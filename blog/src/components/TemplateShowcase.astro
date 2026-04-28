@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getAppUrl, getSiteUrl, siteName } from '../data/site.js'
+import { getFrameAppUrl, getFrameById } from '../data/marketingFrames.js'
+
+const {
+  title,
+  description,
+  h1,
+  eyebrow = 'Template',
+  introParagraphs = [],
+  headlineExamples = [],
+  colorSuggestions = [],
+  layoutTips = [],
+  faqs = [],
+  relatedLinks = [],
+  primaryFrameId = 'pill-phone',
+  previewImage = '/frame-assets/mobile/pill-phone.svg',
+  previewAlt = 'Phone frame mockup preview',
+  keywords = undefined,
+} = Astro.props
+
+const appUrl = getAppUrl()
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const frame = getFrameById(primaryFrameId)
+const editorCta = frame ? getFrameAppUrl(frame, appUrl) : appUrl
+const pageUrl = `${siteUrl}${Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`}`
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: h1,
+      description,
+      url: pageUrl,
+      isPartOf: { '@type': 'WebSite', name: siteName, url: siteUrl },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: siteName,
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'Web',
+      url: siteUrl,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  ],
+}
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData} keywords={keywords}>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs">
+        <a href="/">Home</a><span>/</span><span>{h1}</span>
+      </div>
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{h1}</h1>
+      {introParagraphs.map((text) => <p>{text}</p>)}
+      <div class="pillar-actions">
+        <a class="button" href={editorCta}>Open in editor</a>
+        <a class="button-ghost" href="/play-store-screenshot-editor/">Play Store editor</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell">
+      <div class="template-preview" style="padding: 24px; text-align: center; background: linear-gradient(160deg, rgba(40,48,70,0.9), rgba(12,16,28,0.95));">
+        <img src={previewImage} alt={previewAlt} width="340" height="680" loading="lazy" decoding="async" style="max-width: min(340px, 100%); height: auto; margin: 0 auto;" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell content-prose pillar-inner">
+      <h2>Headline examples</h2>
+      <ul>
+        {headlineExamples.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+      <h2>Color direction</h2>
+      <ul>
+        {colorSuggestions.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+      <h2>Recommended layout</h2>
+      <ul>
+        {layoutTips.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell content-prose pillar-inner">
+      <h2>FAQ</h2>
+      <div class="pillar-faq">
+        {faqs.map((item) => (
+          <div class="pillar-faq-item">
+            <h3 class="pillar-faq-q">{item.q}</h3>
+            <p class="pillar-faq-a">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell content-prose pillar-inner">
+      <h2>Related</h2>
+      <ul class="pillar-link-list">
+        {relatedLinks.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

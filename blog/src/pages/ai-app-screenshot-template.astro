@@ -1,0 +1,69 @@
+---
+import TemplateShowcase from '../components/TemplateShowcase.astro'
+
+const title = 'AI App Play Store Screenshot Template'
+const description =
+  'Positioning lines, palette ideas, and gallery structure for AI assistants, copilots, and generative mobile apps.'
+const h1 = 'AI app screenshot template'
+const introParagraphs = [
+  'AI apps flood the store—your screenshots must show what is unique: model choice, privacy stance, offline mode, or domain-specific workflows.',
+  'Prefer concrete UI over abstract “sparkle” stock art. Let users see prompts, outputs, and guardrails.',
+]
+
+const headlineExamples = [
+  'Answers grounded in your files',
+  'Private by default—no training on you',
+  'Summarize any PDF in seconds',
+  'Write once, reuse everywhere',
+  'Local models when you need offline',
+  'Switch models without losing chats',
+]
+
+const colorSuggestions = [
+  'Midnight blues and soft violet glows read “AI” without looking identical to every competitor.',
+  'Reserve bright gradients for backgrounds; keep in-app screenshots true to product UI.',
+  'If you show generated text, blur personal data in marketing captures.',
+]
+
+const layoutTips = [
+  'Shot 1: chat or prompt UI with a headline about trust, speed, or accuracy—pick one truth.',
+  'Shot 2: output examples (code, email, image) tied to a real use case.',
+  'Shot 3: settings: privacy, model picker, or enterprise controls if you sell to teams.',
+  'Disclose limits honestly; screenshots that overpromise hurt retention and reviews.',
+]
+
+const faqs = [
+  {
+    q: 'Should I mention the underlying model?',
+    a: 'If switching vendors is a selling point, yes. If not, focus on user outcomes instead of model names.',
+  },
+  {
+    q: 'Regulated domains (medical, legal)?',
+    a: 'Add disclaimers where required and avoid implying professional advice unless licensed.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/blog/how-to-create-play-store-screenshots-for-an-ai-app/', label: 'AI app Play Store screenshots' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/blog/common-play-store-screenshot-mistakes/', label: 'Common screenshot mistakes' },
+]
+
+const keywords = ['AI app screenshots', 'Play Store AI app listing', 'AI mockup template']
+---
+
+<TemplateShowcase
+  title={title}
+  description={description}
+  h1={h1}
+  introParagraphs={introParagraphs}
+  headlineExamples={headlineExamples}
+  colorSuggestions={colorSuggestions}
+  layoutTips={layoutTips}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="dynamic-island-camera"
+  previewImage="/frame-assets/mobile/dynamic-island-camera.svg"
+  previewAlt="AI app screenshot mockup with modern phone frame and dynamic island"
+  keywords={keywords}
+/>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getAppUrl, getSiteUrl, siteName } from '../data/site.js'
+import { getFrameAppUrl, getFrameById } from '../data/marketingFrames.js'
+
+/**
+ * @typedef {{ title: string; body: string }} PillarFeature
+ * @typedef {{ q: string; a: string }} PillarFaq
+ * @typedef {{ href: string; label: string }} PillarLink
+ */
+
+const {
+  title,
+  description,
+  h1,
+  eyebrow = 'Product',
+  introParagraphs = [],
+  features = /** @type {PillarFeature[]} */ ([]),
+  faqs = /** @type {PillarFaq[]} */ ([]),
+  relatedLinks = /** @type {PillarLink[]} */ ([]),
+  primaryFrameId = 'pill-phone',
+  keywords = undefined,
+} = Astro.props
+
+const appUrl = getAppUrl()
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const frame = getFrameById(primaryFrameId)
+const editorCta = frame ? getFrameAppUrl(frame, appUrl) : appUrl
+const pathJoined = `${siteUrl}${Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`}`
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: h1,
+      description,
+      url: pathJoined,
+      isPartOf: { '@type': 'WebSite', name: siteName, url: siteUrl },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: siteName,
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'Web',
+      url: siteUrl,
+      description:
+        'Create and edit Play Store and App Store screenshots with device frames, backgrounds, headline text, layouts, and export-ready sizes.',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+  ],
+}
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData} keywords={keywords}>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs">
+        <a href="/">Home</a><span>/</span><span>{h1}</span>
+      </div>
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{h1}</h1>
+      {introParagraphs.map((text) => <p>{text}</p>)}
+      <div class="pillar-actions">
+        <a class="button" href={editorCta}>{frame ? `Open ${frame.label}` : 'Open Mockup Studio'}</a>
+        <a class="button-ghost" href="/blog/">Read guides</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell">
+      <h2 class="content-title" style="font-size: clamp(1.6rem, 3vw, 2.2rem);">What you get in one workflow</h2>
+      <div class="home-proof-grid pillar-feature-grid">
+        {features.map((f) => (
+          <article class="home-proof-card home-proof-blue">
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell content-prose pillar-inner">
+      <h2>Related guides</h2>
+      <ul class="pillar-link-list">
+        {relatedLinks.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pillar-section">
+    <div class="page-shell content-prose pillar-inner">
+      <h2>FAQ</h2>
+      <div class="pillar-faq">
+        {faqs.map((item) => (
+          <div class="pillar-faq-item">
+            <h3 class="pillar-faq-q">{item.q}</h3>
+            <p class="pillar-faq-a">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillar-section pillar-bottom-cta">
+    <div class="page-shell">
+      <div class="cta-panel">
+        <p class="eyebrow" style="color:#ffb47f;">Try it</p>
+        <h2 class="content-title" style="font-size:2rem;color:#fff;">Edit the full mockup in the browser</h2>
+        <p>Frame, background, text, layout, and export size—without bouncing between Figma and a separate mockup tool.</p>
+        <a class="button" href={editorCta}>{frame ? `Start with ${frame.label}` : 'Open Mockup Studio'}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

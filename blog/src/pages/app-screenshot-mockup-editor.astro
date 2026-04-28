@@ -1,0 +1,62 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'App Screenshot Mockup Editor'
+const description =
+  'Turn raw app UI into polished marketing and store screenshots: phone and tablet mockups, typography, backgrounds, and export-ready layouts.'
+const h1 = 'App screenshot mockup editor'
+const introParagraphs = [
+  'Mockups are not just “phones around PNGs.” They are how teams communicate value on landing pages, pitch decks, and store listings—especially when the UI alone does not explain the benefit.',
+  'Mockup Studio focuses on the whole canvas: frame choice, safe margins, headline hierarchy, and background treatment so each image works at small preview sizes.',
+]
+
+const features = [
+  {
+    title: 'Marketing and stores',
+    body: 'Ship the same visual language to your site hero, social ads, and Play or App Store galleries.',
+  },
+  {
+    title: 'Readable at thumbnail size',
+    body: 'Design with the assumption that many users will see a tiny preview first—short copy and strong contrast win.',
+  },
+  {
+    title: 'Frame library',
+    body: 'Phones, tablets, laptops, and watches—pick shells that match how your product is actually used.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Does this replace my design system?',
+    a: 'No—it helps you execute screenshot and mockup deliverables faster while staying on-brand with your colors and type choices.',
+  },
+  {
+    q: 'App Store and Play Store together?',
+    a: 'Yes. Aspect ratios differ; use our App Store and Play size guides, then mirror the same story arc across both.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/android-app-screenshot-editor/', label: 'Android app screenshot editor' },
+  { href: '/blog/app-screenshot-generator-vs-mockup-generator/', label: 'Screenshot generator vs mockup generator' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'Add text to app screenshots' },
+  { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
+  { href: '/frames/', label: 'Frames catalog' },
+]
+
+const keywords = ['app screenshot mockup editor', 'mobile app mockup tool', 'App Store Play Store mockups']
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Product"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="borderless-phone"
+  keywords={keywords}
+/>

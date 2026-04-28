@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import FramePreview from '../../components/FramePreview.astro'
+import { frameToBlogMap, getFrameAppUrl, getRelatedFrames, marketingFrames } from '../../data/marketingFrames.js'
+import { getAppUrl, siteName } from '../../data/site.js'
+
+export async function getStaticPaths() {
+  return marketingFrames.map((frame) => ({
+    params: { slug: frame.slug },
+    props: { frame },
+  }))
+}
+
+const { frame } = Astro.props
+const appUrl = getAppUrl()
+const posts = await getCollection('blog')
+const relatedPostSlugs = frameToBlogMap[frame.id] || [
+  'how-to-make-play-store-screenshots-that-get-downloads',
+  'best-device-frame-sizes-for-google-play-2025',
+]
+const relatedPosts = relatedPostSlugs
+  .map((slug) => posts.find((post) => post.slug === slug))
+  .filter(Boolean)
+const relatedFrames = getRelatedFrames(frame, 3)
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `${frame.label} Mockup Generator`,
+  description: frame.seoDescription,
+  publisher: { '@type': 'Organization', name: siteName },
+}
+---
+
+<BaseLayout
+  title={`${frame.label} Mockup Generator`}
+  description={frame.seoDescription}
+  structuredData={structuredData}
+>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/frames/">Frames</a><span>/</span><span>{frame.label}</span></div>
+      <p class="eyebrow">{frame.categoryLabel}</p>
+      <h1>{frame.label} mockup generator for faster store screenshots.</h1>
+      <p>{frame.seoDescription}</p>
+      <div class="hero-actions">
+        <a class="button" href={getFrameAppUrl(frame, appUrl)}>Open {frame.label} in the editor</a>
+        <a class="button-ghost" href="/frames/">Back to gallery</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 10px;">
+    <div class="page-shell content-grid">
+      <div class="aside-stack">
+        <div class="frame-page-card">
+          <FramePreview
+            frame={frame}
+            gradient="linear-gradient(145deg, #ff8f3c 0%, #ff6c21 50%, #ffe3c2 100%)"
+          />
+        </div>
+
+        <div class="grid-2">
+          <div class="stat-card">
+            <p class="eyebrow">Built for</p>
+            <h3>App marketing pages</h3>
+            <p>Use this frame for landing-page mockups, store listing previews, and answer-first SEO content.</p>
+          </div>
+          <div class="stat-card">
+            <p class="eyebrow">CTA path</p>
+            <h3>Static page → tool</h3>
+            <p>Let search engines index the frame page, then push the visitor directly into the React editor with the frame preselected.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="aside-stack">
+        <div class="frame-page-card">
+          <p class="eyebrow">Why this page exists</p>
+          <h2 style="font-size:1.7rem;">Static HTML that can actually rank.</h2>
+          <p>
+            Your editor is still the product. This page is the discoverable entry point: it explains the frame, targets the keyword, and routes traffic into the actual tool.
+          </p>
+          <ul>
+            <li>Clear frame name for search intent</li>
+            <li>Direct CTA to the editor</li>
+            <li>Related posts and related frame links for internal linking</li>
+          </ul>
+        </div>
+
+        <div class="frame-page-card">
+          <p class="eyebrow">Related reading</p>
+          <div class="aside-stack">
+            {relatedPosts.map((post) => (
+              <div>
+                <h2 style="font-size:1.2rem; margin-bottom:8px;"><a href={`/blog/${post.slug}/`}>{post.data.title}</a></h2>
+                <p>{post.data.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="frame-page-card">
+          <p class="eyebrow">Related frames</p>
+          <div class="aside-stack">
+            {relatedFrames.map((related) => (
+              <div>
+                <h2 style="font-size:1.2rem; margin-bottom:8px;"><a href={`/frames/${related.slug}/`}>{related.label}</a></h2>
+                <p>{related.seoDescription}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

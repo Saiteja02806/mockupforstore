@@ -1,0 +1,17 @@
+{
+  "name": "mockup-studio-seo-site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "sync-frame-assets": "node scripts/sync-frame-assets.mjs",
+    "dev": "npm run sync-frame-assets && astro dev",
+    "build": "npm run sync-frame-assets && astro build",
+    "preview": "astro preview",
+    "serve:dist": "node scripts/serve-dist.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.14.1"
+  }
+}

@@ -1,0 +1,69 @@
+---
+import TemplateShowcase from '../components/TemplateShowcase.astro'
+
+const title = 'Fitness App Play Store Screenshot Template'
+const description =
+  'Energetic headline patterns, color cues, and gallery flow ideas for fitness and workout apps on Google Play.'
+const h1 = 'Fitness app screenshot template'
+const introParagraphs = [
+  'Fitness shoppers respond to progress, coaching, and community. Screenshots should show metrics, plans, and social proof without cluttering the frame.',
+  'Pair bold motion-friendly headlines with high-contrast backgrounds so thumbnails stay legible in Play browse surfaces.',
+]
+
+const headlineExamples = [
+  'Plans that adapt to your week',
+  'Track strength, not guesswork',
+  'Heart zones in real time',
+  'Coach in your pocket',
+  'Programs for every level',
+  'Share wins with your crew',
+]
+
+const colorSuggestions = [
+  'Deep charcoal or navy base with neon green, orange, or magenta accents common in fitness brands.',
+  'Optional gradient sweeps (diagonal) behind the device—keep UI screenshots themselves clean.',
+  'If you show skin or bodies, follow store policies on imagery and health claims.',
+]
+
+const layoutTips = [
+  'Shot 1: active workout or live metrics screen with a punchy promise headline.',
+  'Shot 2: history or trends chart—prove long-term value.',
+  'Shot 3: social, challenges, or wearable sync if you have it.',
+  'Avoid unreadable micro-type on wearable screenshots; zoom or simplify.',
+]
+
+const faqs = [
+  {
+    q: 'Can I use before/after body claims?',
+    a: 'Be careful—misleading health claims can violate Play policies. Prefer performance metrics you can substantiate.',
+  },
+  {
+    q: 'Wearables in the set?',
+    a: 'Yes—use watch frames sparingly as supporting slides, not the only context for a phone-first app.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/blog/how-to-create-play-store-screenshots-for-a-fitness-app/', label: 'Fitness app Play Store guide' },
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/blog/play-store-screenshot-examples/', label: 'Play Store screenshot examples' },
+]
+
+const keywords = ['fitness app screenshots', 'workout app Play Store', 'fitness mockup template']
+---
+
+<TemplateShowcase
+  title={title}
+  description={description}
+  h1={h1}
+  introParagraphs={introParagraphs}
+  headlineExamples={headlineExamples}
+  colorSuggestions={colorSuggestions}
+  layoutTips={layoutTips}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="borderless-phone"
+  previewImage="/frame-assets/mobile/borderless-phone.svg"
+  previewAlt="Fitness app screenshot mockup with borderless Android-style phone frame"
+  keywords={keywords}
+/>

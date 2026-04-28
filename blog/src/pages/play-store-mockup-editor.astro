@@ -1,0 +1,62 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'Play Store Mockup Editor'
+const description =
+  'Compose Google Play listing mockups with realistic Android hardware, headline text, backgrounds, and export sizes tuned for Play Console.'
+const h1 = 'Play Store mockup editor'
+const introParagraphs = [
+  'A Play mockup is the composite buyers see: device, UI, optional tagline, and background. Weak mockups look like disconnected layers; strong ones read as a single intentional poster.',
+  'This page is for teams who want listing art that survives cropping, dark mode store chrome, and small previews in discovery surfaces—not only the full-width listing view.',
+]
+
+const features = [
+  {
+    title: 'Play-first framing',
+    body: 'Prioritize portrait phone and tablet frames that match what Android shoppers expect in the Play catalog.',
+  },
+  {
+    title: 'Honest copy',
+    body: 'Pair screenshots with concise claims that match in-app reality—store policies reward accurate preview assets.',
+  },
+  {
+    title: 'Export discipline',
+    body: 'Ship PNG or JPEG sets at the dimensions your track requires, with consistent padding between shots.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'How is this different from the screenshot editor page?',
+    a: 'Same product surface—this page emphasizes “mockup” and composite listing art keywords; use whichever matches how you search.',
+  },
+  {
+    q: 'Landscape screenshots?',
+    a: 'Supported where your story needs it; see the size guide for mixing portrait and landscape sets.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/blog/play-store-screenshot-size-guide/', label: 'Play Store screenshot size guide' },
+  { href: '/blog/google-play-screenshot-requirements/', label: 'Google Play screenshot requirements' },
+  { href: '/productivity-app-screenshot-template/', label: 'Productivity app template example' },
+  { href: '/frames/', label: 'Frames' },
+]
+
+const keywords = ['Play Store mockup editor', 'Google Play listing mockup', 'Android store screenshot mockup']
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Google Play"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="punchhole-phone"
+  keywords={keywords}
+/>

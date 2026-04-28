@@ -1,0 +1,70 @@
+---
+import TemplateShowcase from '../components/TemplateShowcase.astro'
+
+const title = 'Productivity App Play Store Screenshot Template'
+const description =
+  'Headline ideas, palette direction, and layout tips for productivity and to-do style apps—then open the frame in Mockup Studio.'
+const h1 = 'Productivity app screenshot template'
+const introParagraphs = [
+  'Productivity listings compete on clarity: users want to see tasks, calendars, or inboxes in seconds. Your screenshots should show real workflows with short outcome-led headlines.',
+  'Use this page as a creative brief, then open the editor to drop in your UI and tune copy for your actual feature set.',
+]
+
+const headlineExamples = [
+  'Ship your day from one inbox',
+  'Tasks, calendar, notes—together',
+  'Focus blocks that actually stick',
+  'Automate repeats in two taps',
+  'See today at a glance',
+  'Never miss a deadline again',
+]
+
+const colorSuggestions = [
+  'Cool neutrals (slate + white) with one electric accent (cyan or violet) for buttons.',
+  'Soft paper backgrounds for “calm focus” positioning—avoid neon gradients unless brand demands it.',
+  'Keep text WCAG-friendly: 4.5:1 contrast minimum on headline bands.',
+]
+
+const layoutTips = [
+  'Shot 1: hero UI with the primary list or board visible; headline names the core job.',
+  'Shot 2: capture flow—drag, assign date, or snooze—so users see motion, not static chrome.',
+  'Shot 3: integrations or sync if that is a differentiator; otherwise show notifications or widgets.',
+  'Leave padding for localized strings; German and French titles often run longer.',
+]
+
+const faqs = [
+  {
+    q: 'Should I show every feature?',
+    a: 'No—show the three jobs that convert. Save edge features for the long description or video.',
+  },
+  {
+    q: 'Portrait or tablet first?',
+    a: 'Lead with phone portrait for most Play listings; add a tablet chapter if tablet is a real segment.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/todo-app-screenshot-template/', label: 'To-do app screenshot template' },
+  { href: '/blog/how-to-create-play-store-screenshots-for-a-to-do-app/', label: 'Play Store screenshots for a to-do app' },
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'How to add text to app screenshots' },
+]
+
+const keywords = ['productivity app screenshots', 'Play Store productivity template', 'todo app listing images']
+---
+
+<TemplateShowcase
+  title={title}
+  description={description}
+  h1={h1}
+  introParagraphs={introParagraphs}
+  headlineExamples={headlineExamples}
+  colorSuggestions={colorSuggestions}
+  layoutTips={layoutTips}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="pill-phone"
+  previewImage="/frame-assets/mobile/pill-phone.svg"
+  previewAlt="Productivity app screenshot mockup with rounded phone frame for Google Play"
+  keywords={keywords}
+/>

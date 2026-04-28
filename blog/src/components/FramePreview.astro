@@ -1,0 +1,64 @@
+---
+const {
+  frame,
+  gradient = 'linear-gradient(160deg, #dbe8ff 0%, #eadbff 48%, #fff3f9 100%)',
+  chip = true,
+  compact = false,
+  alt,
+} = Astro.props
+
+const ratio = `${frame.canvasWidth} / ${frame.canvasHeight}`
+const imageAlt = alt || `${frame.label} device frame for Play Store and App Store screenshots`
+
+function pctX(value) {
+  return ((value / frame.canvasWidth) * 100).toFixed(4)
+}
+
+function pctY(value) {
+  return ((value / frame.canvasHeight) * 100).toFixed(4)
+}
+
+function buildScreenStyle(screenArea) {
+  if (!screenArea) return 'left:0;top:0;width:100%;height:100%;'
+
+  if (screenArea.shape === 'circle') {
+    return [
+      `left:${pctX(screenArea.cx - screenArea.r)}%`,
+      `top:${pctY(screenArea.cy - screenArea.r)}%`,
+      `width:${pctX(screenArea.r * 2)}%`,
+      `height:${pctY(screenArea.r * 2)}%`,
+      'border-radius:999px',
+    ].join(';')
+  }
+
+  if (screenArea.shape === 'polygon' && Array.isArray(screenArea.points) && screenArea.points.length) {
+    const points = screenArea.points.map((point) => `${pctX(point.x)}% ${pctY(point.y)}%`).join(', ')
+    return `left:0;top:0;width:100%;height:100%;clip-path:polygon(${points});`
+  }
+
+  const radiusX = screenArea.radius ? ((screenArea.radius / screenArea.width) * 100).toFixed(4) : 0
+  const radiusY = screenArea.radius ? ((screenArea.radius / screenArea.height) * 100).toFixed(4) : 0
+
+  return [
+    `left:${pctX(screenArea.x)}%`,
+    `top:${pctY(screenArea.y)}%`,
+    `width:${pctX(screenArea.width)}%`,
+    `height:${pctY(screenArea.height)}%`,
+    `border-radius:${radiusX}% / ${radiusY}%`,
+  ].join(';')
+}
+
+const screenStyle = buildScreenStyle(frame.screenArea)
+---
+
+<figure class={`frame-preview${compact ? ' is-compact' : ''}`} style={`--frame-ratio:${ratio}; --frame-gradient:${gradient};`}>
+  <div class="frame-preview-screen" style={screenStyle} aria-hidden="true"></div>
+  <img
+    class="frame-preview-overlay"
+    src={frame.assetPath}
+    alt={imageAlt}
+    loading="lazy"
+    decoding="async"
+  />
+  {chip ? <figcaption class="frame-preview-chip">{frame.label}</figcaption> : null}
+</figure>

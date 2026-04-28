@@ -1,0 +1,50 @@
+---
+const { appUrl } = Astro.props
+---
+
+<footer class="site-footer" id="footer">
+  <div class="site-footer-inner">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-title">Product</p>
+        <a href="/frames/">Device frames</a>
+        <a href="/play-store-screenshot-editor/">Play Store screenshot editor</a>
+        <a href="/play-store-screenshot-generator/">Play Store screenshot generator</a>
+        <a href="/app-screenshot-mockup-editor/">App screenshot mockup editor</a>
+        <a href={appUrl}>Open Mockup Studio</a>
+      </div>
+
+      <div>
+        <p class="footer-title">Resources</p>
+        <a href="/blog/">Blog</a>
+        <a href="/blog/how-to-create-play-store-screenshots/">Create Play screenshots</a>
+        <a href="/blog/play-store-screenshot-size-guide/">Screenshot size guide</a>
+        <a href="/productivity-app-screenshot-template/">Templates</a>
+        <a href="/#footer">Contact</a>
+      </div>
+
+      <div>
+        <p class="footer-title">Company</p>
+        <a href="/#footer">Company</a>
+        <a href="/#footer">Terms of Use</a>
+        <a href="/#footer">Contact Us</a>
+        <a href="/blog/">Blog</a>
+      </div>
+
+      <div>
+        <p class="footer-title">Social</p>
+        <div class="footer-social">
+          <a href="/#footer" aria-label="Twitter">t</a>
+          <a href="/#footer" aria-label="Facebook">f</a>
+          <a href="/#footer" aria-label="Instagram">ig</a>
+          <a href="/#footer" aria-label="YouTube">yt</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>Powered by Mockup Studio</span>
+      <span>Real device mockups for faster store launches.</span>
+    </div>
+  </div>
+</footer>

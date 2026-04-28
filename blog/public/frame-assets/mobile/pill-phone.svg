@@ -1,0 +1,28 @@
+<svg viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg" width="400" height="800">
+  <defs>
+    <mask id="m01">
+      <rect width="400" height="800" fill="white"/>
+      <rect x="38" y="60" width="324" height="680" rx="4" ry="4" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Body -->
+  <rect x="20" y="20" width="360" height="760" rx="50" ry="50"
+        fill="#1c1c20" mask="url(#m01)"/>
+  <!-- Inner bezel -->
+  <rect x="27" y="27" width="346" height="746" rx="45" ry="45"
+        fill="#0c0c10" mask="url(#m01)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="38" y="60" width="324" height="680" rx="4" ry="4"
+        fill="none"/>
+  <!-- Dynamic Island pill -->
+  <rect x="140" y="30" width="120" height="30" rx="15" ry="15"
+        fill="#0c0c10"/>
+  <!-- Camera dot inside island -->
+  <circle cx="234" cy="45" r="5" fill="#080810"/>
+  <circle cx="234" cy="45" r="2.5" fill="#050508"/>
+  <!-- Side buttons — right -->
+  <rect x="378" y="160" width="7" height="64" rx="3.5" fill="#1c1c22"/>
+  <rect x="378" y="246" width="7" height="44" rx="3.5" fill="#1c1c22"/>
+  <!-- Side button — left (power/lock) -->
+  <rect x="15" y="200" width="7" height="80" rx="3.5" fill="#1c1c22"/>
+</svg>

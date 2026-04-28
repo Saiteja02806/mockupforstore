@@ -1,0 +1,71 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'Play Store Screenshot Editor'
+const description =
+  'Edit full Google Play listing images in one place: Android device frames, headline text, backgrounds, layout, and export-ready dimensions.'
+const h1 = 'Play Store screenshot editor'
+const introParagraphs = [
+  'Google Play can show your screenshots in search, collections, and your store listing—often smaller than full size. That means your listing art needs to read clearly as a complete mockup, not only as a raw UI capture.',
+  'Mockup Studio is built for the full listing image: pick a frame, place your screen, add typography and background, then export at the sizes you need. Use it alongside our guides on sizes, text, and workflow.',
+]
+
+const features = [
+  {
+    title: 'Device frame + screen',
+    body: 'Choose Android-friendly phone and tablet frames so your UI reads as a real product shot, not a floating rectangle.',
+  },
+  {
+    title: 'Headline text and layout',
+    body: 'Add short benefit-led headlines and keep them legible in thumbnail views—critical for Play discovery surfaces.',
+  },
+  {
+    title: 'Background and export',
+    body: 'Unify backgrounds across a screenshot set and export consistent dimensions for Play Console uploads.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Is this only for the Play Store?',
+    a: 'The same mockup workflow works for App Store screenshots too; dimensions differ, which our size guides cover.',
+  },
+  {
+    q: 'Do I still need a design tool?',
+    a: 'Many teams use Mockup Studio to assemble listing-ready shots without rebuilding device chrome in Figma or Photoshop for every export.',
+  },
+  {
+    q: 'Where do I learn export sizes?',
+    a: 'Start with our Play Store screenshot size guide linked below, then open the editor with a frame preset.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/blog/how-to-create-play-store-screenshots/', label: 'How to create Play Store screenshots (workflow)' },
+  { href: '/blog/play-store-screenshot-size-guide/', label: 'Play Store screenshot size guide' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'How to add text to app screenshots' },
+  { href: '/blog/how-to-make-play-store-screenshots-that-get-downloads/', label: 'Screenshots that support downloads' },
+  { href: '/frames/', label: 'Browse device frames' },
+]
+
+const keywords = [
+  'Play Store screenshot editor',
+  'Google Play mockup editor',
+  'Android app screenshot editor',
+  'Play Console screenshots',
+]
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Google Play"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="pill-phone"
+  keywords={keywords}
+/>

@@ -1,0 +1,30 @@
+<svg viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg" width="240" height="290">
+  <defs>
+    <mask id="m17">
+      <rect width="240" height="290" fill="white"/>
+      <circle cx="120" cy="145" r="88" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Top strap (narrower for round watch) -->
+  <rect x="88" y="0" width="64" height="60" rx="8" fill="#1c1c20"/>
+  <line x1="88" y1="16" x2="152" y2="16" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="28" x2="152" y2="28" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="40" x2="152" y2="40" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="52" x2="152" y2="52" stroke="#1a1a24" stroke-width="1"/>
+  <!-- Bottom strap -->
+  <rect x="88" y="232" width="64" height="58" rx="8" fill="#1c1c20"/>
+  <line x1="88" y1="244" x2="152" y2="244" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="256" x2="152" y2="256" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="268" x2="152" y2="268" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="88" y1="280" x2="152" y2="280" stroke="#1a1a24" stroke-width="1"/>
+  <!-- Watch case circle — centred at 120,145 so straps align -->
+  <circle cx="120" cy="145" r="106" fill="#1c1c20" mask="url(#m17)"/>
+  <!-- Bezel ring -->
+  <circle cx="120" cy="145" r="100" fill="#0c0c10" mask="url(#m17)"/>
+  <!-- Screen area — MUST match frames.js: cx:120, cy:145, r:88 -->
+  <circle cx="120" cy="145" r="88" fill="none"/>
+  <!-- Crown (right) -->
+  <rect x="224" y="128" width="10" height="18" rx="5" fill="#1c1c22"/>
+  <!-- Button (right lower) -->
+  <rect x="224" y="154" width="8" height="14" rx="4" fill="#1c1c22"/>
+</svg>

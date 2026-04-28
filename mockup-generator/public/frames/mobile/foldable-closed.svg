@@ -1,0 +1,28 @@
+<svg viewBox="0 0 300 800" xmlns="http://www.w3.org/2000/svg" width="300" height="800">
+  <defs>
+    <mask id="m08">
+      <rect width="300" height="800" fill="white"/>
+      <rect x="30" y="52" width="240" height="696" rx="4" ry="4" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="16" y="16" width="268" height="768" rx="38" ry="38"
+        fill="#1c1c20" mask="url(#m08)"/>
+  <rect x="22" y="22" width="256" height="756" rx="33" ry="33"
+        fill="#0c0c10" mask="url(#m08)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="30" y="52" width="240" height="696" rx="4" ry="4"
+        fill="none"/>
+  <!-- Hinge line — subtle horizontal crease midpoint -->
+  <line x1="30" y1="400" x2="270" y2="400"
+        stroke="#0f0f16" stroke-width="1.5"/>
+  <!-- Punch-hole -->
+  <circle cx="150" cy="36" r="7" fill="#0c0c10"/>
+  <circle cx="150" cy="36" r="4.5" fill="#080810"/>
+  <circle cx="150" cy="36" r="2.5" fill="#040408"/>
+  <circle cx="148" cy="34" r="1" fill="#1a2030" opacity="0.6"/>
+  <!-- Side buttons right -->
+  <rect x="280" y="170" width="7" height="54" rx="3.5" fill="#1c1c22"/>
+  <rect x="280" y="240" width="7" height="36" rx="3.5" fill="#1c1c22"/>
+  <!-- Side button left (volume) -->
+  <rect x="13" y="200" width="7" height="68" rx="3.5" fill="#1c1c22"/>
+</svg>

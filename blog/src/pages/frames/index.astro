@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import FramePreview from '../../components/FramePreview.astro'
+import { frameGroups, getFrameAppUrl } from '../../data/marketingFrames.js'
+import { getAppUrl } from '../../data/site.js'
+
+const appUrl = getAppUrl()
+---
+
+<BaseLayout
+  title="Mockup Studio Frames"
+  description="Browse SEO-friendly frame pages generated from the Mockup Studio device catalog: phones, tablets, desktop layouts, and watches."
+>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs"><a href="/">Home</a><span>/</span><span>Frames</span></div>
+      <p class="eyebrow">Frame gallery</p>
+      <h1>Seventeen searchable frame pages generated from your product catalog.</h1>
+      <p>
+        Each frame page is static, indexable HTML on Astro. That means Google and AI crawlers can understand the frame names, the use cases, and the calls to action without trying to render your React editor.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 10px;">
+    <div class="page-shell">
+      {frameGroups.map((group) => (
+        <section style="margin-bottom:56px;">
+          <div class="section-heading-row">
+            <div>
+              <p class="eyebrow">{group.title}</p>
+              <h2 class="section-title">{group.title}</h2>
+            </div>
+            <p class="section-copy" style="max-width:32ch;">{group.description}</p>
+          </div>
+
+          <div class="frame-gallery">
+            {group.frames.map((frame, index) => (
+              <article class="frame-card">
+                <FramePreview
+                  frame={frame}
+                  compact={true}
+                  gradient={[
+                    'linear-gradient(145deg, #ff913f 0%, #ff6620 52%, #ffe0b8 100%)',
+                    'linear-gradient(145deg, #15120d 0%, #38281d 48%, #9d6330 100%)',
+                    'linear-gradient(145deg, #fff1dd 0%, #ffc789 46%, #ff8f3b 100%)',
+                  ][index % 3]}
+                />
+                <div class="frame-card-copy">
+                  <div class="frame-card-topline">
+                    <span class="dot"></span>
+                    <span>{frame.categoryLabel}</span>
+                  </div>
+                  <h3><a href={`/frames/${frame.slug}/`}>{frame.label}</a></h3>
+                  <p>{frame.seoDescription}</p>
+                  <div class="hero-actions">
+                    <a class="button-ghost" href={`/frames/${frame.slug}/`}>Open frame page</a>
+                    <a class="nav-link-muted" href={getFrameAppUrl(frame, appUrl)}>Use in editor</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

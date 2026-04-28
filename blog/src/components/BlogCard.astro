@@ -1,0 +1,14 @@
+---
+const { post } = Astro.props
+const href = `/blog/${post.slug}/`
+---
+
+<article class="blog-card">
+  <p class="eyebrow">{post.data.category}</p>
+  <h3><a href={href}>{post.data.title}</a></h3>
+  <p>{post.data.description}</p>
+  <div class="blog-card-meta">
+    <span>{post.data.readingTime || '7 min read'}</span>
+    <a href={href}>Read article</a>
+  </div>
+</article>

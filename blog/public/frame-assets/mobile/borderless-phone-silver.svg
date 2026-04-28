@@ -1,0 +1,21 @@
+<svg viewBox="0 0 400 800" xmlns="http://www.w3.org/2000/svg" width="400" height="800">
+  <defs>
+    <mask id="m06s">
+      <rect width="400" height="800" fill="white"/>
+      <rect x="14" y="14" width="372" height="772" rx="48" ry="48" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Ultra-thin silver shell - same geometry as Borderless -->
+  <rect x="10" y="10" width="380" height="780" rx="52" ry="52"
+        fill="#cfd1d5" mask="url(#m06s)"/>
+  <!-- Screen area - MUST match frames.js: x:14, y:14, w:372, h:772 -->
+  <rect x="14" y="14" width="372" height="772" rx="48" ry="48"
+        fill="none"/>
+  <!-- Subtle chin indicator line -->
+  <line x1="172" y1="775" x2="228" y2="775"
+        stroke="#8d9097" stroke-width="2" stroke-linecap="round"/>
+  <!-- Side buttons (barely visible on edge) -->
+  <rect x="388" y="180" width="5" height="60" rx="2.5" fill="#a8abb2"/>
+  <rect x="388" y="258" width="5" height="40" rx="2.5" fill="#a8abb2"/>
+  <rect x="7" y="220" width="5" height="76" rx="2.5" fill="#a8abb2"/>
+</svg>

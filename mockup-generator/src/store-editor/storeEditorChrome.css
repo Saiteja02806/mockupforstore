@@ -1,0 +1,503 @@
+/* Scoped to store editor overlay — tokens match vanilla-mockup styles.css :root */
+.store-editor-root {
+  --bg: #0f1117;
+  --sb: #13151e;
+  --panel: #181a22;
+  --panel2: #22252e;
+  --panel3: #2d313d;
+  --border: #2d313d;
+  --border2: #404552;
+  --border3: #4b5563;
+  --text: #f8fafc;
+  --text2: #cbd5e1;
+  --text3: #64748b;
+  --accent: #6366f1;
+  --accent2: #4f46e5;
+  --accent-glow: rgba(99, 102, 241, 0.25);
+  --red: #ef4444;
+  --canvas-bg: #13151e;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.store-editor-root .se-mono {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.store-editor-root .se-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+  padding: 0 14px;
+  flex-shrink: 0;
+  background: var(--sb);
+  border-bottom: 1px solid var(--border);
+}
+
+.store-editor-root .se-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.store-editor-root .se-logo-mark {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+.store-editor-root .se-app-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.store-editor-root .se-app-sub {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 1px;
+  line-height: 1.3;
+}
+
+.store-editor-root .se-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.store-editor-root .se-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(91, 138, 240, 0.45);
+  background: rgba(91, 138, 240, 0.18);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px var(--accent-glow);
+}
+
+.store-editor-root .se-btn-primary:hover:not(:disabled) {
+  background: rgba(91, 138, 240, 0.28);
+  border-color: rgba(91, 138, 240, 0.65);
+}
+
+.store-editor-root .se-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.store-editor-root .se-btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel);
+  color: var(--text2);
+  font-weight: 600;
+  font-size: 12px;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.store-editor-root .se-btn-link:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+
+.store-editor-root .se-btn-close {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel);
+  color: var(--text2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-editor-root .se-btn-close:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+
+.store-editor-root .se-sidebar {
+  width: 288px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--panel);
+  padding: 14px 14px 18px;
+  gap: 0;
+}
+
+.store-editor-root .se-rail {
+  width: 340px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 14px 16px 18px;
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.store-editor-root .se-section-title {
+  font-family: 'DM Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+  margin-bottom: 10px;
+}
+
+.store-editor-root .se-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 14px 0;
+  flex-shrink: 0;
+}
+
+.store-editor-root .se-stage {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--canvas-bg);
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.04) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.04) 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+.store-editor-root .se-select,
+.store-editor-root .se-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+}
+
+.store-editor-root .se-select:focus,
+.store-editor-root .se-input:focus {
+  border-color: rgba(91, 138, 240, 0.55);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.store-editor-root .se-layer-row-btn {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  padding: 9px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.store-editor-root .se-layer-row-btn.se-selected {
+  border-color: rgba(91, 138, 240, 0.55);
+  background: var(--accent-glow);
+}
+
+.store-editor-root .se-layer-order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel);
+  color: var(--text2);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.store-editor-root .se-layer-order-btn:hover:not(:disabled) {
+  border-color: var(--border3);
+  color: var(--text);
+  background: var(--panel2);
+}
+
+.store-editor-root .se-layer-order-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.store-editor-root .se-chip-btn {
+  padding: 5px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.store-editor-root .se-chip-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.store-editor-root .se-secondary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.store-editor-root .se-secondary-btn:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+
+.store-editor-root .se-shadow-style-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.store-editor-root .se-shadow-style-btn {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.store-editor-root .se-shadow-style-btn span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.store-editor-root .se-shadow-style-btn small {
+  display: block;
+  margin-top: 2px;
+  font-size: 9.5px;
+  line-height: 1.3;
+  color: var(--text3);
+}
+
+.store-editor-root .se-shadow-style-btn:hover,
+.store-editor-root .se-shadow-style-btn.se-selected {
+  border-color: rgba(91, 138, 240, 0.6);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.store-editor-root .se-accent-outline-btn {
+  border-color: rgba(91, 138, 240, 0.35);
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+.store-editor-root .se-accent-outline-btn:hover {
+  border-color: rgba(91, 138, 240, 0.55);
+  background: rgba(91, 138, 240, 0.22);
+}
+
+.store-editor-root .se-preview-surface {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  /* No default drop shadow — device shadow is opt-in in the DEVICE panel only */
+  border: 1px solid var(--border2);
+  box-shadow: none;
+}
+
+/* Mockup art fills its layer box. Device shadow is applied to the outer layer when enabled. */
+.store-editor-root .se-mockup-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+  background: transparent;
+}
+
+/* object-fit only applies once the <img> is sized to the mask box (not natural pixels) */
+.store-editor-root .se-mockup-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  object-position: center;
+  display: block;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.store-editor-root .se-link-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0 0 12px;
+  margin: -4px 0 4px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.store-editor-root .se-link-btn:hover {
+  color: var(--accent2);
+}
+
+.store-editor-root .se-rail-inner {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.store-editor-root .se-rail-footer {
+  flex-shrink: 0;
+  padding-top: 8px;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Download platform menu ── */
+.store-editor-root .se-dl-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 7px 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+.store-editor-root .se-dl-option:hover {
+  background: rgba(99, 102, 241, 0.12);
+  color: #fff;
+}
+
+/* ── Gradient preset swatches in artboard panel ── */
+.store-editor-root .se-grad-swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.store-editor-root .se-grad-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.12s, transform 0.1s;
+  flex-shrink: 0;
+}
+.store-editor-root .se-grad-swatch:hover {
+  transform: scale(1.12);
+  border-color: rgba(255,255,255,0.3);
+}
+.store-editor-root .se-grad-swatch--on {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.35);
+}
+
+/* ── Platform / store size selector in header ── */
+.store-editor-root .se-store-select {
+  height: 30px;
+  padding: 0 28px 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--panel2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+  color: var(--text2);
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  max-width: 200px;
+  transition: border-color 120ms, color 120ms;
+}
+.store-editor-root .se-store-select:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+.store-editor-root .se-store-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.18);
+}
+.store-editor-root .se-store-select option,
+.store-editor-root .se-store-select optgroup {
+  background: #1a1a2e;
+  color: #e2e8f0;
+}

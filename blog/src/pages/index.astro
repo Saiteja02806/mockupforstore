@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import BlogCard from '../components/BlogCard.astro'
+import { getCollection } from 'astro:content'
+import { getAppUrl, getSiteUrl, siteName } from '../data/site.js'
+
+const appUrl = getAppUrl()
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+
+const blogPosts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 6)
+
+const assetUrl = (folder, file) => `/hero-assets/${folder}/${encodeURIComponent(file)}`
+
+const phoneFiles = [
+  'download_store_1080x1920__4_-removebg-preview (1) (1).png',
+  'download_store_1080x1920__5_-removebg-preview (1).png',
+  'download_store_1080x1920__6_-removebg-preview (1).png',
+  'download_store_1080x1920__7_-removebg-preview (1).png',
+  'download_store_1080x1920__8_-removebg-preview (1).png',
+  'download_store_1080x1920__9_-removebg-preview (1).png',
+  'GRAINYENTS_-_Michel_Carvalho_store_1080x1920__4_-removebg-preview (1).png',
+  'GRAINYENTS_-_Michel_Carvalho_store_1080x1920__5_-removebg-preview (1).png',
+  'log_in_page_for_mobile_app_store_1080x1920__1_-removebg-preview (1).png',
+  'Mobile_First_Login_for_Webflow_store_1080x1920-removebg-preview (1).png',
+]
+
+const tabletFiles = ['download_store_1080x1920__10_-removebg-preview (1).png']
+const laptopFiles = ['download (1)_store_1080x1920 (4).png']
+
+const phoneColumns = [0, 1, 2].map((column) =>
+  phoneFiles
+    .filter((_, index) => index % 3 === column)
+    .map((file) => assetUrl('phones', file))
+)
+
+const laptopTiles = Array.from({ length: 5 }, (_, index) => assetUrl('laptops', laptopFiles[index % laptopFiles.length]))
+const tabletTiles = Array.from({ length: 4 }, (_, index) => assetUrl('tablets', tabletFiles[index % tabletFiles.length]))
+
+const pageTitle = 'App Screenshot Mockup Editor for Play Store and App Store'
+const pageDescription =
+  'Create and edit app screenshot mockups with mobile frames, custom backgrounds, text, layouts, and export-ready designs for Play Store and App Store listings.'
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: siteName,
+      url: siteUrl,
+      description: pageDescription,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: `${siteUrl}/blog/{search_term_string}/`,
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: siteName,
+      applicationCategory: 'DesignApplication',
+      operatingSystem: 'Web',
+      url: siteUrl,
+      description:
+        'Create and edit Play Store and App Store screenshots with mobile frames, custom backgrounds, headline text, layouts, and export-ready sizes.',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+  ],
+}
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} structuredData={structuredData}>
+  <section class="home-hero">
+    <div class="home-shell home-hero-grid">
+      <div class="home-hero-copy">
+        <h1>Create and Edit App Store-Ready Mockups</h1>
+        <p>
+          Design Play Store and App Store screenshots with mobile frames, custom backgrounds, headline text, layouts, and
+          export-ready sizes.
+        </p>
+        <p class="home-hero-position">
+          Most mockup tools only place your screenshot inside a phone frame. Mockup Studio helps you design the
+          <strong>complete store screenshot</strong>—frame, background, text, layout, and export size—in one workflow.
+        </p>
+        <p class="home-hero-bloglink">
+          <a href="/blog/">See all guides</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/play-store-screenshot-editor/">Play Store editor</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/play-store-screenshot-generator/">Generator</a>
+        </p>
+        <div class="home-price-badge">Free <span>Forever</span></div>
+        <div class="home-actions">
+          <a class="home-button home-button-primary" href={appUrl}>
+            <span id="home-cta-label" aria-live="polite">Create Play Store Mockup</span>
+          </a>
+          <a class="home-button home-button-secondary" href="#proof">See How It Works</a>
+        </div>
+      </div>
+
+      <div class="device-showcase" aria-label="Cycling showcase of phone, laptop, and tablet app mockups">
+        <div class="device-phase phone-phase">
+          <div class="phone-rain">
+            {phoneColumns.map((column, index) => (
+              <div class={`phone-column phone-column-${index + 1}`}>
+                <div class="phone-track">
+                  {[...column, ...column].map((src) => (
+                    <img src={src} alt="" loading="eager" decoding="async" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="device-phase laptop-phase">
+          <div class="laptop-grid">
+            {laptopTiles.map((src, index) => (
+              <img class={`laptop-shot laptop-shot-${index + 1}`} src={src} alt="" loading="lazy" decoding="async" />
+            ))}
+          </div>
+        </div>
+
+        <div class="device-phase tablet-phase">
+          <div class="tablet-cloud">
+            {tabletTiles.map((src, index) => (
+              <img class={`tablet-shot tablet-shot-${index + 1}`} src={src} alt="" loading="lazy" decoding="async" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-proof" id="proof">
+    <div class="home-shell">
+      <h2>Why it wins</h2>
+      <div class="home-proof-grid">
+        <article class="home-proof-card home-proof-blue">
+          <div class="proof-icon">01</div>
+          <h3>Real Device Frames</h3>
+          <p>Choose from authentic phone, tablet, and laptop mockups instead of rebuilding device scenes manually.</p>
+        </article>
+        <article class="home-proof-card home-proof-teal">
+          <div class="proof-icon">02</div>
+          <h3>Batch Editing</h3>
+          <p>Update store screenshots together with a connected editor and immediate visual feedback.</p>
+        </article>
+        <article class="home-proof-card home-proof-lime">
+          <div class="proof-icon">SEO</div>
+          <h3>SEO-Optimized Export</h3>
+          <p>Create polished marketing images and store assets that are ready for launch pages and listings.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-guides" aria-labelledby="guides-heading">
+    <div class="home-shell">
+      <h2 id="guides-heading">Guides for store screenshots</h2>
+      <p class="home-guides-intro">
+        Answer-first articles on Play Store and App Store visuals. <a href="/blog/">Browse the full blog</a>.
+      </p>
+      <div class="grid-3 home-guides-grid">
+        {blogPosts.map((post) => (
+          <BlogCard post={post} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    ;(function () {
+      var el = document.getElementById('home-cta-label')
+      if (!el) return
+      window.setTimeout(function () {
+        el.textContent = 'Create App Store Mockup'
+      }, 2000)
+    })()
+  </script>
+</BaseLayout>

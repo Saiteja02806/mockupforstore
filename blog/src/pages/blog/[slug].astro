@@ -1,0 +1,79 @@
+---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getAppUrl, siteName } from '../../data/site.js'
+import { getFrameAppUrl, getFrameById, getRelatedFrames } from '../../data/marketingFrames.js'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog')
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+const appUrl = getAppUrl()
+const ctaFrame = getFrameById(post.data.ctaFrame)
+const relatedFrames = ctaFrame ? [ctaFrame, ...getRelatedFrames(ctaFrame, 2)] : []
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate ? { dateModified: post.data.updatedDate.toISOString() } : {}),
+  author: { '@type': 'Person', name: 'Mockup Studio Team' },
+  publisher: { '@type': 'Organization', name: siteName },
+  ...(post.data.canonical ? { mainEntityOfPage: { '@type': 'WebPage', '@id': post.data.canonical } } : {}),
+}
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  structuredData={structuredData}
+  canonical={post.data.canonical}
+  keywords={post.data.keywords}
+>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/blog/">Blog</a><span>/</span><span>{post.data.title}</span></div>
+      <p class="eyebrow">{post.data.category}</p>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 14px;">
+    <div class="page-shell content-grid">
+      <article class="content-prose">
+        <Content />
+      </article>
+
+      <aside class="aside-stack">
+        {ctaFrame ? (
+          <div class="cta-panel">
+            <p class="eyebrow" style="color:#ffb47f;">Open the tool</p>
+            <h2 class="content-title" style="font-size:2rem;">Build this inside Mockup Studio.</h2>
+            <p>
+              This article brings the strategy. The editor gives you the actual frame, the editing controls, and the export flow.
+            </p>
+            <a class="button" href={getFrameAppUrl(ctaFrame, appUrl)}>Open {ctaFrame.label}</a>
+          </div>
+        ) : null}
+
+        {relatedFrames.map((frame) => (
+          <div class="frame-page-card">
+            <p class="eyebrow">{frame.categoryLabel}</p>
+            <h2 style="font-size:1.5rem;">{frame.label}</h2>
+            <p>{frame.seoDescription}</p>
+            <a class="button-ghost" href={`/frames/${frame.slug}/`}>See frame page</a>
+          </div>
+        ))}
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

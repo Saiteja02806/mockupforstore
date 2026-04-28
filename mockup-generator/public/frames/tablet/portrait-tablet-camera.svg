@@ -1,0 +1,23 @@
+<svg viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg" width="600" height="800">
+  <defs>
+    <mask id="m11">
+      <rect width="600" height="800" fill="white"/>
+      <rect x="32" y="32" width="536" height="736" rx="8" ry="8" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="18" y="18" width="564" height="764" rx="24" ry="24"
+        fill="#1c1c20" mask="url(#m11)"/>
+  <!-- Inner bezel -->
+  <rect x="24" y="24" width="552" height="752" rx="19" ry="19"
+        fill="#0c0c10" mask="url(#m11)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="32" y="32" width="536" height="736" rx="8" ry="8"
+        fill="none"/>
+  <!-- Front camera - centered inside the top bezel without touching the screen -->
+  <circle cx="300" cy="27" r="3.6" fill="#080810"/>
+  <circle cx="300" cy="27" r="1.9" fill="#040408"/>
+  <circle cx="298.8" cy="25.8" r="0.75" fill="#1a2030" opacity="0.6"/>
+  <rect x="582" y="280" width="6" height="80" rx="3" fill="#1c1c22"/>
+  <rect x="12" y="250" width="6" height="50" rx="3" fill="#1c1c22"/>
+  <rect x="12" y="316" width="6" height="50" rx="3" fill="#1c1c22"/>
+</svg>

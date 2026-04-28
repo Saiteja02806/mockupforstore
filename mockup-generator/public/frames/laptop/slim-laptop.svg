@@ -1,0 +1,24 @@
+<svg viewBox="0 0 1200 780" xmlns="http://www.w3.org/2000/svg" width="1200" height="780">
+  <defs>
+    <mask id="slimLaptopMask">
+      <rect width="1200" height="780" fill="white"/>
+      <rect x="86" y="46" width="1028" height="628" rx="4" ry="4" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="36" y="18" width="1128" height="694" rx="14" ry="14" fill="#1c1c20" mask="url(#slimLaptopMask)"/>
+  <rect x="40" y="22" width="1120" height="686" rx="12" ry="12" fill="#0c0c10" mask="url(#slimLaptopMask)"/>
+  <rect x="40" y="22" width="1120" height="686" rx="12" ry="12" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.07"/>
+  <rect x="36" y="28" width="3" height="672" rx="1.5" fill="#ffffff" opacity="0.18"/>
+  <rect x="1163" y="28" width="3" height="672" rx="1.5" fill="#080810" opacity="0.55"/>
+  <circle cx="600" cy="36" r="6.5" fill="#0c0c10"/>
+  <circle cx="600" cy="36" r="3.1" fill="#040408"/>
+  <circle cx="600" cy="36" r="1.5" fill="#182030" opacity="0.65"/>
+  <rect x="86" y="46" width="1028" height="628" rx="4" ry="4" fill="none"/>
+  <rect x="36" y="710" width="1128" height="8" rx="4" fill="#1c1c22" opacity="0.65"/>
+  <rect x="0" y="716" width="1200" height="64" fill="#1c1c20"/>
+  <rect x="0" y="716" width="1200" height="64" fill="none" stroke="#0c0c10" stroke-width="1" opacity="0.3"/>
+  <rect x="78" y="722" width="864" height="36" rx="5" fill="#0c0c10" opacity="0.45"/>
+  <rect x="464" y="724" width="272" height="26" rx="7" fill="#0c0c10" opacity="0.5"/>
+  <rect x="466" y="726" width="268" height="22" rx="6" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.08"/>
+  <rect x="0" y="770" width="1200" height="10" rx="5" fill="#1c1c22" opacity="0.65"/>
+</svg>

@@ -1,0 +1,10 @@
+{
+  "name": "mockup-studio-workspace",
+  "private": true,
+  "description": "Run marketing site (Astro) vs editor (Vite) from the correct package.",
+  "scripts": {
+    "dev:blog": "npm --prefix ./blog run dev",
+    "dev:studio": "npm --prefix ./mockup-generator run dev",
+    "build:blog": "npm --prefix ./blog run build"
+  }
+}

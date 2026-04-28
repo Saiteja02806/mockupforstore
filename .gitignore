@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Astro / Vite cache
+.astro/
+**/.astro/
+.vite/
+**/.vite/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs & OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Local / IDE (optional)
+*.local
+
+# Cursor / MCP / Playwright artifacts (not app source)
+.playwright-mcp/
+mcps/
+agent-transcripts/

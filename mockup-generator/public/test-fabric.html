@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head><title>Fabric v7 Test</title></head>
+<body style="background:#111;color:#fff;padding:20px">
+<h2>Fabric v7 Direct Test</h2>
+<div id="canvas-container"></div>
+<pre id="log"></pre>
+<script type="module">
+import { Canvas, loadSVGFromString, util, version } from 'fabric';
+
+const log = document.getElementById('log');
+function addLog(msg) { log.textContent += msg + '\n'; console.log(msg); }
+
+addLog('Fabric version: ' + version);
+
+try {
+  const container = document.getElementById('canvas-container');
+  const canvasEl = document.createElement('canvas');
+  canvasEl.id = 'test-canvas';
+  container.appendChild(canvasEl);
+
+  addLog('Creating Canvas...');
+  const canvas = new Canvas(canvasEl, { width: 400, height: 800 });
+  addLog('Canvas created: ' + canvas.getWidth() + 'x' + canvas.getHeight());
+
+  addLog('Fetching SVG...');
+  fetch('/frames/mobile/pill-phone.svg')
+    .then(r => { addLog('Fetch status: ' + r.status); return r.text(); })
+    .then(svg => { addLog('SVG length: ' + svg.length); return loadSVGFromString(svg); })
+    .then(({ objects, options }) => {
+      addLog('Objects count: ' + objects.length);
+      addLog('First obj type: ' + objects[0]?.type);
+      addLog('Options keys: ' + Object.keys(options).join(', '));
+
+      const group = util.groupSVGElements(objects, options);
+      addLog('Group type: ' + group?.type + ', w:' + group?.width + ', h:' + group?.height);
+
+      group.set({ left: 0, top: 0, selectable: false, evented: false });
+      canvas.add(group);
+      canvas.renderAll();
+      addLog('SUCCESS! Canvas objects: ' + canvas.getObjects().length);
+    })
+    .catch(e => addLog('ERROR: ' + e.message));
+} catch(e) {
+  addLog('INIT ERROR: ' + e.message);
+}
+</script>
+</body>
+</html>

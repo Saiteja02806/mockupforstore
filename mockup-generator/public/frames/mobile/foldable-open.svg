@@ -1,0 +1,36 @@
+<svg viewBox="0 0 760 800" xmlns="http://www.w3.org/2000/svg" width="760" height="800">
+  <defs>
+    <mask id="m09">
+      <rect width="760" height="800" fill="white"/>
+      <rect x="32" y="32" width="696" height="736" rx="6" ry="6" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="16" y="16" width="728" height="768" rx="26" ry="26"
+        fill="#1c1c20" mask="url(#m09)"/>
+  <rect x="22" y="22" width="716" height="756" rx="21" ry="21"
+        fill="#0c0c10" mask="url(#m09)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="32" y="32" width="696" height="736" rx="6" ry="6"
+        fill="none"/>
+  <!-- Hinge crease — vertical center -->
+  <rect x="374" y="22" width="12" height="756" rx="0"
+        fill="#0c0c10"/>
+  <!-- Subtle hinge texture lines -->
+  <line x1="378" y1="60" x2="382" y2="60" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="80" x2="382" y2="80" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="100" x2="382" y2="100" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="120" x2="382" y2="120" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="680" x2="382" y2="680" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="700" x2="382" y2="700" stroke="#151520" stroke-width="1"/>
+  <line x1="378" y1="720" x2="382" y2="720" stroke="#151520" stroke-width="1"/>
+  <!-- Punch-hole (right panel, top centre) -->
+  <circle cx="556" cy="50" r="7" fill="#0c0c10"/>
+  <circle cx="556" cy="50" r="4.5" fill="#080810"/>
+  <circle cx="556" cy="50" r="2.5" fill="#040408"/>
+  <circle cx="554" cy="48" r="1" fill="#1a2030" opacity="0.6"/>
+  <!-- Side buttons right -->
+  <rect x="742" y="180" width="7" height="54" rx="3.5" fill="#1c1c22"/>
+  <rect x="742" y="252" width="7" height="36" rx="3.5" fill="#1c1c22"/>
+  <!-- Side button left -->
+  <rect x="11" y="220" width="7" height="68" rx="3.5" fill="#1c1c22"/>
+</svg>

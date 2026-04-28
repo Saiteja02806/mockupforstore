@@ -1,0 +1,32 @@
+<svg viewBox="0 0 240 290" xmlns="http://www.w3.org/2000/svg" width="240" height="290">
+  <defs>
+    <mask id="m16">
+      <rect width="240" height="290" fill="white"/>
+      <rect x="30" y="56" width="180" height="176" rx="28" ry="28" fill="black"/>
+    </mask>
+  </defs>
+  <!-- Top strap -->
+  <rect x="80" y="0" width="80" height="54" rx="10" fill="#1c1c20"/>
+  <!-- Strap texture lines -->
+  <line x1="80" y1="18" x2="160" y2="18" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="80" y1="30" x2="160" y2="30" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="80" y1="42" x2="160" y2="42" stroke="#1a1a24" stroke-width="1"/>
+  <!-- Bottom strap -->
+  <rect x="80" y="238" width="80" height="52" rx="10" fill="#1c1c20"/>
+  <line x1="80" y1="250" x2="160" y2="250" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="80" y1="262" x2="160" y2="262" stroke="#1a1a24" stroke-width="1"/>
+  <line x1="80" y1="274" x2="160" y2="274" stroke="#1a1a24" stroke-width="1"/>
+  <!-- Watch case -->
+  <rect x="14" y="40" width="212" height="208" rx="44" ry="44"
+        fill="#1c1c20" mask="url(#m16)"/>
+  <!-- Inner bezel -->
+  <rect x="20" y="46" width="200" height="196" rx="38" ry="38"
+        fill="#0c0c10" mask="url(#m16)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="30" y="56" width="180" height="176" rx="28" ry="28"
+        fill="none"/>
+  <!-- Digital crown (right side) -->
+  <rect x="225" y="118" width="10" height="30" rx="5" fill="#1c1c22"/>
+  <!-- Side button below crown -->
+  <rect x="225" y="158" width="8" height="18" rx="4" fill="#1c1c22"/>
+</svg>

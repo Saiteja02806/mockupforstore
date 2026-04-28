@@ -1,0 +1,11 @@
+<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" width="600" height="600">
+  <defs>
+    <mask id="roundWatchCleanMask">
+      <rect width="600" height="600" fill="white"/>
+      <circle cx="300" cy="300" r="286" fill="black"/>
+    </mask>
+  </defs>
+  <circle cx="300" cy="300" r="300" fill="#1c1c20" mask="url(#roundWatchCleanMask)"/>
+  <circle cx="300" cy="300" r="294" fill="#0c0c10" mask="url(#roundWatchCleanMask)"/>
+  <circle cx="300" cy="300" r="286" fill="none"/>
+</svg>

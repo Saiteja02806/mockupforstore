@@ -1,0 +1,20 @@
+<svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg" width="1200" height="860">
+  <defs>
+    <mask id="monitorMask">
+      <rect width="1200" height="860" fill="white"/>
+      <rect x="50" y="30" width="1100" height="680" rx="4" ry="4" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="36" y="18" width="1128" height="712" rx="14" ry="14" fill="#1c1c20" mask="url(#monitorMask)"/>
+  <rect x="42" y="24" width="1116" height="700" rx="10" ry="10" fill="#0c0c10" mask="url(#monitorMask)"/>
+  <rect x="42" y="24" width="1116" height="700" rx="10" ry="10" fill="none" stroke="#ffffff" stroke-width="0.7" opacity="0.07"/>
+  <rect x="38" y="28" width="3" height="696" rx="1.5" fill="#ffffff" opacity="0.18"/>
+  <rect x="1161" y="28" width="3" height="696" rx="1.5" fill="#080810" opacity="0.55"/>
+  <circle cx="600" cy="27" r="4" fill="#040408"/>
+  <circle cx="1142" cy="718" r="3" fill="#0a2010"/>
+  <rect x="50" y="30" width="1100" height="680" rx="4" ry="4" fill="none"/>
+  <rect x="548" y="730" width="104" height="68" rx="6" fill="#1c1c22"/>
+  <rect x="548" y="794" width="104" height="4" rx="2" fill="#040408" opacity="0.25"/>
+  <rect x="348" y="794" width="504" height="24" rx="10" fill="#1c1c20"/>
+  <rect x="318" y="814" width="564" height="12" rx="6" fill="#1c1c22"/>
+</svg>

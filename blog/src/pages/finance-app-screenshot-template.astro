@@ -1,0 +1,68 @@
+---
+import TemplateShowcase from '../components/TemplateShowcase.astro'
+
+const title = 'Finance App Play Store Screenshot Template'
+const description =
+  'Trust-first headlines, conservative palettes, and gallery sequencing for banking, budgeting, and investing apps.'
+const h1 = 'Finance app screenshot template'
+const introParagraphs = [
+  'Finance users scan for trust signals: encryption, biometrics, institutions you support, and clarity on fees. Screenshots should echo those themes visually—clean layouts, restrained color, real product UI.',
+  'Avoid sensational claims; pair numbers in headlines with footnotes or in-app disclosures where required.',
+]
+
+const headlineExamples = [
+  'Balances with bank-grade security',
+  'Biometric lock on every launch',
+  'Spending insights without jargon',
+  'Invest on your schedule',
+  'Multi-account clarity in one feed',
+  'Statements export in one tap',
+]
+
+const colorSuggestions = [
+  'Navy, forest green, or charcoal bases with gold or teal accents read “finance” without cliché stock imagery.',
+  'Keep plenty of whitespace; dense charts need breathing room for thumbnail legibility.',
+]
+
+const layoutTips = [
+  'Shot 1: home dashboard with headline on clarity or security.',
+  'Shot 2: transfers or payments flow—show recognizable bank patterns blurred where needed.',
+  'Shot 3: insights or budgeting charts with simple legends.',
+  'Shot 4: support, FDIC/NCUA style badges, or card controls if differentiators.',
+]
+
+const faqs = [
+  {
+    q: 'Masked data?',
+    a: 'Always mask account numbers and PII in marketing shots—even if “example” data.',
+  },
+  {
+    q: 'Crypto vs traditional banking tone?',
+    a: 'Match risk language to your compliance review; screenshots should align with store listing text.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/blog/how-to-create-play-store-screenshots-for-a-finance-app/', label: 'Finance app Play Store guide' },
+  { href: '/play-store-mockup-editor/', label: 'Play Store mockup editor' },
+  { href: '/blog/google-play-screenshot-requirements/', label: 'Google Play screenshot requirements' },
+]
+
+const keywords = ['finance app screenshots', 'banking app Play Store', 'fintech mockup template']
+---
+
+<TemplateShowcase
+  title={title}
+  description={description}
+  h1={h1}
+  introParagraphs={introParagraphs}
+  headlineExamples={headlineExamples}
+  colorSuggestions={colorSuggestions}
+  layoutTips={layoutTips}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="silver-black-phone"
+  previewImage="/frame-assets/mobile/silver-black-phone.svg"
+  previewAlt="Finance app screenshot mockup with silver and black phone frame"
+  keywords={keywords}
+/>

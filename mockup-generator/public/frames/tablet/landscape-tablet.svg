@@ -1,0 +1,24 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+  <defs>
+    <mask id="m12">
+      <rect width="800" height="600" fill="white"/>
+      <rect x="32" y="32" width="736" height="536" rx="8" ry="8" fill="black"/>
+    </mask>
+  </defs>
+  <rect x="18" y="18" width="764" height="564" rx="24" ry="24"
+        fill="#1c1c20" mask="url(#m12)"/>
+  <rect x="24" y="24" width="752" height="552" rx="19" ry="19"
+        fill="#0c0c10" mask="url(#m12)"/>
+  <!-- Screen area — transparent for clipPath -->
+  <rect x="32" y="32" width="736" height="536" rx="8" ry="8"
+        fill="none"/>
+  <!-- Front camera — right edge centre (landscape orientation) -->
+  <circle cx="775" cy="300" r="5" fill="#080810"/>
+  <circle cx="775" cy="300" r="2.5" fill="#040408"/>
+  <circle cx="773" cy="298" r="1" fill="#1a2030" opacity="0.6"/>
+  <!-- Side buttons top (landscape) -->
+  <rect x="250" y="12" width="50" height="6" rx="3" fill="#1c1c22"/>
+  <rect x="316" y="12" width="50" height="6" rx="3" fill="#1c1c22"/>
+  <!-- Power top-right -->
+  <rect x="650" y="12" width="80" height="6" rx="3" fill="#1c1c22"/>
+</svg>

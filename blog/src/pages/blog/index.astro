@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import BlogCard from '../../components/BlogCard.astro'
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+---
+
+<BaseLayout
+  title="Mockup Studio Blog"
+  description="Product-led SEO content for App Store and Play Store screenshots, device frames, and faster mockup workflows."
+>
+  <section class="page-hero">
+    <div class="page-shell">
+      <div class="breadcrumbs"><a href="/">Home</a><span>/</span><span>Blog</span></div>
+      <p class="eyebrow">Blog index</p>
+      <h1>Answer-first content that ranks and sends users into the editor.</h1>
+      <p>
+        These posts are written around real screenshot problems: which frame to use, which size to export, how to structure App Store and Play Store visuals, and how to move faster without a bloated multi-tool process.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 10px;">
+    <div class="page-shell">
+      <div class="grid-3">
+        {posts.map((post) => <BlogCard post={post} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

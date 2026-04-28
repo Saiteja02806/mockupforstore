@@ -1,0 +1,61 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'Play Store Screenshot Generator'
+const description =
+  'Generate store-ready Play listing images from your raw captures: frames, backgrounds, text, and batch-friendly editing in Mockup Studio.'
+const h1 = 'Play Store screenshot generator'
+const introParagraphs = [
+  'A “generator” mindset is about speed: go from screenshots on disk to a cohesive set of listing images without redrawing device bezels for every slide.',
+  'Mockup Studio combines frame presets with editing controls so you are not limited to a single rigid template—you can still tune layout, copy, and background per shot.',
+]
+
+const features = [
+  {
+    title: 'Fast first version',
+    body: 'Pick a frame, drop in your UI, add a headline, and export—ideal when you are validating positioning before polish.',
+  },
+  {
+    title: 'Consistent series',
+    body: 'Reuse background and type styles across the gallery so the listing feels like one product story.',
+  },
+  {
+    title: 'Editor-grade control',
+    body: 'When you need pixel tweaks, the same canvas behaves as an editor—not a one-off PNG from a rigid template.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Generator vs editor—what is the difference?',
+    a: 'Generators emphasize speed from a template; editors emphasize control. Mockup Studio blends both: quick presets with full mockup editing.',
+  },
+  {
+    q: 'Can I match Play Console dimensions?',
+    a: 'Yes—use our size guide for phone and tablet requirements, then export from the studio when the layout looks right at thumbnail scale.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/blog/best-play-store-screenshot-generators/', label: 'Best Play Store screenshot generators (comparison)' },
+  { href: '/blog/how-to-create-play-store-screenshots/', label: 'Create Play Store screenshots (step-by-step)' },
+  { href: '/blog/play-store-screenshot-size-guide/', label: 'Screenshot size guide' },
+  { href: '/frames/', label: 'Device frames' },
+]
+
+const keywords = ['Play Store screenshot generator', 'Google Play mockup generator', 'Android listing screenshots']
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Google Play"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="dynamic-island-camera"
+  keywords={keywords}
+/>

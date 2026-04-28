@@ -1,0 +1,64 @@
+---
+import TemplateShowcase from '../components/TemplateShowcase.astro'
+
+const title = 'To-Do App Play Store Screenshot Template'
+const description =
+  'Gallery story, headlines, and layout patterns for habit and task apps—optimized for Google Play thumbnails.'
+const h1 = 'To-do app screenshot template'
+const introParagraphs = [
+  'To-do shoppers compare speed of capture, reminders, and cross-device sync. Your gallery should prove those jobs in the first two frames.',
+  'Keep headlines short; show recognizable UI (lists, due dates, widgets) instead of empty onboarding art.',
+]
+
+const headlineExamples = [
+  'Capture tasks in one line',
+  'Reminders that respect your focus',
+  'Sync lists across every device',
+  'Widgets for today only',
+  'Share lists without the noise',
+  'Templates for work and home',
+]
+
+const colorSuggestions = [
+  'Friendly pastels or clean monochrome—match the calm positioning of your brand.',
+  'If you use red for overdue, keep it as UI chrome, not full-bleed backgrounds that fight text.',
+]
+
+const layoutTips = [
+  'Shot 1: inbox or today view with headline on capture speed.',
+  'Shot 2: natural language or voice input if supported.',
+  'Shot 3: collaboration or shared projects for teams SKU.',
+  'Shot 4: widgets / wearables if part of your value.',
+]
+
+const faqs = [
+  {
+    q: 'Free vs paid story?',
+    a: 'If monetization matters, show premium features transparently—do not imply features are free if they are not.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/productivity-app-screenshot-template/', label: 'Productivity app template' },
+  { href: '/blog/how-to-create-play-store-screenshots-for-a-to-do-app/', label: 'To-do app Play Store guide' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'Add text to screenshots' },
+]
+
+const keywords = ['todo app screenshots', 'task app Play Store', 'habit app mockup']
+---
+
+<TemplateShowcase
+  title={title}
+  description={description}
+  h1={h1}
+  introParagraphs={introParagraphs}
+  headlineExamples={headlineExamples}
+  colorSuggestions={colorSuggestions}
+  layoutTips={layoutTips}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="notch-phone"
+  previewImage="/frame-assets/mobile/notch-phone.svg"
+  previewAlt="To-do app screenshot mockup with notched phone frame"
+  keywords={keywords}
+/>

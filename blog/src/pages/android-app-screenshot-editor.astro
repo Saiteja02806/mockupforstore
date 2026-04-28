@@ -1,0 +1,62 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'Android App Screenshot Editor'
+const description =
+  'Create and edit Android app screenshots with Material-friendly frames, bold headline type, and backgrounds suited to Google Play previews.'
+const h1 = 'Android app screenshot editor'
+const introParagraphs = [
+  'Android teams often ship more device diversity—notches, punch holes, foldables—than a single Figma artboard can mock quickly. A dedicated screenshot editor keeps shells and safe areas consistent.',
+  'Mockup Studio pairs Android-appropriate frames with typography and export controls so marketing and dev-build screenshots stay aligned.',
+]
+
+const features = [
+  {
+    title: 'Hardware diversity',
+    body: 'Foldables, notched phones, and tablets—pick the chassis that matches your release notes and target devices.',
+  },
+  {
+    title: 'Play discovery aware',
+    body: 'Tune headlines for legibility when Google surfaces tiny previews next to your title and icon.',
+  },
+  {
+    title: 'From capture to upload',
+    body: 'Pair this workflow with our guides on capture hygiene, size tables, and common rejection mistakes.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Is this only for developers?',
+    a: 'Marketers and solo founders use the same flow—anyone who has PNG or JPEG captures and needs store-ready mockups.',
+  },
+  {
+    q: 'Kotlin or Android Studio integration?',
+    a: 'Export images from the emulator or device, then bring them into Mockup Studio in the browser—no IDE plugin required.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/blog/how-to-add-android-phone-frame-to-app-screenshot/', label: 'Add an Android phone frame' },
+  { href: '/blog/best-device-frame-sizes-for-google-play-2025/', label: 'Device frame sizes for Google Play' },
+  { href: '/blog/common-play-store-screenshot-mistakes/', label: 'Common Play Store screenshot mistakes' },
+  { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
+  { href: '/frames/', label: 'Browse Android-style frames' },
+]
+
+const keywords = ['Android app screenshot editor', 'Google Play screenshot tool', 'Android mockup editor']
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Android"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="notch-phone"
+  keywords={keywords}
+/>
