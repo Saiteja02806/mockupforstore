@@ -1,5 +1,6 @@
-import { Component } from 'react'
+import { Component, Fragment } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.jsx'
 import { getInitialAppPage } from './utils/siteLinks'
@@ -68,7 +69,10 @@ if (!rootEl) {
 }
 
 createRoot(rootEl).render(
-  <AppErrorBoundary>
-    <App />
-  </AppErrorBoundary>
+  <Fragment>
+    <AppErrorBoundary>
+      <App />
+    </AppErrorBoundary>
+    <Analytics mode="production" />
+  </Fragment>
 )
