@@ -38,6 +38,10 @@ const phoneColumns = [0, 1, 2].map((column) =>
 const laptopTiles = Array.from({ length: 5 }, (_, index) => assetUrl('laptops', laptopFiles[index % laptopFiles.length]))
 const tabletTiles = Array.from({ length: 4 }, (_, index) => assetUrl('tablets', tabletFiles[index % tabletFiles.length]))
 
+const pngToWebp = (pngUrl) => pngUrl.replace(/\.png$/i, '.webp')
+const firstPhoneSrc = assetUrl('phones', phoneFiles[0])
+const preloadHeroImages = [pngToWebp(firstPhoneSrc)]
+
 const pageTitle = 'App Screenshot Mockup Editor for Play Store and App Store'
 const pageDescription =
   'Create and edit store-ready app screenshots with phone frames, backgrounds, headline text, layouts, and export sizes for Play Store and App Store listings.'
@@ -74,7 +78,7 @@ const structuredData = {
 }
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription} structuredData={structuredData}>
+<BaseLayout title={pageTitle} description={pageDescription} structuredData={structuredData} preloadImages={preloadHeroImages}>
   <section class="home-hero">
     <div class="home-shell home-hero-grid">
       <div class="home-hero-copy">
@@ -110,12 +114,25 @@ const structuredData = {
       <div class="device-showcase" aria-label="Cycling showcase of phone, laptop, and tablet app mockups">
         <div class="device-phase phone-phase">
           <div class="phone-rain">
-            {phoneColumns.map((column, index) => (
-              <div class={`phone-column phone-column-${index + 1}`}>
+            {phoneColumns.map((column, colIdx) => (
+              <div class={`phone-column phone-column-${colIdx + 1}`}>
                 <div class="phone-track">
-                  {[...column, ...column].map((src) => (
-                    <img src={src} alt="" loading="eager" decoding="async" />
-                  ))}
+                  {[...column, ...column].map((pngSrc, innerIdx) => {
+                    const webpSrc = pngToWebp(pngSrc)
+                    const isFirst = colIdx === 0 && innerIdx === 0
+                    return (
+                      <picture>
+                        <source srcset={webpSrc} type="image/webp" />
+                        <img
+                          src={pngSrc}
+                          alt=""
+                          loading={isFirst ? 'eager' : 'lazy'}
+                          decoding="async"
+                          {...(isFirst ? { fetchpriority: 'high' } : {})}
+                        />
+                      </picture>
+                    )
+                  })}
                 </div>
               </div>
             ))}
@@ -124,16 +141,22 @@ const structuredData = {
 
         <div class="device-phase laptop-phase">
           <div class="laptop-grid">
-            {laptopTiles.map((src, index) => (
-              <img class={`laptop-shot laptop-shot-${index + 1}`} src={src} alt="" loading="lazy" decoding="async" />
+            {laptopTiles.map((pngSrc, index) => (
+              <picture>
+                <source srcset={pngToWebp(pngSrc)} type="image/webp" />
+                <img class={`laptop-shot laptop-shot-${index + 1}`} src={pngSrc} alt="" loading="lazy" decoding="async" />
+              </picture>
             ))}
           </div>
         </div>
 
         <div class="device-phase tablet-phase">
           <div class="tablet-cloud">
-            {tabletTiles.map((src, index) => (
-              <img class={`tablet-shot tablet-shot-${index + 1}`} src={src} alt="" loading="lazy" decoding="async" />
+            {tabletTiles.map((pngSrc, index) => (
+              <picture>
+                <source srcset={pngToWebp(pngSrc)} type="image/webp" />
+                <img class={`tablet-shot tablet-shot-${index + 1}`} src={pngSrc} alt="" loading="lazy" decoding="async" />
+              </picture>
             ))}
           </div>
         </div>

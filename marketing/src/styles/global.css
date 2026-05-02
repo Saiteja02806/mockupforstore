@@ -301,6 +301,12 @@ body {
   animation-duration: 9s;
 }
 
+.phone-track picture,
+.laptop-grid picture,
+.tablet-cloud picture {
+  display: contents;
+}
+
 .phone-track img {
   width: 100%;
   height: auto;
