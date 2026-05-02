@@ -2,15 +2,33 @@ import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, rmSync } from
 import { resolve } from 'node:path'
 import sharp from 'sharp'
 
-const repoRoot = resolve(process.cwd(), '..')
-const editorRoot = [resolve(repoRoot, 'editor'), resolve(repoRoot, 'mockup-generator')].find((dir) =>
-  existsSync(resolve(dir, 'package.json')),
-)
-
-if (!editorRoot) {
-  console.error('Editor package not found: expected ../editor or ../mockup-generator with package.json')
+/** Editor app root: walk up from marketing-site until package.json + public/frames, else sibling mockup-generator. */
+function findEditorRoot() {
+  let dir = process.cwd()
+  for (let i = 0; i < 8; i++) {
+    const pkg = resolve(dir, 'package.json')
+    const frames = resolve(dir, 'public', 'frames')
+    if (existsSync(pkg) && existsSync(frames)) return dir
+    const parent = resolve(dir, '..')
+    if (parent === dir) break
+    dir = parent
+  }
+  const workspaceRoot = resolve(process.cwd(), '..')
+  for (const name of ['mockup-generator', 'editor']) {
+    const cand = resolve(workspaceRoot, name)
+    if (
+      existsSync(resolve(cand, 'package.json')) &&
+      existsSync(resolve(cand, 'public', 'frames'))
+    )
+      return cand
+  }
+  console.error(
+    'Editor package not found: expected ancestor or sibling with package.json and public/frames',
+  )
   process.exit(1)
 }
+
+const editorRoot = findEditorRoot()
 
 const vectorSourceDir = resolve(editorRoot, 'public', 'frames')
 const vectorTargetDir = resolve(process.cwd(), 'public', 'frame-assets')

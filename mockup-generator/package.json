@@ -8,7 +8,7 @@
     "strip-svg-filters": "node scripts/strip-frame-svg-filters.mjs",
     "dev": "npm run sync-frames && vite",
     "dev:vanilla": "npm run sync-frames && vite --open /vanilla.html",
-    "build": "npm run sync-frames && node scripts/optimize-landing-carousel-webp.mjs && npm --prefix ../marketing run build && vite build && node scripts/merge-marketing-into-editor-dist.mjs",
+    "build": "npm run sync-frames && node scripts/optimize-landing-carousel-webp.mjs && npm --prefix ./marketing-site run build && vite build && node scripts/merge-marketing-into-editor-dist.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

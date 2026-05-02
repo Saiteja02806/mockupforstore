@@ -1,10 +1,10 @@
 {
   "name": "mockup-studio-workspace",
   "private": true,
-  "description": "Local workspace: marketing=Astro site (folder marketing/). Editor=Vite app—use folder editor/ after git mv mockup-generator editor; until then run npm --prefix ./mockup-generator for editor.",
+  "description": "Local workspace: Astro SEO site lives in mockup-generator/marketing-site/. Editor=Vite app in mockup-generator/.",
   "scripts": {
-    "dev:marketing": "npm --prefix ./marketing run dev",
-    "build:marketing": "npm --prefix ./marketing run build",
+    "dev:marketing": "npm --prefix ./mockup-generator/marketing-site run dev",
+    "build:marketing": "npm --prefix ./mockup-generator/marketing-site run build",
     "dev:editor": "npm --prefix ./mockup-generator run dev",
     "build:editor": "npm --prefix ./mockup-generator run build",
     "dev:blog": "npm run dev:marketing",

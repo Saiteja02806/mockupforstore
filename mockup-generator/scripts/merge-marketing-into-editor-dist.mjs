@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const editorRoot = join(__dirname, '..')
-const marketingDist = join(editorRoot, '..', 'marketing', 'dist')
+const marketingDist = join(editorRoot, 'marketing-site', 'dist')
 const viteDist = join(editorRoot, 'dist')
 
 if (!existsSync(viteDist)) {
@@ -17,7 +17,7 @@ if (!existsSync(viteDist)) {
   process.exit(1)
 }
 if (!existsSync(marketingDist)) {
-  console.error('[merge-marketing] ../marketing/dist missing — run astro build in marketing/ first')
+  console.error('[merge-marketing] marketing-site/dist missing — run astro build in mockup-generator/marketing-site first')
   process.exit(1)
 }
 
@@ -35,7 +35,7 @@ console.log('[merge-marketing] Copied Astro marketing dist into editor dist/ (ke
 const blogIndex = join(viteDist, 'blog', 'index.html')
 const blogOk = existsSync(blogIndex)
 if (!blogOk) {
-  console.error('[merge-marketing] FAIL: dist/blog/index.html missing — Astro blog did not merge (check marketing build + install ../marketing deps)')
+  console.error('[merge-marketing] FAIL: dist/blog/index.html missing — Astro blog did not merge (check marketing-site build + npm install --prefix ./marketing-site)')
   process.exit(1)
 }
 
