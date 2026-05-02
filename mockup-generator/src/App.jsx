@@ -415,6 +415,10 @@ function StudioApp({ onGoHome } = {}) {
                 disabled={!selectedFrame || isLoading}
                 suggestedBaseName={(userImageFile?.name || selectedFrame?.id || 'mockup').replace(/\.[^.]+$/, '')}
               />
+              <p className="studio-sdesc" style={{ marginTop: 8, lineHeight: 1.45 }}>
+                Image crop and rounded corners for store compositions live in this editor — not in step 3 on the mockup
+                canvas.
+              </p>
             </div>
 
             <div className="studio-sbd" />

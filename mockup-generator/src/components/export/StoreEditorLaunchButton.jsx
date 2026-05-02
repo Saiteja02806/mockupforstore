@@ -38,6 +38,7 @@ export default function StoreEditorLaunchButton({ buildExportOptions, disabled, 
       type="button"
       onClick={() => void handleClick()}
       disabled={disabled || busy}
+      title="Opens the App Store / Play Store screenshot composer. Crop and corner radius for extra images are edited there, not on the mockup canvas."
       className={`
         flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border py-2.5 text-sm font-semibold transition-all duration-[var(--transition)]
         ${disabled || busy

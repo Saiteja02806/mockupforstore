@@ -4,7 +4,7 @@
  * Do **not** use Fabric `canvas.clipPath` (destination-in) — it caused repeated
  * “cut down” / wrong rendering. Screen masking for preview is handled in the DOM
  * (MockupCanvas: overflow + offset wrapper). Export clips the raster snapshot in 2D
- * (see exportHelpers). FabricImage.clipPath stays unset.
+ * (see exportHelpers). FabricImage.clipPath stays unset for the device screenshot.
  */
 import { Control, FabricImage, Group, Path, Rect, Text, filters, controlsUtils } from 'fabric'
 import { useMockupStore } from '../store/mockupStore'
@@ -786,6 +786,7 @@ export function setImageDisplayMode(fabricCanvas, screenArea, mode) {
     scaleX: targetScale,
     scaleY: targetScale,
     angle: 0,
+    ...(mode === 'fit' ? { clipPath: undefined } : {}),
   })
 
   applyPhotoConstraints(image, screenArea)

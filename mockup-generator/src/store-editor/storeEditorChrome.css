@@ -501,3 +501,312 @@
   background: #1a1a2e;
   color: #e2e8f0;
 }
+
+/* ── Image crop modal (upload + cover crop + corners) ─────────────────── */
+.store-editor-root .se-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.store-editor-root .se-modal-card {
+  width: min(440px, 100%);
+  max-height: min(92vh, 880px);
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+}
+
+.store-editor-root .se-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.store-editor-root .se-modal-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.store-editor-root .se-modal-x {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--text2);
+  cursor: pointer;
+}
+
+.store-editor-root .se-modal-x:hover {
+  border-color: var(--border3);
+  color: var(--text);
+}
+
+.store-editor-root .se-modal-lead {
+  margin: 0 0 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text3);
+}
+
+.store-editor-root .se-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.store-editor-root .se-drop-zone {
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px dashed var(--border3);
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.store-editor-root .se-drop-zone:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.store-editor-root .se-crop-preview-shell {
+  margin: 0 auto 8px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: #0a0a0c;
+}
+
+.store-editor-root .se-crop-preview {
+  position: relative;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.store-editor-root .se-crop-preview:active {
+  cursor: grabbing;
+}
+
+.store-editor-root .se-crop-preview-img {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+}
+
+.store-editor-root .se-crop-hint {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.store-editor-root .se-crop-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.store-editor-root .se-crop-val {
+  font-variant-numeric: tabular-nums;
+  color: var(--text3);
+  font-size: 10px;
+}
+
+.store-editor-root .se-crop-range {
+  width: 100%;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.store-editor-root .se-modal-repick {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.store-editor-root .se-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.store-editor-root .se-modal-actions .se-secondary-btn,
+.store-editor-root .se-modal-actions .se-primary-btn {
+  flex: 1;
+  width: auto;
+}
+
+.store-editor-root .se-primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(91, 138, 240, 0.45);
+  background: rgba(91, 138, 240, 0.22);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.store-editor-root .se-primary-btn:hover:not(:disabled) {
+  background: rgba(91, 138, 240, 0.32);
+}
+
+.store-editor-root .se-primary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Crop + corner modal (rect crop, medium size) ─────────────────────── */
+.store-editor-root .se-cropcorner-card.se-modal-card {
+  width: min(640px, 94vw);
+  max-height: min(92vh, 900px);
+}
+
+.store-editor-root .se-cropcorner-stage {
+  position: relative;
+  width: 100%;
+  min-height: min(420px, 52vh);
+  max-height: min(520px, 56vh);
+  background: #08090f;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  margin-bottom: 12px;
+}
+
+.store-editor-root .se-cropcorner-upload-zone {
+  width: 100%;
+  min-height: min(340px, 48vh);
+  margin: 0;
+  justify-content: center;
+}
+
+.store-editor-root .se-cropcorner-base-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.store-editor-root .se-cropcorner-marquee {
+  position: absolute;
+  border: 2px solid rgba(129, 140, 248, 0.95);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.52);
+  cursor: move;
+  touch-action: none;
+  box-sizing: border-box;
+}
+
+.store-editor-root .se-cropcorner-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 2px solid #fff;
+  background: var(--accent);
+  border-radius: 3px;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.store-editor-root .se-cropcorner-handle--nw {
+  left: -7px;
+  top: -7px;
+  cursor: nwse-resize;
+}
+.store-editor-root .se-cropcorner-handle--n {
+  left: 50%;
+  top: -7px;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+.store-editor-root .se-cropcorner-handle--ne {
+  right: -7px;
+  top: -7px;
+  cursor: nesw-resize;
+}
+.store-editor-root .se-cropcorner-handle--e {
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+.store-editor-root .se-cropcorner-handle--se {
+  right: -7px;
+  bottom: -7px;
+  cursor: nwse-resize;
+}
+.store-editor-root .se-cropcorner-handle--s {
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+.store-editor-root .se-cropcorner-handle--sw {
+  left: -7px;
+  bottom: -7px;
+  cursor: nesw-resize;
+}
+.store-editor-root .se-cropcorner-handle--w {
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.store-editor-root .se-cropcorner-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  color: var(--text3);
+  font-size: 13px;
+}

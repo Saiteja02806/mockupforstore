@@ -7,6 +7,7 @@ import {
   ImagePlus,
   Plus,
   Copy,
+  Crop,
   Eye,
   EyeOff,
   ChevronUp,
@@ -23,6 +24,14 @@ import { loadStoreEditorPrefs, saveStoreEditorPrefs } from './storeEditorStorage
 import { STORE_EDITOR_GOOGLE_FONTS_HREF, STORE_TEXT_FONT_OPTIONS } from './storeEditorFonts.js'
 import { getMarketingHomeUrl } from '../utils/siteLinks.js'
 import './storeEditorChrome.css'
+import StoreCropCornerModal from './StoreCropCornerModal.jsx'
+import {
+  drawStoreImageLayer,
+  getDefaultImageCropRect,
+  getImageLayerPreviewBox,
+  getLayerCroppedAspect,
+} from './imageLayerGeometry.js'
+import { resolveImageCropRect, normRectToSourcePixels, clampNormRect } from './storeRectCropMath.js'
 
 /** Matches generator accent; root `.store-editor-root` also defines --accent in CSS */
 const ACCENT = '#6366f1'
@@ -302,7 +311,15 @@ function getLayerPositionBounds(layer, mockImgs, canvasAspect) {
   if (layer?.type === 'mockup') {
     const img = getMockupBitmap(layer, mockImgs)
     const wPct = clamp(layer.wPct ?? DEFAULT_MOCKUP_WIDTH_PCT, MOCKUP_WIDTH_MIN_PCT, MOCKUP_WIDTH_MAX_PCT)
-    const ar = img?.naturalWidth ? img.naturalHeight / img.naturalWidth : 1.85
+    let ar = 1.85
+    if (img?.naturalWidth && img?.naturalHeight) {
+      const { sw, sh } = normRectToSourcePixels(
+        img.naturalWidth,
+        img.naturalHeight,
+        resolveImageCropRect(layer, img.naturalWidth, img.naturalHeight),
+      )
+      ar = sh / Math.max(sw, 1)
+    }
     const hPct = wPct * ar * canvasAspect
     return {
       xMin: Math.min(0, -wPct / 2 + MIN_VISIBLE_LAYER_PCT),
@@ -317,6 +334,16 @@ function getLayerPositionBounds(layer, mockImgs, canvasAspect) {
     return { xMin: -100, xMax: 200, yMin: -100, yMax: 200 }
   }
   return { xMin: 0.5, xMax: 99.5, yMin: 0.5, yMax: 99.5 }
+}
+
+function getLayerDropShadowFilter(layer) {
+  if (!layer?.shadowOn) return undefined
+  const opacity = clamp(Number(layer.shadowOpacity ?? 0.35), 0, 1)
+  if (opacity <= 0) return undefined
+  const blur = Math.max(0, Number(layer.shadowBlur ?? 24) || 0)
+  const offsetX = Number(layer.shadowOffsetX ?? 0) || 0
+  const offsetY = Number(layer.shadowOffsetY ?? 12) || 0
+  return `drop-shadow(${offsetX}px ${offsetY}px ${blur}px rgba(0,0,0,${opacity}))`
 }
 
 /** stack[0] drawn first (back); stack[length-1] drawn last (front) */
@@ -384,6 +411,21 @@ export default function StoreScreenshotEditor({
         shadowOffsetX: typeof prefs?.mockShadowOffsetX === 'number' ? prefs.mockShadowOffsetX : 0,
         shadowOffsetY: typeof prefs?.mockShadowOffsetY === 'number' ? prefs.mockShadowOffsetY : 12,
         shadowOpacity: typeof prefs?.mockShadowOpacity === 'number' ? prefs.mockShadowOpacity : 0.35,
+        ...(prefs?.mockImageCropRect && typeof prefs.mockImageCropRect === 'object'
+          ? { imageCropRect: clampNormRect(prefs.mockImageCropRect) }
+          : {}),
+        ...(prefs?.mockImageCrop &&
+        typeof prefs.mockImageCrop === 'object' &&
+        !(prefs?.mockImageCropRect && typeof prefs.mockImageCropRect === 'object')
+          ? {
+              imageCrop: prefs.mockImageCrop,
+              imageCropRefW: prefs.mockImageCropRefW,
+              imageCropRefH: prefs.mockImageCropRefH,
+            }
+          : {}),
+        ...(typeof prefs?.mockImageCornerRadiusRatio === 'number'
+          ? { imageCornerRadiusRatio: clamp(prefs.mockImageCornerRadiusRatio, 0, 1) }
+          : {}),
       },
     ]
   })
@@ -393,14 +435,16 @@ export default function StoreScreenshotEditor({
   const [loadError, setLoadError] = useState('')
   const [exporting, setExporting] = useState(false)
   const [dropHint, setDropHint] = useState('')
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [imgNaturalById, setImgNaturalById] = useState({})
+  const addImageFileRef = useRef(null)
+  const replaceImageFileRef = useRef(null)
 
   const stageRef = useRef(null)
   const previewRef = useRef(null)
   const dragRef = useRef(null)
   /** Outer wrapper per text layer — used for pointer hit-testing (matches padded bounds). */
   const textLayerRootRef = useRef({})
-  const fileRef = useRef(null)
-  const replaceImageRef = useRef(null)
   const bgFileRef = useRef(null)
   const restoredTextRef = useRef(false)
 
@@ -514,6 +558,8 @@ export default function StoreScreenshotEditor({
       mockShadowOffsetX: mock?.shadowOffsetX ?? 0,
       mockShadowOffsetY: mock?.shadowOffsetY ?? 12,
       mockShadowOpacity: mock?.shadowOpacity ?? 0.35,
+      mockImageCropRect: mock?.imageCropRect,
+      mockImageCornerRadiusRatio: mock?.imageCornerRadiusRatio,
       textLayers: stack
         .filter((l) => l.type === 'text')
         .map((l) => ({
@@ -746,7 +792,7 @@ export default function StoreScreenshotEditor({
     setSelectedId(id)
   }, [])
 
-  const addImageFromDataUrl = useCallback((dataUrl) => {
+  const addImageFromDataUrl = useCallback((dataUrl, opts = {}) => {
     const id = newId()
     setStack((prev) => [
       ...prev,
@@ -760,6 +806,13 @@ export default function StoreScreenshotEditor({
         rotation: 0,
         opacity: 1,
         visible: true,
+        imageCropRect: opts.imageCropRect || getDefaultImageCropRect(),
+        imageCornerRadiusRatio: clamp(Number(opts.imageCornerRadiusRatio) || 0, 0, 1),
+        shadowOn: false,
+        shadowBlur: 24,
+        shadowOffsetX: 0,
+        shadowOffsetY: 12,
+        shadowOpacity: 0.35,
       },
     ])
     setSelectedId(id)
@@ -837,8 +890,10 @@ export default function StoreScreenshotEditor({
         const img = getMockupBitmap(layer, mockImgs)
         if (!img) return false
         const mw = (layer.wPct / 100) * rect.width
-        const ar = img.naturalHeight / img.naturalWidth
-        const mh = mw * ar
+        const nw = img.naturalWidth || img.width
+        const nh = img.naturalHeight || img.height
+        const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1)
+        const mh = mw * car
         const lx = (layer.x / 100) * rect.width
         const ly = (layer.y / 100) * rect.height
         const dx = (e.clientX - rect.left - lx) / rect.width * 100
@@ -848,7 +903,11 @@ export default function StoreScreenshotEditor({
       if (layer.type === 'image') {
         const iw = (layer.wPct / 100) * rect.width
         const imgEl = imageCache.get(layer.src)
-        const ih = imgEl ? iw * (imgEl.naturalHeight / imgEl.naturalWidth) : iw
+        const nat = imgNaturalById[layer.id]
+        const nw = nat?.w || imgEl?.naturalWidth || 0
+        const nh = nat?.h || imgEl?.naturalHeight || 0
+        const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1) || 1
+        const ih = iw * car
         const lx = (layer.x / 100) * rect.width
         const ly = (layer.y / 100) * rect.height
         const dx = e.clientX - rect.left - lx
@@ -875,7 +934,7 @@ export default function StoreScreenshotEditor({
       }
       return false
     },
-    [mockImgs],
+    [mockImgs, imgNaturalById],
   )
 
   const onStageMouseDown = useCallback(
@@ -970,7 +1029,9 @@ export default function StoreScreenshotEditor({
       }
       const r = new FileReader()
       r.onload = () => {
-        if (typeof r.result === 'string') addImageFromDataUrl(r.result)
+        if (typeof r.result === 'string') {
+          addImageFromDataUrl(r.result)
+        }
       }
       r.readAsDataURL(f)
     },
@@ -1020,40 +1081,11 @@ export default function StoreScreenshotEditor({
         if (layer.type === 'mockup') {
           const img = getMockupBitmap(layer, mockImgs)
           if (!img) continue
-          const mw = W * (layer.wPct / 100)
-          const ar = img.naturalHeight / img.naturalWidth
-          const mh = mw * ar
-          const cx = (W * layer.x) / 100
-          const cy = (H * layer.y) / 100
-          const rot = ((layer.rotation ?? 0) * Math.PI) / 180
-          ctx.save()
-          ctx.translate(cx, cy)
-          ctx.rotate(rot)
-          ctx.globalAlpha = 1
-          if (layer.shadowOn) {
-            const op = clamp(layer.shadowOpacity ?? 0.35, 0, 1)
-            ctx.shadowColor = `rgba(0,0,0,${op})`
-            ctx.shadowBlur = (layer.shadowBlur ?? 24) * EXPORT_SCALE
-            ctx.shadowOffsetX = (layer.shadowOffsetX ?? 0) * EXPORT_SCALE
-            ctx.shadowOffsetY = (layer.shadowOffsetY ?? 12) * EXPORT_SCALE
-          }
-          ctx.drawImage(img, -mw / 2, -mh / 2, mw, mh)
-          ctx.restore()
+          drawStoreImageLayer(ctx, img, layer, W, H, EXPORT_SCALE)
         } else if (layer.type === 'image') {
           try {
             const im = await loadImage(layer.src)
-            const mw = W * (layer.wPct / 100)
-            const ar = im.naturalHeight / im.naturalWidth
-            const mh = mw * ar
-            const cx = (W * layer.x) / 100
-            const cy = (H * layer.y) / 100
-            const rot = ((layer.rotation ?? 0) * Math.PI) / 180
-            ctx.save()
-            ctx.globalAlpha = clamp(layer.opacity ?? 1, 0, 1)
-            ctx.translate(cx, cy)
-            if (rot !== 0) ctx.rotate(rot)
-            ctx.drawImage(im, -mw / 2, -mh / 2, mw, mh)
-            ctx.restore()
+            drawStoreImageLayer(ctx, im, layer, W, H, EXPORT_SCALE)
           } catch {
             /* skip */
           }
@@ -1203,17 +1235,14 @@ export default function StoreScreenshotEditor({
           >
             <Plus size={14} strokeWidth={2.25} /> Add text
           </button>
-          <button type="button" onClick={() => fileRef.current?.click()} className="se-secondary-btn" style={{ marginBottom: 10 }}>
-            <ImagePlus size={14} strokeWidth={2} /> Add image
-          </button>
           <input
-            ref={fileRef}
+            ref={addImageFileRef}
             type="file"
             accept="image/*"
-            style={{ display: 'none' }}
+            className="se-sr-only"
             onChange={(e) => {
               const f = e.target.files?.[0]
-              if (!f) return
+              if (!f || !f.type.startsWith('image/')) return
               const r = new FileReader()
               r.onload = () => {
                 if (typeof r.result === 'string') addImageFromDataUrl(r.result)
@@ -1222,6 +1251,29 @@ export default function StoreScreenshotEditor({
               e.target.value = ''
             }}
           />
+          <button
+            type="button"
+            onClick={() => addImageFileRef.current?.click()}
+            className="se-secondary-btn"
+            style={{ marginBottom: 6 }}
+          >
+            <ImagePlus size={14} strokeWidth={2} /> Add image…
+          </button>
+          <p style={{ fontSize: 11, color: 'var(--text3)', margin: '0 0 8px', lineHeight: 1.45 }}>
+            Adds a plain image layer to the canvas (no dialog).
+          </p>
+          <button
+            type="button"
+            disabled={!mockImgs || Boolean(loadError)}
+            onClick={() => setCropModalOpen(true)}
+            className="se-secondary-btn se-accent-outline-btn"
+            style={{ marginBottom: 10 }}
+          >
+            <Crop size={14} strokeWidth={2.25} /> Crop and Corner Radius
+          </button>
+          <p style={{ fontSize: 11, color: 'var(--text3)', margin: '0 0 10px', lineHeight: 1.45 }}>
+            Upload any image, crop it, set corner radius, then Apply — it appears centered on the canvas as a new layer.
+          </p>
 
           <div className="se-divider" />
 
@@ -1402,9 +1454,11 @@ export default function StoreScreenshotEditor({
                 if (layer.type === 'mockup') {
                   const img = getMockupBitmap(layer, mockImgs)
                   if (!img) return null
-                  const ar = img.naturalHeight / img.naturalWidth
                   const wPct = layer.wPct
-                  const hPct = wPct * ar * aspect
+                  const nw = img.naturalWidth || img.width
+                  const nh = img.naturalHeight || img.height
+                  const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1)
+                  const hPct = wPct * car * aspect
                   const rot = layer.rotation ?? 0
                   const shOn = layer.shadowOn
                   const sb = layer.shadowBlur ?? 24
@@ -1412,6 +1466,12 @@ export default function StoreScreenshotEditor({
                   const sy = layer.shadowOffsetY ?? 12
                   const sop = clamp(layer.shadowOpacity ?? 0.35, 0, 1)
                   const dropFilter = shOn ? `drop-shadow(${sx}px ${sy}px ${sb}px rgba(0,0,0,${sop}))` : undefined
+                  const mwPx = (previewW * wPct) / 100
+                  const inner = nw && nh ? getImageLayerPreviewBox(layer, nw, nh, mwPx) : null
+                  const br = inner
+                    ? Math.min(inner.cornerRadiusPx, inner.mw / 2, inner.mh / 2, 999)
+                    : 6
+                  const mockSrc = layer.useSceneBg ? initialMockupWithSceneUrl : initialMockupDeviceOnlyUrl
                   return (
                     <div
                       key={layer.id}
@@ -1425,16 +1485,36 @@ export default function StoreScreenshotEditor({
                         filter: dropFilter,
                         pointerEvents: 'auto',
                         cursor: 'grab',
-                        borderRadius: 6,
+                        borderRadius: 0,
                         outline: 'none',
                       }}
                     >
-                      <div className="se-mockup-wrap" style={{ width: '100%', height: '100%' }}>
+                      <div
+                        className="se-mockup-wrap"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          borderRadius: br,
+                          overflow: 'hidden',
+                        }}
+                      >
                         <img
                           className="se-mockup-img"
-                          src={layer.useSceneBg ? initialMockupWithSceneUrl : initialMockupDeviceOnlyUrl}
+                          src={mockSrc}
                           alt=""
                           draggable={false}
+                          style={
+                            inner?.layout
+                              ? {
+                                  position: 'absolute',
+                                  width: inner.layout.width,
+                                  height: inner.layout.height,
+                                  left: inner.layout.left,
+                                  top: inner.layout.top,
+                                  objectFit: 'fill',
+                                }
+                              : undefined
+                          }
                         />
                       </div>
                     </div>
@@ -1442,6 +1522,23 @@ export default function StoreScreenshotEditor({
                 }
                 if (layer.type === 'image') {
                   const imgRot = layer.rotation ?? 0
+                  const nat = imgNaturalById[layer.id]
+                  const mwPx = (previewW * (layer.wPct ?? 22)) / 100
+                  let aspectStr = '16 / 9'
+                  if (nat?.w && nat?.h) {
+                    const { sw, sh } = normRectToSourcePixels(
+                      nat.w,
+                      nat.h,
+                      resolveImageCropRect(layer, nat.w, nat.h),
+                    )
+                    aspectStr = `${sw} / ${sh}`
+                  }
+                  const inner =
+                    nat?.w && nat?.h ? getImageLayerPreviewBox(layer, nat.w, nat.h, mwPx) : null
+                  const br = inner
+                    ? Math.min(inner.cornerRadiusPx, inner.mw / 2, inner.mh / 2, 999)
+                    : 4
+                  const imageDropFilter = getLayerDropShadowFilter(layer)
                   return (
                     <div
                       key={layer.id}
@@ -1452,17 +1549,46 @@ export default function StoreScreenshotEditor({
                         width: `${layer.wPct}%`,
                         transform: `translate(-50%, -50%) rotate(${imgRot}deg)`,
                         opacity: layer.opacity ?? 1,
+                        filter: imageDropFilter,
                         pointerEvents: 'auto',
                         cursor: 'grab',
                         outline: 'none',
                       }}
                     >
-                      <img
-                        src={layer.src}
-                        alt=""
-                        draggable={false}
-                        style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 4 }}
-                      />
+                      <div
+                        style={{
+                          position: 'relative',
+                          width: '100%',
+                          aspectRatio: aspectStr,
+                          overflow: 'hidden',
+                          borderRadius: br,
+                        }}
+                      >
+                        <img
+                          src={layer.src}
+                          alt=""
+                          draggable={false}
+                          onLoad={(e) => {
+                            const el = e.currentTarget
+                            setImgNaturalById((m) => ({
+                              ...m,
+                              [layer.id]: { w: el.naturalWidth, h: el.naturalHeight },
+                            }))
+                          }}
+                          style={
+                            inner?.layout
+                              ? {
+                                  position: 'absolute',
+                                  width: inner.layout.width,
+                                  height: inner.layout.height,
+                                  left: inner.layout.left,
+                                  top: inner.layout.top,
+                                  display: 'block',
+                                }
+                              : { width: '100%', height: 'auto', display: 'block' }
+                          }
+                        />
+                      </div>
                     </div>
                   )
                 }
@@ -1724,6 +1850,9 @@ export default function StoreScreenshotEditor({
                   Mockup was opened without a generator scene; only the device frame is available.
                 </p>
               )}
+              <p style={{ fontSize: 10, color: 'var(--text3)', lineHeight: 1.45, margin: '0 0 12px' }}>
+                Extra pictures with crop and rounded corners: use <strong style={{ color: 'var(--text2)' }}>Crop and Corner Radius</strong> in the left column (upload there).
+              </p>
               <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: 'var(--text)', cursor: 'pointer', fontSize: 12 }}>
                 <input
                   type="checkbox"
@@ -1894,14 +2023,90 @@ export default function StoreScreenshotEditor({
                   </button>
                 ))}
               </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, color: 'var(--text)', cursor: 'pointer', fontSize: 12 }}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(selected.shadowOn)}
+                  onChange={(e) => updateLayer(selected.id, { shadowOn: e.target.checked })}
+                />
+                Drop shadow
+              </label>
+              {selected.shadowOn ? (
+                <>
+                  <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Shadow blur ({selected.shadowBlur ?? 24}px)</label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={220}
+                    value={selected.shadowBlur ?? 24}
+                    onChange={(e) => updateLayer(selected.id, { shadowBlur: Number(e.target.value) })}
+                    style={{ width: '100%', marginBottom: 8 }}
+                  />
+                  <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Shadow offset X ({selected.shadowOffsetX ?? 0}px)</label>
+                  <input
+                    type="range"
+                    min={-180}
+                    max={180}
+                    value={selected.shadowOffsetX ?? 0}
+                    onChange={(e) => updateLayer(selected.id, { shadowOffsetX: Number(e.target.value) })}
+                    style={{ width: '100%', marginBottom: 8 }}
+                  />
+                  <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Shadow offset Y ({selected.shadowOffsetY ?? 12}px)</label>
+                  <input
+                    type="range"
+                    min={-180}
+                    max={220}
+                    value={selected.shadowOffsetY ?? 12}
+                    onChange={(e) => updateLayer(selected.id, { shadowOffsetY: Number(e.target.value) })}
+                    style={{ width: '100%', marginBottom: 8 }}
+                  />
+                  <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Shadow opacity ({Math.round((selected.shadowOpacity ?? 0.35) * 100)}%)</label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.02}
+                    value={selected.shadowOpacity ?? 0.35}
+                    onChange={(e) => updateLayer(selected.id, { shadowOpacity: Number(e.target.value) })}
+                    style={{ width: '100%', marginBottom: 12 }}
+                  />
+                </>
+              ) : null}
+              <input
+                ref={replaceImageFileRef}
+                type="file"
+                accept="image/*"
+                className="se-sr-only"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (!f || !f.type.startsWith('image/')) return
+                  const r = new FileReader()
+                  r.onload = () => {
+                    if (typeof r.result === 'string') {
+                      updateLayer(selected.id, {
+                        src: r.result,
+                        imageCropRect: getDefaultImageCropRect(),
+                        imageCrop: undefined,
+                        imageCropRefW: undefined,
+                        imageCropRefH: undefined,
+                      })
+                    }
+                  }
+                  r.readAsDataURL(f)
+                  e.target.value = ''
+                }}
+              />
               <button
                 type="button"
-                onClick={() => replaceImageRef.current?.click()}
+                onClick={() => replaceImageFileRef.current?.click()}
                 className="se-secondary-btn"
-                style={{ marginBottom: 8 }}
+                style={{ marginBottom: 6 }}
               >
-                <ImagePlus size={14} /> Replace image…
+                <ImagePlus size={14} /> Replace image file…
               </button>
+              <p style={{ fontSize: 10, color: 'var(--text3)', lineHeight: 1.45, margin: '0 0 8px' }}>
+                To add a <strong style={{ color: 'var(--text2)' }}>new</strong> image with upload, crop, and corner radius, use <strong style={{ color: 'var(--text2)' }}>Crop and Corner Radius</strong> in the left column.
+              </p>
               <button
                 type="button"
                 onClick={() => duplicateLayer(selected.id)}
@@ -2129,29 +2334,6 @@ export default function StoreScreenshotEditor({
               Select a layer on the canvas or from the list.
             </p>
           )}
-          <input
-            ref={replaceImageRef}
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              const targetId = selectedId
-              if (!f) return
-              const r = new FileReader()
-              r.onload = () => {
-                if (typeof r.result !== 'string') return
-                const url = r.result
-                setStack((prev) => {
-                  const layer = prev.find((l) => l.id === targetId)
-                  if (layer?.type !== 'image') return prev
-                  return prev.map((l) => (l.id === targetId ? { ...l, src: url } : l))
-                })
-              }
-              r.readAsDataURL(f)
-              e.target.value = ''
-            }}
-          />
           </div>
 
           <p className="se-mono" style={{ color: 'var(--text3)', marginTop: 12, lineHeight: 1.5, marginBottom: 0, paddingTop: 10, borderTop: '1px solid var(--border)' }}>
@@ -2159,6 +2341,20 @@ export default function StoreScreenshotEditor({
           </p>
         </aside>
       </div>
+
+      {cropModalOpen ? (
+        <StoreCropCornerModal
+          open={cropModalOpen}
+          onClose={() => setCropModalOpen(false)}
+          onApply={(payload) => {
+            addImageFromDataUrl(payload.dataUrl, {
+              imageCropRect: payload.imageCropRect,
+              imageCornerRadiusRatio: payload.imageCornerRadiusRatio,
+            })
+            setCropModalOpen(false)
+          }}
+        />
+      ) : null}
     </div>
   )
 }

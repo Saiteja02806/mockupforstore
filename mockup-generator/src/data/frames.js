@@ -429,6 +429,15 @@ export const frames = {
       screenArea: { x: 14, y: 14, width: 372, height: 772, radius: 48, shape: 'rect' }
     },
     {
+      id: 'silver-black-phone',
+      label: 'Silver Black',
+      file: '/frames/mobile/silver-black-phone.svg',
+      canvasWidth: 400,
+      canvasHeight: 800,
+      fixedFinish: 'silver',
+      screenArea: { x: 32, y: 32, width: 336, height: 736, radius: 42, shape: 'rect' }
+    },
+    {
       id: 'foldable-closed',
       label: 'Foldable (closed)',
       file: '/frames/mobile/foldable-closed.svg',

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 /* ─── Rolling phones (hidden, kept for future use) ─────────────────── */
 const firstPhoneImage = '/framesforphone/apple-iphone-15-photo-removebg-preview.png'
