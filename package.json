@@ -1,7 +1,7 @@
 {
   "name": "mockup-studio-workspace",
   "private": true,
-  "description": "Local workspace: Astro SEO site lives in mockup-generator/marketing-site/. Editor=Vite app in mockup-generator/.",
+  "description": "Vercel: set Git Root Directory to mockup-generator OR leave repo root and use root vercel.json (build → mockup-generator/dist).",
   "scripts": {
     "dev:marketing": "npm --prefix ./mockup-generator/marketing-site run dev",
     "build:marketing": "npm --prefix ./mockup-generator/marketing-site run build",
