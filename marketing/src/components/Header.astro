@@ -16,7 +16,8 @@ const { appUrl } = Astro.props
       <a href="/play-store-screenshot-editor/">Play Store</a>
       <a href="/app-store-screenshot-editor/">App Store</a>
       <a href="/mobile-app-mockup-editor/">Mobile mockups</a>
-      <a href="/blog/">Blog</a>
+      <span class="site-nav-spacer" aria-hidden="true"></span>
+      <a href="/blog/" class="site-nav-blog">Blog</a>
       <a href="/#footer">Company</a>
     </nav>
 
@@ -25,10 +26,67 @@ const { appUrl } = Astro.props
       <a class="button button-dark" href={appUrl}>Sign Up</a>
     </div>
 
-    <button class="site-menu-button" type="button" aria-label="Open navigation">
+    <button
+      type="button"
+      id="site-menu-toggle"
+      class="site-menu-button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="site-mobile-nav"
+    >
       <span></span>
       <span></span>
       <span></span>
     </button>
   </div>
+
+  <div id="site-mobile-backdrop" class="site-mobile-nav-backdrop" tabindex="-1" aria-hidden="true"></div>
+
+  <div id="site-mobile-nav" class="site-mobile-nav-panel" role="dialog" aria-modal="true" aria-label="Main navigation">
+    <nav aria-label="Mobile primary">
+      <a href="/frames/">Products</a>
+      <a href="/play-store-screenshot-editor/">Play Store</a>
+      <a href="/app-store-screenshot-editor/">App Store</a>
+      <a href="/mobile-app-mockup-editor/">Mobile mockups</a>
+      <a href="/blog/" class="site-mobile-nav-blog">Blog — all guides</a>
+      <a href="/#footer">Company</a>
+    </nav>
+    <div class="site-mobile-nav-actions">
+      <a class="nav-link-muted" href={appUrl}>Log In</a>
+      <a class="button button-dark" href={appUrl}>Sign Up</a>
+    </div>
+  </div>
 </header>
+
+<script is:inline>
+  ;(function () {
+    var toggle = document.getElementById('site-menu-toggle')
+    var panel = document.getElementById('site-mobile-nav')
+    var backdrop = document.getElementById('site-mobile-backdrop')
+    if (!toggle || !panel || !backdrop) return
+
+    function setOpen(open) {
+      document.body.classList.toggle('site-mobile-nav-open', open)
+      panel.classList.toggle('is-open', open)
+      backdrop.classList.toggle('is-open', open)
+      backdrop.setAttribute('aria-hidden', open ? 'false' : 'true')
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!document.body.classList.contains('site-mobile-nav-open'))
+    })
+    backdrop.addEventListener('click', function () {
+      setOpen(false)
+    })
+    panel.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        setOpen(false)
+      })
+    })
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setOpen(false)
+    })
+  })()
+</script>
