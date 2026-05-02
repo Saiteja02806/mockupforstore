@@ -1,5 +1,11 @@
 const DEFAULT_MARKETING_ORIGIN = 'https://mockupeditor.site'
 
+/** True when the editor/marketing app is served from loopback (incl. IPv6). */
+export function isLoopbackMarketingHost(hostname) {
+  const h = String(hostname || '').toLowerCase()
+  return h === 'localhost' || h === '127.0.0.1' || h === '::1' || h === '[::1]'
+}
+
 export function getMarketingHomeUrl() {
   // Set VITE_MARKETING_SITE_URL in .env.local to override for any environment.
   // Locally: the Astro marketing site runs on port 4321 (run `npm run dev`
@@ -10,7 +16,7 @@ export function getMarketingHomeUrl() {
 
   if (typeof window !== 'undefined') {
     const { hostname } = window.location
-    if (hostname === '127.0.0.1' || hostname === 'localhost') {
+    if (isLoopbackMarketingHost(hostname)) {
       return 'http://127.0.0.1:4321'
     }
     return DEFAULT_MARKETING_ORIGIN
@@ -21,6 +27,23 @@ export function getMarketingHomeUrl() {
 
 /** Marketing site blog index (Astro). Matches trailingSlash: 'always' on the marketing app. */
 export function getMarketingBlogUrl() {
+  const configured = import.meta.env.VITE_MARKETING_SITE_URL
+  if (configured) {
+    const base = String(configured).replace(/\/$/, '')
+    return `${base}/blog/`
+  }
+
+  /*
+   * Loopback without VITE_MARKETING_SITE_URL: never use getMarketingHomeUrl()'s :4321 here — it breaks when
+   * Astro isn't running (ERR_CONNECTION_REFUSED). Applies in dev and vite preview (import.meta.env.DEV may be false).
+   */
+  if (typeof window !== 'undefined') {
+    const { hostname } = window.location
+    if (isLoopbackMarketingHost(hostname)) {
+      return `${DEFAULT_MARKETING_ORIGIN.replace(/\/$/, '')}/blog/`
+    }
+  }
+
   const base = getMarketingHomeUrl().replace(/\/$/, '')
   return `${base}/blog/`
 }
