@@ -1,13 +1,13 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
 
-const title = 'Play Store Screenshot Generator'
+const title = 'App Store Screenshot Generator'
 const description =
-  'Generate store-ready Play listing images from your raw captures: frames, backgrounds, text, and batch-friendly editing in Mockup Studio.'
-const h1 = 'Play Store screenshot generator'
+  'Generate store-ready App Store listing images from your raw captures: frames, backgrounds, text, and editing controls in Mockup Studio.'
+const h1 = 'App Store screenshot generator'
 const introParagraphs = [
   'A “generator” mindset is about speed: go from screenshots on disk to a cohesive set of listing images without redrawing device bezels for every slide.',
-  'Mockup Studio combines frame presets with editing controls so you are not limited to a single rigid template—you can still tune layout, copy, and background per shot.',
+  'Mockup Studio combines frame presets with editing controls so you are not locked into one rigid template—you can still tune layout, copy, and background per shot.',
 ]
 
 const features = [
@@ -31,32 +31,32 @@ const faqs = [
     a: 'Generators emphasize speed from a template; editors emphasize control. Mockup Studio blends both: quick presets with full mockup editing.',
   },
   {
-    q: 'Can I match Play Console dimensions?',
-    a: 'Yes—use our size guide for phone and tablet requirements, then export from the studio when the layout looks right at thumbnail scale.',
+    q: 'Can I match App Store Connect dimensions?',
+    a: 'Yes—use our App Store requirements guide for phone and tablet ranges, then export from the studio when the layout reads at thumbnail scale.',
   },
 ]
 
 const relatedLinks = [
-  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
-  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
-  { href: '/blog/best-play-store-screenshot-generators/', label: 'Best Play Store screenshot generators (comparison)' },
-  { href: '/blog/how-to-create-play-store-screenshots/', label: 'Create Play Store screenshots (step-by-step)' },
-  { href: '/blog/play-store-screenshot-size-guide/', label: 'Screenshot size guide' },
+  { href: '/app-store-screenshot-editor/', label: 'App Store screenshot editor' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'How to add text to app screenshots' },
+  { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
   { href: '/frames/', label: 'Device frames' },
 ]
 
-const keywords = ['Play Store screenshot generator', 'Google Play mockup generator', 'Android listing screenshots']
+const keywords = ['App Store screenshot generator', 'iOS mockup generator', 'iPhone listing screenshots']
 ---
 
 <PillarPage
   title={title}
   description={description}
   h1={h1}
-  eyebrow="Google Play"
+  eyebrow="App Store"
   introParagraphs={introParagraphs}
   features={features}
   faqs={faqs}
   relatedLinks={relatedLinks}
-  primaryFrameId="dynamic-island-camera"
+  primaryFrameId="borderless-phone-silver"
   keywords={keywords}
 />

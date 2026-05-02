@@ -1,0 +1,62 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'App Store Mockup Editor'
+const description =
+  'Compose App Store listing mockups with realistic iPhone and iPad hardware, headline text, backgrounds, and export sizes tuned for App Store Connect.'
+const h1 = 'App Store mockup editor'
+const introParagraphs = [
+  'An App Store mockup is the composite shoppers see: device, UI, optional tagline, and background. Strong mockups read as one intentional poster—especially at thumbnail scale in search and browse.',
+  'This page matches teams who want listing art that survives cropping and small previews—not only the full-width gallery on your product page.',
+]
+
+const features = [
+  {
+    title: 'iOS-first framing',
+    body: 'Prioritize portrait phone and tablet frames that match what App Store shoppers expect in the catalog.',
+  },
+  {
+    title: 'Honest copy',
+    body: 'Pair screenshots with concise claims that match in-app reality—accurate preview assets support trust and review.',
+  },
+  {
+    title: 'Export discipline',
+    body: 'Ship PNG sets at the dimensions each device class requires, with consistent padding between shots.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'How is this different from the screenshot editor page?',
+    a: 'Same product surface—this page emphasizes “mockup” and composite listing art keywords; use whichever matches how you search.',
+  },
+  {
+    q: 'Landscape screenshots?',
+    a: 'Supported where your story needs it; see the App Store requirements guide for mixing portrait and landscape sets.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/app-store-screenshot-editor/', label: 'App Store screenshot editor' },
+  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
+  { href: '/play-store-mockup-editor/', label: 'Play Store mockup editor' },
+  { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
+  { href: '/blog/how-to-create-play-store-screenshots/', label: 'Play Store screenshot workflow (parallel ideas)' },
+  { href: '/frames/', label: 'Frames' },
+]
+
+const keywords = ['App Store mockup editor', 'iOS listing mockup', 'iPhone store screenshot mockup']
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="App Store"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="notch-phone"
+  keywords={keywords}
+/>

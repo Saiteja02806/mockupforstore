@@ -1,0 +1,66 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'Mobile App Mockup Editor'
+const description =
+  'Design mobile app mockups for marketing and store listings: phone and tablet frames, backgrounds, headline text, layouts, and export-ready sizes for iOS and Android.'
+const h1 = 'Mobile app mockup editor'
+const introParagraphs = [
+  'Most mockup tools stop at dropping a PNG inside a phone frame. Store-ready marketing usually needs the full canvas: frame, background, headline hierarchy, and export dimensions that match Play Console or App Store Connect.',
+  'Mockup Studio treats each shot as an editable mockup—so you can iterate copy and layout without rebuilding device chrome in a separate design tool for every export.',
+]
+
+const features = [
+  {
+    title: 'Cross-platform storytelling',
+    body: 'Use the same narrative arc for Android and iOS galleries while respecting each store’s aspect ratios and safe areas.',
+  },
+  {
+    title: 'Thumbnail-legible type',
+    body: 'Tune headlines for discovery surfaces where shoppers see tiny previews before they open the full gallery.',
+  },
+  {
+    title: 'Frames + export',
+    body: 'Pick shells that match real hardware, then export consistent PNG sets for handoff to marketing or upload.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Android vs iPhone frames?',
+    a: 'Choose frames that match your launch devices; pair this page with the Play Store and App Store editor pages for store-specific sizing.',
+  },
+  {
+    q: 'Is this only for the stores?',
+    a: 'No—use the same mockups for landing pages, pitch decks, and ads; export sizes can follow each channel’s needs.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/app-store-screenshot-editor/', label: 'App Store screenshot editor' },
+  { href: '/app-screenshot-mockup-editor/', label: 'App screenshot mockup editor' },
+  { href: '/android-app-screenshot-editor/', label: 'Android app screenshot editor' },
+  { href: '/blog/app-screenshot-generator-vs-mockup-generator/', label: 'Screenshot generator vs mockup generator' },
+  { href: '/frames/', label: 'Browse mobile frames' },
+]
+
+const keywords = [
+  'mobile app mockup editor',
+  'phone mockup editor app screenshots',
+  'iOS Android mockup editor',
+]
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Mobile"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="pill-phone"
+  keywords={keywords}
+/>

@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: punchhole-phone
 readingTime: 10 min read
-canonical: "https://mockupstudio.app/blog/how-to-add-android-phone-frame-to-app-screenshot/"
+canonical: "https://www.mockupeditor.site/blog/how-to-add-android-phone-frame-to-app-screenshot/"
 keywords:
   - Android phone frame screenshot
   - Play Store frame mockup
@@ -39,4 +39,4 @@ Match **short edge** and **aspect** requirements for the phone track—see [Play
 
 ## Workflow
 
-[How to create Play Store screenshots](/blog/how-to-create-play-store-screenshots/) · [Mockup Studio](https://app.mockupstudio.app)
+[How to create Play Store screenshots](/blog/how-to-create-play-store-screenshots/) · [Mockup Studio](https://www.mockupeditor.site/)

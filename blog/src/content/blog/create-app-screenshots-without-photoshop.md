@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: punchhole-phone
 readingTime: 8 min read
-canonical: "https://mockupstudio.app/blog/create-app-screenshots-without-photoshop/"
+canonical: "https://www.mockupeditor.site/blog/create-app-screenshots-without-photoshop/"
 keywords:
   - app screenshots without Photoshop
   - Play Store mockups browser
@@ -25,7 +25,7 @@ Photoshop is powerful for retouching and complex composites, but **store screens
 
 ## Browser-first alternative
 
-[Mockup Studio](https://app.mockupstudio.app) handles device frames, typography, and backgrounds together—see [Play Store screenshot editor](/play-store-screenshot-editor/). For App Store dimensions, start with [App Store screenshot requirements](/blog/app-store-screenshot-requirements-complete-guide/).
+[Mockup Studio](https://www.mockupeditor.site/) handles device frames, typography, and backgrounds together—see [Play Store screenshot editor](/play-store-screenshot-editor/). For App Store dimensions, start with [App Store screenshot requirements](/blog/app-store-screenshot-requirements-complete-guide/).
 
 ## Related
 

@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = ({ site }) => {
-  const base = String(site || 'https://mockupstudio.app').replace(/\/$/, '')
+  const base = String(site || 'https://www.mockupeditor.site').replace(/\/$/, '')
   const body = [
     'User-agent: *',
     'Allow: /',

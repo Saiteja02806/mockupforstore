@@ -40,7 +40,7 @@ const tabletTiles = Array.from({ length: 4 }, (_, index) => assetUrl('tablets', 
 
 const pageTitle = 'App Screenshot Mockup Editor for Play Store and App Store'
 const pageDescription =
-  'Create and edit app screenshot mockups with mobile frames, custom backgrounds, text, layouts, and export-ready designs for Play Store and App Store listings.'
+  'Create and edit store-ready app screenshots with phone frames, backgrounds, headline text, layouts, and export sizes for Play Store and App Store listings.'
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -63,7 +63,7 @@ const structuredData = {
       operatingSystem: 'Web',
       url: siteUrl,
       description:
-        'Create and edit Play Store and App Store screenshots with mobile frames, custom backgrounds, headline text, layouts, and export-ready sizes.',
+        'Create and edit store-ready Play Store and App Store screenshots with phone frames, backgrounds, headline text, layouts, and export sizes.',
       offers: {
         '@type': 'Offer',
         price: '0',
@@ -78,26 +78,30 @@ const structuredData = {
   <section class="home-hero">
     <div class="home-shell home-hero-grid">
       <div class="home-hero-copy">
-        <h1>Create and Edit App Store-Ready Mockups</h1>
+        <h1>App Screenshot Mockup Editor for Play Store and App Store</h1>
         <p>
-          Design Play Store and App Store screenshots with mobile frames, custom backgrounds, headline text, layouts, and
-          export-ready sizes.
+          Create and edit store-ready app screenshots with phone frames, backgrounds, headline text, layouts, and export sizes.
         </p>
         <p class="home-hero-position">
-          Most mockup tools only place your screenshot inside a phone frame. Mockup Studio helps you design the
-          <strong>complete store screenshot</strong>—frame, background, text, layout, and export size—in one workflow.
+          Most mockup tools stop at the phone frame. Mockup Studio is a <strong>screenshot editor</strong> for the full listing
+          image—frame, background, headline text, layout, and export size—so you are not stuck redoing device chrome in Figma or
+          Photoshop for every shot.
         </p>
         <p class="home-hero-bloglink">
           <a href="/blog/">See all guides</a>
           <span aria-hidden="true"> · </span>
           <a href="/play-store-screenshot-editor/">Play Store editor</a>
           <span aria-hidden="true"> · </span>
-          <a href="/play-store-screenshot-generator/">Generator</a>
+          <a href="/app-store-screenshot-editor/">App Store editor</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/mobile-app-mockup-editor/">Mobile mockup editor</a>
+          <span aria-hidden="true"> · </span>
+          <a href="/play-store-screenshot-generator/">Generators</a>
         </p>
         <div class="home-price-badge">Free <span>Forever</span></div>
         <div class="home-actions">
           <a class="home-button home-button-primary" href={appUrl}>
-            <span id="home-cta-label" aria-live="polite">Create Play Store Mockup</span>
+            <span id="home-cta-label" aria-live="polite">Open screenshot editor</span>
           </a>
           <a class="home-button home-button-secondary" href="#proof">See How It Works</a>
         </div>
@@ -179,7 +183,7 @@ const structuredData = {
       var el = document.getElementById('home-cta-label')
       if (!el) return
       window.setTimeout(function () {
-        el.textContent = 'Create App Store Mockup'
+        el.textContent = 'Edit Play & App Store screenshots'
       }, 2000)
     })()
   </script>

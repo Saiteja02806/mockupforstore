@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: pill-phone
 readingTime: 8 min read
-canonical: "https://mockupstudio.app/blog/app-screenshot-generator-vs-mockup-generator/"
+canonical: "https://www.mockupeditor.site/blog/app-screenshot-generator-vs-mockup-generator/"
 keywords:
   - screenshot generator vs mockup
   - app mockup editor

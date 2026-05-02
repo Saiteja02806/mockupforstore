@@ -1,0 +1,72 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+
+const title = 'App Store Screenshot Editor'
+const description =
+  'Edit full App Store listing images in one place: iPhone and iPad frames, headline text, backgrounds, layout, and export-ready dimensions.'
+const h1 = 'App Store screenshot editor'
+const introParagraphs = [
+  'App Store shoppers skim galleries fast—often from search, Today, or your product page—so each shot needs to read as a complete mockup: frame, UI, headline, and background working together.',
+  'Mockup Studio is built for the full listing image: pick a frame, place your screen, add typography and background, then export at the sizes your localization and device class require—without rebuilding device chrome in Figma for every slide.',
+]
+
+const features = [
+  {
+    title: 'Device frame + screen',
+    body: 'Choose phone and tablet shells that match how Apple surfaces previews so your UI reads as a polished product shot.',
+  },
+  {
+    title: 'Headline text and layout',
+    body: 'Add short benefit-led copy with hierarchy tuned for small thumbnails in search and browse surfaces.',
+  },
+  {
+    title: 'Background and export',
+    body: 'Unify backgrounds across a screenshot set and export consistent dimensions for App Store Connect uploads.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Is this only for the App Store?',
+    a: 'The same mockup workflow works for Google Play screenshots too; dimensions differ—see our Play Store guides and size tables.',
+  },
+  {
+    q: 'Do I still need a design tool?',
+    a: 'Many teams use Mockup Studio to assemble listing-ready shots without redrawing device bezels in Photoshop or Figma for every export.',
+  },
+  {
+    q: 'Where do I learn export sizes?',
+    a: 'Start with our App Store screenshot requirements guide linked below, then open the editor with a frame preset.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/app-store-mockup-editor/', label: 'App Store mockup editor' },
+  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
+  { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
+  { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'How to add text to app screenshots' },
+  { href: '/frames/', label: 'Browse device frames' },
+]
+
+const keywords = [
+  'App Store screenshot editor',
+  'iOS app screenshot editor',
+  'iPhone screenshot mockup editor',
+  'App Store Connect screenshots',
+]
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="App Store"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="dynamic-island-camera"
+  keywords={keywords}
+/>

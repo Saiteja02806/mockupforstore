@@ -3,8 +3,8 @@ export const siteTagline = 'Create store-ready mockups in minutes, not in two-ho
 export const defaultDescription =
   'Mockup Studio helps app teams create Play Store and App Store screenshots with real device frames, built-in editing, and export-ready layouts.'
 
-export const defaultSiteUrl = 'https://mockupstudio.app'
-export const defaultAppUrl = 'https://app.mockupstudio.app'
+export const defaultSiteUrl = 'https://www.mockupeditor.site'
+export const defaultAppUrl = 'https://www.mockupeditor.site/'
 
 export function getAppUrl() {
   return import.meta.env.PUBLIC_APP_URL || defaultAppUrl

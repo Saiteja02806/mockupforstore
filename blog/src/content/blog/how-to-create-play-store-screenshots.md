@@ -7,7 +7,7 @@ category: Play Store
 featured: true
 ctaFrame: pill-phone
 readingTime: 18 min read
-canonical: "https://mockupstudio.app/blog/how-to-create-play-store-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots/"
 keywords:
   - create Play Store screenshots
   - Google Play listing images
@@ -105,4 +105,4 @@ If you claim a tablet experience, show it. Otherwise stretched phone comps erode
 
 ## Create your Play Store screenshot
 
-Use [Mockup Studio](https://app.mockupstudio.app) to combine Android-style frames, backgrounds, and layout in one workflow—editing the **full** store image, not only masking a PNG. When sizing is unclear, start with the [Play Store screenshot size guide](/blog/play-store-screenshot-size-guide/).
+Use [Mockup Studio](https://www.mockupeditor.site/) to combine Android-style frames, backgrounds, and layout in one workflow—editing the **full** store image, not only masking a PNG. When sizing is unclear, start with the [Play Store screenshot size guide](/blog/play-store-screenshot-size-guide/).

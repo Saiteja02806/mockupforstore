@@ -7,7 +7,7 @@ category: App Store
 featured: false
 ctaFrame: pill-phone
 readingTime: 14 min read
-canonical: "https://mockupstudio.app/blog/how-to-add-text-to-app-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/how-to-add-text-to-app-screenshots/"
 keywords:
   - app screenshot text
   - add text to app screenshots
@@ -108,7 +108,7 @@ Read [common Play Store screenshot mistakes](/blog/common-play-store-screenshot-
 
 ## How to add text using Mockup Studio
 
-1. Open the [app](https://app.mockupstudio.app) with a frame that matches your story ([Android-focused editor context](/android-app-screenshot-editor/) if helpful).  
+1. Open the [app](https://www.mockupeditor.site/) with a frame that matches your story ([Android-focused editor context](/android-app-screenshot-editor/) if helpful).  
 2. Place your UI capture, then add headline and optional subhead in the canvas—not in a separate tool where alignment drifts.  
 3. Tune background and spacing so type and device read as **one composition**.  
 4. Export at the dimensions your store track requires—see the [size guide](/blog/play-store-screenshot-size-guide/).  

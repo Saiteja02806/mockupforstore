@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: silver-black-phone
 readingTime: 9 min read
-canonical: "https://mockupstudio.app/blog/how-to-create-play-store-screenshots-for-a-finance-app/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots-for-a-finance-app/"
 keywords:
   - finance app Play Store screenshots
   - fintech listing images
@@ -34,4 +34,4 @@ Pair with [Google Play screenshot requirements](/blog/google-play-screenshot-req
 
 ## Editor
 
-[Play Store mockup editor](/play-store-mockup-editor/) · [Mockup Studio](https://app.mockupstudio.app)
+[Play Store mockup editor](/play-store-mockup-editor/) · [Mockup Studio](https://www.mockupeditor.site/)

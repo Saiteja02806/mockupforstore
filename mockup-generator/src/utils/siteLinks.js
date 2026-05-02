@@ -1,6 +1,7 @@
+const DEFAULT_MARKETING_ORIGIN = 'https://www.mockupeditor.site'
+
 export function getMarketingHomeUrl() {
   // Set VITE_MARKETING_SITE_URL in .env.local to override for any environment.
-  // In production with app.* subdomain pattern this is auto-derived.
   // Locally: the Astro marketing/blog site runs on port 4321 (run `npm run dev`
   // inside the `blog/` folder). If that server is not running you will get
   // "site can't be reached" – start both dev servers to use the Home link.
@@ -8,17 +9,14 @@ export function getMarketingHomeUrl() {
   if (configured) return configured
 
   if (typeof window !== 'undefined') {
-    const { hostname, protocol } = window.location
-    if (hostname.startsWith('app.')) {
-      return `${protocol}//${hostname.replace(/^app\./, '')}`
-    }
+    const { hostname } = window.location
     if (hostname === '127.0.0.1' || hostname === 'localhost') {
       return 'http://127.0.0.1:4321'
     }
-    return 'https://mockupstudio.app'
+    return DEFAULT_MARKETING_ORIGIN
   }
 
-  return 'https://mockupstudio.app'
+  return DEFAULT_MARKETING_ORIGIN
 }
 
 /** Matches App routing: landing vs studio (URL query/hash). Safe before React mounts. */

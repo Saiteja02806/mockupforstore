@@ -7,7 +7,7 @@ category: Play Store
 featured: true
 ctaFrame: dynamic-island-camera
 readingTime: 16 min read
-canonical: "https://mockupstudio.app/blog/play-store-screenshot-size-guide/"
+canonical: "https://www.mockupeditor.site/blog/play-store-screenshot-size-guide/"
 keywords:
   - Play Store screenshot sizes
   - Google Play screenshot requirements
@@ -109,4 +109,4 @@ See [how many screenshots on Google Play](/blog/how-many-screenshots-should-you-
 
 ## Try export presets in the editor
 
-[Mockup Studio](https://app.mockupstudio.app) helps you compose Play-ready mockups with frames, backgrounds, and text, then export at consistent dimensions. Pair this guide with [how to create Play Store screenshots](/blog/how-to-create-play-store-screenshots/) for capture → frame → text → export → upload.
+[Mockup Studio](https://www.mockupeditor.site/) helps you compose Play-ready mockups with frames, backgrounds, and text, then export at consistent dimensions. Pair this guide with [how to create Play Store screenshots](/blog/how-to-create-play-store-screenshots/) for capture → frame → text → export → upload.
