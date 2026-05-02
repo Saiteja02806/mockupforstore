@@ -1228,6 +1228,10 @@ main {
   gap: 24px;
 }
 
+.content-article-wrap {
+  padding-bottom: 72px;
+}
+
 .content-prose {
   padding: 30px;
   border-radius: 30px;
