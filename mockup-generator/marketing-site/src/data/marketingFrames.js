@@ -1,5 +1,5 @@
-// When the editor package is renamed to `editor/`, switch to: ../../../editor/src/data/frames.js
-import { frames as productFrames, getAllFrames, isRasterFrame } from '../../../mockup-generator/src/data/frames.js'
+// Resolved from marketing-site/src/data → mockup-generator/src/data (sibling package layout removed).
+import { frames as productFrames, getAllFrames, isRasterFrame } from '../../../src/data/frames.js'
 
 const MARKETING_FRAME_IDS = [
   'pill-phone',
