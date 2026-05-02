@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm install --prefix mockup-generator",
+  "buildCommand": "npm run build --prefix mockup-generator",
+  "outputDirectory": "mockup-generator/dist"
+}
