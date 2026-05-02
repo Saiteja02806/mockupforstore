@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
+import { getMarketingBlogUrl } from './utils/siteLinks'
 
 /* ─── Rolling phones (hidden, kept for future use) ─────────────────── */
 const firstPhoneImage = '/framesforphone/apple-iphone-15-photo-removebg-preview.png'
@@ -69,6 +70,10 @@ const CAROUSEL_IMAGES = [
 ]
 const NUM_SLIDES = CAROUSEL_IMAGES.length
 
+function carouselWebpUrl(pngSrc) {
+  return pngSrc.replace(/\.png$/i, '.webp')
+}
+
 function ChevLeft() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -119,12 +124,17 @@ function HeroCarousel() {
               onClick={off === -1 ? prev : off === 1 ? next : undefined}
               aria-hidden={Math.abs(off) > 1}
             >
-              <img
-                src={src}
-                alt={off === 0 ? `App Store mockup screenshot ${i + 1}` : ''}
-                loading={Math.abs(off) <= 1 ? 'eager' : 'lazy'}
-                draggable={false}
-              />
+              <picture>
+                <source type="image/webp" srcSet={carouselWebpUrl(src)} />
+                <img
+                  src={src}
+                  alt={off === 0 ? `App Store mockup screenshot ${i + 1}` : ''}
+                  loading={Math.abs(off) <= 1 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  draggable={false}
+                  fetchPriority={off === 0 ? 'high' : undefined}
+                />
+              </picture>
             </div>
           )
         })}
@@ -203,6 +213,8 @@ function FeatureIcon({ type }) {
 
 /* ─── Main component ───────────────────────────────────────────────── */
 export default function MarketingHome({ onEnterStudio }) {
+  const blogUrl = getMarketingBlogUrl()
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 })
   }, [])
@@ -229,6 +241,7 @@ export default function MarketingHome({ onEnterStudio }) {
         <nav className="landing-nav" aria-label="Primary">
           <a href="#how-it-works">How It Works</a>
           <a href="#features">Features</a>
+          <a href={blogUrl}>Blog</a>
           <a href="#comparison">Compare</a>
         </nav>
 
@@ -424,15 +437,16 @@ export default function MarketingHome({ onEnterStudio }) {
       {/* ── FOOTER (existing — kept) ── */}
       <footer id="footer" className="landing-footer">
         {[
-          ['Product',   'Product', 'App Store', 'Mockup Studio', 'Play Store', 'Ultr Shots'],
+          ['Product', 'Product', 'App Store', 'Mockup Studio', 'Play Store', 'Ultr Shots'],
           ['Resources', 'About', 'Blog', 'Careers', 'Responsibility', 'Resources', 'Privacy Policy'],
-          ['Company',   'Company', 'Terms of Use', 'Contact Us', 'Blog'],
-          ['Social',    'X', 'Facebook', 'Instagram', 'YouTube'],
+          ['Company', 'Company', 'Terms of Use', 'Contact Us', 'Blog'],
         ].map(([title, ...links]) => (
           <div key={title} className="landing-footer-col">
             <h3>{title}</h3>
-            {links.map((link) => (
-              <a key={link} href="#top">{link}</a>
+            {links.map((link, i) => (
+              <a key={`${title}-${i}-${link}`} href={link === 'Blog' ? blogUrl : '#top'}>
+                {link}
+              </a>
             ))}
           </div>
         ))}

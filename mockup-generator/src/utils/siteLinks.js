@@ -19,6 +19,12 @@ export function getMarketingHomeUrl() {
   return DEFAULT_MARKETING_ORIGIN
 }
 
+/** Marketing site blog index (Astro). Matches trailingSlash: 'always' on the marketing app. */
+export function getMarketingBlogUrl() {
+  const base = getMarketingHomeUrl().replace(/\/$/, '')
+  return `${base}/blog/`
+}
+
 /** Matches App routing: landing vs studio (URL query/hash). Safe before React mounts. */
 export function getInitialAppPage() {
   if (typeof window === 'undefined') return 'landing'
