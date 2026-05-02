@@ -1,6 +1,8 @@
 ---
+import { blogEntrySlug } from '../utils/blogEntrySlug.ts'
+
 const { post } = Astro.props
-const href = `/blog/${post.slug}/`
+const href = `/blog/${blogEntrySlug(post)}/`
 ---
 
 <article class="blog-card">

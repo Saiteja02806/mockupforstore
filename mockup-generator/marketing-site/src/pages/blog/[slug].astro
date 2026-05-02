@@ -3,11 +3,12 @@ import { getCollection, render } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { getAppUrl, siteName } from '../../data/site.js'
 import { getFrameAppUrl, getFrameById, getRelatedFrames } from '../../data/marketingFrames.js'
+import { blogEntrySlug } from '../../utils/blogEntrySlug.ts'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog')
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: blogEntrySlug(post) },
     props: { post },
   }))
 }

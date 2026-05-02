@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 import FramePreview from '../../components/FramePreview.astro'
 import { frameToBlogMap, getFrameAppUrl, getRelatedFrames, marketingFrames } from '../../data/marketingFrames.js'
 import { getAppUrl, siteName } from '../../data/site.js'
+import { blogEntrySlug } from '../../utils/blogEntrySlug.ts'
 
 export async function getStaticPaths() {
   return marketingFrames.map((frame) => ({
@@ -20,7 +21,7 @@ const relatedPostSlugs = frameToBlogMap[frame.id] || [
   'best-device-frame-sizes-for-google-play-2025',
 ]
 const relatedPosts = relatedPostSlugs
-  .map((slug) => posts.find((post) => post.slug === slug))
+  .map((slug) => posts.find((post) => blogEntrySlug(post) === slug))
   .filter(Boolean)
 const relatedFrames = getRelatedFrames(frame, 3)
 
@@ -94,7 +95,7 @@ const structuredData = {
           <div class="aside-stack">
             {relatedPosts.map((post) => (
               <div>
-                <h2 style="font-size:1.2rem; margin-bottom:8px;"><a href={`/blog/${post.slug}/`}>{post.data.title}</a></h2>
+                <h2 style="font-size:1.2rem; margin-bottom:8px;"><a href={`/blog/${blogEntrySlug(post)}/`}>{post.data.title}</a></h2>
                 <p>{post.data.description}</p>
               </div>
             ))}
