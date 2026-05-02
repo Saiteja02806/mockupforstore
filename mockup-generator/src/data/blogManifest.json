@@ -1,0 +1,178 @@
+[
+  {
+    "slug": "app-screenshot-generator-vs-mockup-generator",
+    "title": "App Screenshot Generator vs Mockup Generator",
+    "description": "When a fast generator is enough, when a full mockup editor wins, and how Mockup Studio blends presets with composite control for Play and App Store art.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "8 min read"
+  },
+  {
+    "slug": "best-background-ideas-for-app-screenshots",
+    "title": "Best Background Ideas for App Screenshots",
+    "description": "Solid, gradient, textured, and brand-pattern backgrounds that keep device frames and headline text legible in Google Play thumbnails.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "best-fonts-for-app-screenshots",
+    "title": "Best Fonts for App Store and Play Store Screenshots",
+    "description": "Readable pairing rules, weights that survive JPEG, thumbnail-safe sizes, and how to stay on-brand without cluttering listing art.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "10 min read"
+  },
+  {
+    "slug": "best-play-store-screenshot-generators",
+    "title": "Best Play Store Screenshot Generators for Android Apps",
+    "description": "What to look for in a Play Store screenshot generator—frames, text, export sizes, and honesty when comparing tools including Mockup Studio.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "12 min read"
+  },
+  {
+    "slug": "common-play-store-screenshot-mistakes",
+    "title": "Common Play Store Screenshot Mistakes",
+    "description": "Policy, typography, device, and story mistakes that hurt Google Play listings—plus how to fix them before upload.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "11 min read"
+  },
+  {
+    "slug": "create-app-screenshots-without-figma",
+    "title": "How to Create App Screenshots Without Figma",
+    "description": "When to skip Figma for store screenshots, what workflow replaces it, and how Mockup Studio covers frames, type, backgrounds, and export.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "create-app-screenshots-without-photoshop",
+    "title": "How to Create App Screenshots Without Photoshop",
+    "description": "Replace Photoshop-heavy mockup steps with a browser workflow: frames, text, backgrounds, and batch-friendly tweaks for Play and App Store assets.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "8 min read"
+  },
+  {
+    "slug": "google-play-screenshot-requirements",
+    "title": "Google Play Screenshot Requirements (Preview Assets)",
+    "description": "What Google Play expects for phone, tablet, and feature assets—where to read official rules, and how to avoid common compliance issues.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "10 min read"
+  },
+  {
+    "slug": "how-many-screenshots-should-you-add-to-google-play",
+    "title": "How Many Screenshots Should You Add to Google Play?",
+    "description": "Practical guidance on screenshot count for phone and tablet listings, when extra frames help, and when they hurt conversion.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "6 min read"
+  },
+  {
+    "slug": "how-to-add-android-phone-frame-to-app-screenshot",
+    "title": "How to Add Android Phone Frames to App Screenshots",
+    "description": "Choose a frame style, align safe areas, export for Google Play, and keep a consistent device story across your listing gallery.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "10 min read"
+  },
+  {
+    "slug": "how-to-add-text-to-app-screenshots",
+    "title": "How to Add Text to App Screenshots",
+    "description": "Learn how to add readable headline text, subheads, and feature callouts to Play Store and App Store screenshots—with placement rules, font sizing for thumbnails, and before/after patterns.",
+    "pubDate": "2026-04-28",
+    "category": "App Store",
+    "readingTime": "14 min read"
+  },
+  {
+    "slug": "how-to-create-play-store-screenshots-for-a-finance-app",
+    "title": "How to Create Play Store Screenshots for a Finance App",
+    "description": "Trust-first gallery patterns for banking, budgeting, and investing apps—masking data, typography, and compliance-aware copy.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "how-to-create-play-store-screenshots-for-a-fitness-app",
+    "title": "How to Create Play Store Screenshots for a Fitness App",
+    "description": "Workout, metrics, and community angles for fitness listings—honest health claims, thumbnail-safe type, and template alignment.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "how-to-create-play-store-screenshots-for-a-to-do-app",
+    "title": "How to Create Play Store Screenshots for a To-Do App",
+    "description": "Gallery story, headlines, and layout patterns for task and habit apps on Google Play—with a matching template page.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "how-to-create-play-store-screenshots-for-an-ai-app",
+    "title": "How to Create Play Store Screenshots for an AI App",
+    "description": "Show prompts, outputs, privacy, and model controls honestly—gallery patterns for AI assistants and copilots on Google Play.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "how-to-create-play-store-screenshots",
+    "title": "How to Create Play Store Screenshots Online",
+    "description": "Full workflow: capture clean UI, choose frames, order your gallery story, add text and backgrounds, export correct sizes, and upload to Play Console—with internal links to our editor, generator, and size guide.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "18 min read"
+  },
+  {
+    "slug": "play-store-screenshot-examples",
+    "title": "Play Store Screenshot Examples: 30 App Listing Ideas",
+    "description": "Thirty angle ideas for Play Store galleries—onboarding, social proof, settings, pricing, and more—with links to templates and workflow guides.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "14 min read"
+  },
+  {
+    "slug": "play-store-screenshot-size-guide",
+    "title": "Play Store Screenshot Size Guide",
+    "description": "Portrait and landscape dimensions, Google Play screenshot requirements, tablet tracks, export presets, rejection pitfalls, and a pre-upload checklist—so assets stay sharp in listing, search, and discovery placements.",
+    "pubDate": "2026-04-28",
+    "category": "Play Store",
+    "readingTime": "16 min read"
+  },
+  {
+    "slug": "play-store-vs-app-store-screenshots",
+    "title": "Play Store vs App Store Screenshot Sizes and Strategy",
+    "description": "How Google Play and Apple App Store differ in screenshot tracks, aspect ratios, and gallery strategy—so you reuse UI without reusing bad layouts.",
+    "pubDate": "2026-04-28",
+    "category": "Guides",
+    "readingTime": "11 min read"
+  },
+  {
+    "slug": "app-store-screenshot-requirements-complete-guide",
+    "title": "App Store Screenshot Requirements: Complete Guide",
+    "description": "A clear guide to structuring App Store screenshot sets, choosing frames, and making the final visuals easier to read.",
+    "pubDate": "2026-04-20",
+    "category": "App Store",
+    "readingTime": "9 min read"
+  },
+  {
+    "slug": "best-device-frame-sizes-for-google-play-2025",
+    "title": "Best Device Frame Sizes for Google Play 2025",
+    "description": "A practical guide to choosing the right device frame sizes and aspect ratios for Google Play screenshot sets in 2025.",
+    "pubDate": "2026-04-20",
+    "category": "Device Frames",
+    "readingTime": "7 min read"
+  },
+  {
+    "slug": "how-to-make-play-store-screenshots-that-get-downloads",
+    "title": "How to Make Play Store Screenshots That Get Downloads",
+    "description": "An answer-first guide to building Play Store screenshots that are clearer, faster to produce, and easier for users to understand.",
+    "pubDate": "2026-04-20",
+    "category": "Play Store",
+    "readingTime": "8 min read"
+  }
+]

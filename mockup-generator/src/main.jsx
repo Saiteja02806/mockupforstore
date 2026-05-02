@@ -5,7 +5,8 @@ import './index.css'
 import App from './App.jsx'
 import { getInitialAppPage } from './utils/siteLinks'
 
-if (getInitialAppPage() === 'landing') {
+const initialPage = getInitialAppPage()
+if (initialPage === 'landing' || initialPage === 'blog') {
   document.documentElement.classList.add('marketing-mode')
 }
 

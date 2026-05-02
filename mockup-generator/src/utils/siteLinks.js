@@ -24,7 +24,9 @@ export function getMarketingHomeUrl() {
   return DEFAULT_MARKETING_ORIGIN
 }
 
-/** Marketing site blog index (Astro). Matches trailingSlash: 'always' on the marketing app. */
+/**
+ * External canonical blog URL (SEO / Astro deploy). In-app navigation uses `#blog` instead — see BlogSection.
+ */
 export function getMarketingBlogUrl() {
   const configured = import.meta.env.VITE_MARKETING_SITE_URL
   if (configured) {
@@ -47,9 +49,11 @@ export function getMarketingBlogUrl() {
   return `${base}/blog/`
 }
 
-/** Matches App routing: landing vs studio (URL query/hash). Safe before React mounts. */
+/** Matches App routing: landing vs in-app blog (#blog) vs studio. Safe before React mounts. */
 export function getInitialAppPage() {
   if (typeof window === 'undefined') return 'landing'
+  const h = (window.location.hash || '').replace(/^#\/?/, '')
+  if (h === 'blog' || h.startsWith('blog/')) return 'blog'
   try {
     const params = new URLSearchParams(window.location.search)
     if (params.get('studio') === '1') return 'studio'

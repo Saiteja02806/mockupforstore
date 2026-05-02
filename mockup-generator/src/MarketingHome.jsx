@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react'
-import { getMarketingBlogUrl } from './utils/siteLinks'
 
 /* ─── Rolling phones (hidden, kept for future use) ─────────────────── */
 const firstPhoneImage = '/framesforphone/apple-iphone-15-photo-removebg-preview.png'
@@ -213,8 +212,6 @@ function FeatureIcon({ type }) {
 
 /* ─── Main component ───────────────────────────────────────────────── */
 export default function MarketingHome({ onEnterStudio }) {
-  const blogUrl = getMarketingBlogUrl()
-
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 })
   }, [])
@@ -241,7 +238,7 @@ export default function MarketingHome({ onEnterStudio }) {
         <nav className="landing-nav" aria-label="Primary">
           <a href="#how-it-works">How It Works</a>
           <a href="#features">Features</a>
-          <a href={blogUrl}>Blog</a>
+          <a href="#blog">Blog</a>
           <a href="#comparison">Compare</a>
         </nav>
 
@@ -444,7 +441,7 @@ export default function MarketingHome({ onEnterStudio }) {
           <div key={title} className="landing-footer-col">
             <h3>{title}</h3>
             {links.map((link, i) => (
-              <a key={`${title}-${i}-${link}`} href={link === 'Blog' ? blogUrl : '#top'}>
+              <a key={`${title}-${i}-${link}`} href={link === 'Blog' ? '#blog' : '#top'}>
                 {link}
               </a>
             ))}

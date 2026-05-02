@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import MarketingHome from './MarketingHome'
+import BlogSection from './BlogSection'
 import { AlertCircle, Home } from 'lucide-react'
 import { getInitialAppPage, homeNavProps } from './utils/siteLinks'
 import MockupCanvas from './components/canvas/MockupCanvas'
@@ -608,13 +609,18 @@ export default function App() {
     setMode('landing')
   }, [])
 
+  const backFromBlog = useCallback(() => {
+    if (typeof window !== 'undefined') window.history.replaceState(null, '', window.location.pathname || '/')
+    setMode('landing')
+  }, [])
+
   const enterStudio = useCallback(() => {
     if (typeof window !== 'undefined' && window.location.hash !== '#studio') window.history.pushState(null, '', '#studio')
     setMode('studio')
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('marketing-mode', mode === 'landing')
+    document.documentElement.classList.toggle('marketing-mode', mode === 'landing' || mode === 'blog')
     return () => document.documentElement.classList.remove('marketing-mode')
   }, [mode])
 
@@ -626,5 +632,6 @@ export default function App() {
   }, [])
 
   if (mode === 'landing') return <MarketingHome onEnterStudio={enterStudio} />
+  if (mode === 'blog') return <BlogSection onBackHome={backFromBlog} />
   return <StudioApp onGoHome={goHome} />
 }

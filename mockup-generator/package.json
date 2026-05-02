@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "sync-frames": "node scripts/sync-frames-to-public.mjs",
+    "sync-blog": "node scripts/sync-blog-manifest.mjs",
     "strip-svg-filters": "node scripts/strip-frame-svg-filters.mjs",
-    "dev": "npm run sync-frames && vite",
-    "dev:vanilla": "npm run sync-frames && vite --open /vanilla.html",
-    "build": "npm run sync-frames && node scripts/optimize-landing-carousel-webp.mjs && npm --prefix ./marketing-site run build && vite build && node scripts/merge-marketing-into-editor-dist.mjs",
+    "dev": "npm run sync-frames && npm run sync-blog && vite",
+    "dev:vanilla": "npm run sync-frames && npm run sync-blog && vite --open /vanilla.html",
+    "build": "npm run sync-frames && npm run sync-blog && node scripts/optimize-landing-carousel-webp.mjs && npm --prefix ./marketing-site run build && vite build && node scripts/merge-marketing-into-editor-dist.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -18,6 +19,7 @@
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
