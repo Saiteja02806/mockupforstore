@@ -3,7 +3,7 @@
  * like /blog/ exist on the same origin as the editor (Vercel only builds mockup-generator).
  * Skips marketing's root index.html so the Vite app's entry HTML stays at /.
  */
-import { appendFileSync, cpSync, existsSync, mkdirSync } from 'fs'
+import { cpSync, existsSync } from 'fs'
 import { dirname, join, normalize, relative } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -38,25 +38,5 @@ if (!blogOk) {
   console.error('[merge-marketing] FAIL: dist/blog/index.html missing — Astro blog did not merge (check marketing-site build + npm install --prefix ./marketing-site)')
   process.exit(1)
 }
-
-// #region agent log (build verification NDJSON for debug session 8707e8)
-try {
-  const logDir = join(editorRoot, '..', '.cursor')
-  mkdirSync(logDir, { recursive: true })
-  appendFileSync(
-    join(logDir, 'debug-8707e8.log'),
-    `${JSON.stringify({
-      sessionId: '8707e8',
-      location: 'merge-marketing-into-editor-dist.mjs',
-      message: 'post-merge blog smoke check',
-      data: { blogIndexExists: blogOk, blogIndexPath: blogIndex },
-      timestamp: Date.now(),
-      hypothesisId: 'H-vercel-install-merge',
-    })}\n`,
-  )
-} catch {
-  /* ignore missing .cursor on CI */
-}
-// #endregion
 
 console.log('[merge-marketing] OK: dist/blog/index.html present')
