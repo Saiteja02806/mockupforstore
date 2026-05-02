@@ -1,9 +1,9 @@
-const DEFAULT_MARKETING_ORIGIN = 'https://www.mockupeditor.site'
+const DEFAULT_MARKETING_ORIGIN = 'https://mockupeditor.site'
 
 export function getMarketingHomeUrl() {
   // Set VITE_MARKETING_SITE_URL in .env.local to override for any environment.
-  // Locally: the Astro marketing/blog site runs on port 4321 (run `npm run dev`
-  // inside the `blog/` folder). If that server is not running you will get
+  // Locally: the Astro marketing site runs on port 4321 (run `npm run dev`
+  // inside the `marketing/` folder). If that server is not running you will get
   // "site can't be reached" – start both dev servers to use the Home link.
   const configured = import.meta.env.VITE_MARKETING_SITE_URL
   if (configured) return configured
