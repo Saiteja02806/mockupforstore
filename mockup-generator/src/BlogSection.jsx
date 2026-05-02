@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import blogManifest from './data/blogManifest.json'
+import { getBlogSlugFromLocation } from './utils/siteLinks'
 
-function useBlogHash() {
+function useBlogSlug() {
   const [, setTick] = useState(0)
   const bump = useCallback(() => setTick((t) => t + 1), [])
 
@@ -15,18 +16,10 @@ function useBlogHash() {
     }
   }, [bump])
 
-  const raw = (typeof window !== 'undefined' ? window.location.hash : '').replace(/^#\/?/, '')
-  if (raw === 'blog' || raw === 'blog/') {
-    return { slug: null }
-  }
-  if (raw.startsWith('blog/')) {
-    const s = decodeURIComponent(raw.slice(5).replace(/\/+$/, ''))
-    return { slug: s || null }
-  }
-  return { slug: null }
+  return getBlogSlugFromLocation()
 }
 
-function BlogList({ posts, onOpen }) {
+function BlogList({ posts }) {
   if (!posts.length) {
     return (
       <div className="blog-app-empty">
@@ -45,28 +38,12 @@ function BlogList({ posts, onOpen }) {
         <article key={post.slug} className="blog-app-card">
           <p className="blog-app-card-eyebrow">{post.category}</p>
           <h2>
-            <a
-              href={`#blog/${post.slug}`}
-              onClick={(e) => {
-                e.preventDefault()
-                onOpen(post.slug)
-              }}
-            >
-              {post.title}
-            </a>
+            <a href={`/blog/${encodeURIComponent(post.slug)}/`}>{post.title}</a>
           </h2>
           <p className="blog-app-card-desc">{post.description}</p>
           <div className="blog-app-card-meta">
             {post.readingTime ? <span>{post.readingTime}</span> : null}
-            <a
-              href={`#blog/${post.slug}`}
-              onClick={(e) => {
-                e.preventDefault()
-                onOpen(post.slug)
-              }}
-            >
-              Read article
-            </a>
+            <a href={`/blog/${encodeURIComponent(post.slug)}/`}>Read article</a>
           </div>
         </article>
       ))}
@@ -74,7 +51,7 @@ function BlogList({ posts, onOpen }) {
   )
 }
 
-function BlogPostView({ slug, onBack }) {
+function BlogPostView({ slug }) {
   const [md, setMd] = useState('')
   const [err, setErr] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -108,9 +85,9 @@ function BlogPostView({ slug, onBack }) {
 
   return (
     <article className="blog-app-article">
-      <button type="button" className="blog-app-back" onClick={onBack}>
+      <a href="/blog/" className="blog-app-back">
         ← All articles
-      </button>
+      </a>
       {meta ? (
         <>
           <p className="blog-app-card-eyebrow">{meta.category}</p>
@@ -132,35 +109,24 @@ function BlogPostView({ slug, onBack }) {
   )
 }
 
-export default function BlogSection({ onBackHome }) {
-  const { slug } = useBlogHash()
+export default function BlogSection() {
+  const slug = useBlogSlug()
   const posts = Array.isArray(blogManifest) ? blogManifest : []
-
-  const openPost = useCallback((s) => {
-    window.location.hash = `blog/${s}`
-  }, [])
-
-  const backToList = useCallback(() => {
-    window.location.hash = 'blog'
-  }, [])
-
   const showPost = Boolean(slug)
 
   return (
     <div className="landing-page blog-app">
       <header className="landing-header blog-app-header">
-        <button type="button" className="landing-brand blog-app-brand-btn" onClick={onBackHome}>
+        <a className="landing-brand blog-app-brand-btn" href="/">
           <img
             src="/frames/circular%20courosel/logo/Screenshot%202026-04-25%20231338-modified.png"
             alt=""
             className="landing-brand-logo"
           />
           <span>Mockup Studio</span>
-        </button>
+        </a>
         <nav className="landing-nav" aria-label="Blog">
-          <a href="#top" onClick={(e) => { e.preventDefault(); onBackHome() }}>
-            Home
-          </a>
+          <a href="/">Home</a>
           <span className="blog-app-nav-current" aria-current="page">
             Blog
           </span>
@@ -173,14 +139,15 @@ export default function BlogSection({ onBackHome }) {
             <div className="blog-app-hero">
               <h1 className="section-title">Guides &amp; blog</h1>
               <p className="blog-app-intro">
-                Practical articles on Play Store and App Store screenshots — shown here inside Mockup Studio (same site,
-                no redirect).
+                Practical articles on Play Store and App Store screenshots. This page uses{' '}
+                <strong>/blog/</strong> on the same deployment (Vercel serves the app shell; articles load from{' '}
+                <code>/blog-posts/</code>).
               </p>
             </div>
-            <BlogList posts={posts} onOpen={openPost} />
+            <BlogList posts={posts} />
           </>
         ) : (
-          <BlogPostView slug={slug} onBack={backToList} />
+          <BlogPostView slug={slug} />
         )}
       </main>
     </div>

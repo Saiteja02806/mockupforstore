@@ -1,7 +1,6 @@
 /**
- * After `vite build`, copy the Astro marketing static site into `dist/` so routes
- * like /blog/ exist on the same origin as the editor (Vercel only builds mockup-generator).
- * Skips marketing's root index.html so the Vite app's entry HTML stays at /.
+ * After `vite build`, copy the Astro marketing site into `dist/` (SEO pages, frames, etc.).
+ * Skips root `index.html` (Vite shell) and skips `/blog/**` so React + vercel.json rewrites own /blog/*.
  */
 import { cpSync, existsSync } from 'fs'
 import { dirname, join, normalize, relative } from 'path'
@@ -25,18 +24,12 @@ cpSync(marketingDist, viteDist, {
   recursive: true,
   filter: (src) => {
     const rel = normalize(relative(marketingDist, src))
-    if (rel === 'index.html') return false
+    const posix = rel.replace(/\\/g, '/')
+    if (posix === 'index.html') return false
+    /* React SPA owns /blog/* (vercel.json rewrites → index.html). Do not ship Astro /blog HTML. */
+    if (posix === 'blog' || posix.startsWith('blog/')) return false
     return true
   },
 })
 
-console.log('[merge-marketing] Copied Astro marketing dist into editor dist/ (kept Vite root index.html)')
-
-const blogIndex = join(viteDist, 'blog', 'index.html')
-const blogOk = existsSync(blogIndex)
-if (!blogOk) {
-  console.error('[merge-marketing] FAIL: dist/blog/index.html missing — Astro blog did not merge (check marketing-site build + npm install --prefix ./marketing-site)')
-  process.exit(1)
-}
-
-console.log('[merge-marketing] OK: dist/blog/index.html present')
+console.log('[merge-marketing] Copied Astro marketing dist into editor dist/ (skipped root index + /blog/* for SPA blog)')

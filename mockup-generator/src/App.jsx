@@ -605,12 +605,7 @@ export default function App() {
   const [mode, setMode] = useState(() => getInitialAppPage())
 
   const goHome = useCallback(() => {
-    if (typeof window !== 'undefined') window.history.pushState(null, '', window.location.pathname || '/')
-    setMode('landing')
-  }, [])
-
-  const backFromBlog = useCallback(() => {
-    if (typeof window !== 'undefined') window.history.replaceState(null, '', window.location.pathname || '/')
+    if (typeof window !== 'undefined') window.history.replaceState(null, '', '/')
     setMode('landing')
   }, [])
 
@@ -632,6 +627,6 @@ export default function App() {
   }, [])
 
   if (mode === 'landing') return <MarketingHome onEnterStudio={enterStudio} />
-  if (mode === 'blog') return <BlogSection onBackHome={backFromBlog} />
+  if (mode === 'blog') return <BlogSection />
   return <StudioApp onGoHome={goHome} />
 }

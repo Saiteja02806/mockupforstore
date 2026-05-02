@@ -2687,7 +2687,7 @@ html.marketing-mode #root {
   margin-bottom: 8px;
 }
 
-/* ── In-app blog (#blog / #blog/slug) — same origin as landing ─────────── */
+/* ── In-app blog: /blog/, /blog/:slug (Vercel rewrite → index.html) ───── */
 .blog-app-brand-btn {
   border: none;
   background: transparent;
@@ -2695,6 +2695,7 @@ html.marketing-mode #root {
   font: inherit;
   padding: 0;
   text-align: left;
+  text-decoration: none;
 }
 
 .blog-app-nav-current {
@@ -2791,6 +2792,7 @@ html.marketing-mode #root {
 }
 
 .blog-app-back {
+  display: inline-block;
   border: none;
   background: transparent;
   color: #7c8cff;
@@ -2798,6 +2800,7 @@ html.marketing-mode #root {
   font-size: 14px;
   margin-bottom: 24px;
   padding: 0;
+  text-decoration: none;
 }
 
 .blog-app-article-title {

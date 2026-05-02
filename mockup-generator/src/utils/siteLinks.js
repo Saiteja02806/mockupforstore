@@ -25,7 +25,7 @@ export function getMarketingHomeUrl() {
 }
 
 /**
- * External canonical blog URL (SEO / Astro deploy). In-app navigation uses `#blog` instead — see BlogSection.
+ * External-style blog URL (legacy). Prefer same-origin `/blog/` via MarketingHome links.
  */
 export function getMarketingBlogUrl() {
   const configured = import.meta.env.VITE_MARKETING_SITE_URL
@@ -49,9 +49,42 @@ export function getMarketingBlogUrl() {
   return `${base}/blog/`
 }
 
-/** Matches App routing: landing vs in-app blog (#blog) vs studio. Safe before React mounts. */
+/**
+ * Pathname under BASE_URL: `/blog` or `/blog/slug` → list vs slug object.
+ * Returns `null` if URL is not the in-app blog route.
+ */
+export function getBlogPathMatch(pathname) {
+  let p = String(pathname || '').replace(/\/+$/, '') || '/'
+  const base = String(import.meta.env.BASE_URL || '/').replace(/\/+$/, '')
+  if (base !== '/' && p.startsWith(base)) {
+    p = p.slice(base.length) || '/'
+    if (!p.startsWith('/')) p = `/${p}`
+  }
+  if (p === '/blog') return 'list'
+  if (p.startsWith('/blog/')) {
+    const slug = decodeURIComponent(p.slice('/blog/'.length).replace(/\/+$/, ''))
+    return slug ? { slug } : 'list'
+  }
+  return null
+}
+
+/** Current slug from `/blog/:slug` or hash `#blog/:slug` (hash fallback for old links). */
+export function getBlogSlugFromLocation() {
+  if (typeof window === 'undefined') return null
+  const match = getBlogPathMatch(window.location.pathname)
+  if (match && typeof match === 'object') return match.slug
+  const h = (window.location.hash || '').replace(/^#\/?/, '')
+  if (h.startsWith('blog/')) {
+    const s = decodeURIComponent(h.slice(5).replace(/\/+$/, ''))
+    return s || null
+  }
+  return null
+}
+
+/** Matches App routing: landing vs in-app blog (/blog or #blog) vs studio. Safe before React mounts. */
 export function getInitialAppPage() {
   if (typeof window === 'undefined') return 'landing'
+  if (getBlogPathMatch(window.location.pathname) !== null) return 'blog'
   const h = (window.location.hash || '').replace(/^#\/?/, '')
   if (h === 'blog' || h.startsWith('blog/')) return 'blog'
   try {

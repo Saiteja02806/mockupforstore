@@ -4,6 +4,11 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install && npm install --prefix ./marketing-site",
   "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/blog", "destination": "/index.html" },
+    { "source": "/blog/", "destination": "/index.html" },
+    { "source": "/blog/:path*", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/blog-posts/(.*).md",

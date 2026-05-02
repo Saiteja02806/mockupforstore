@@ -238,7 +238,7 @@ export default function MarketingHome({ onEnterStudio }) {
         <nav className="landing-nav" aria-label="Primary">
           <a href="#how-it-works">How It Works</a>
           <a href="#features">Features</a>
-          <a href="#blog">Blog</a>
+          <a href="/blog/">Blog</a>
           <a href="#comparison">Compare</a>
         </nav>
 
@@ -441,7 +441,7 @@ export default function MarketingHome({ onEnterStudio }) {
           <div key={title} className="landing-footer-col">
             <h3>{title}</h3>
             {links.map((link, i) => (
-              <a key={`${title}-${i}-${link}`} href={link === 'Blog' ? '#blog' : '#top'}>
+              <a key={`${title}-${i}-${link}`} href={link === 'Blog' ? '/blog/' : '#top'}>
                 {link}
               </a>
             ))}
