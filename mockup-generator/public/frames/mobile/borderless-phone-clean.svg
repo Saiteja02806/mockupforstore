@@ -11,7 +11,4 @@
   <!-- Screen area - MUST match frames.js: x:14, y:14, w:372, h:772 -->
   <rect x="14" y="14" width="372" height="772" rx="48" ry="48"
         fill="none"/>
-  <!-- Subtle chin indicator line -->
-  <line x1="172" y1="775" x2="228" y2="775"
-        stroke="#2a3040" stroke-width="2" stroke-linecap="round"/>
 </svg>
