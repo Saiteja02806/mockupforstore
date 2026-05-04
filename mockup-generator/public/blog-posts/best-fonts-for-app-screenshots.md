@@ -5,6 +5,8 @@
 3. **On-brand** with your product (not a random display face per slide).  
 4. **Legally safe**—license webfonts if you embed rasterized type in marketing PNGs.  
 
+For Google Play–first work, set type **inside** the full composite (frame + background + export size)—not in isolation—using an [Android app screenshot editor](/play-store-screenshot-editor/) so thumbnails stay honest after JPEG.
+
 ## Practical pairings
 
 - **Sans + sans:** one family, two weights (700 headline / 500 subhead).  
@@ -21,4 +23,4 @@ Thin weights on busy gradients fail. Either **darken** the band behind type or *
 
 ## Related
 
-[Best background ideas](/blog/best-background-ideas-for-app-screenshots/) · [Play Store screenshot examples](/blog/play-store-screenshot-examples/) · [App screenshot mockup editor](/app-screenshot-mockup-editor/)
+[Best background ideas](/blog/best-background-ideas-for-app-screenshots/) · [Play Store screenshot examples](/blog/play-store-screenshot-examples/) · [edit Play Store screenshots](/play-store-screenshot-editor/) · [App screenshot mockup editor](/app-screenshot-mockup-editor/)

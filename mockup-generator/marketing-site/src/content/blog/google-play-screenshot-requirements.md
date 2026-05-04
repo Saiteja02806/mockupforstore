@@ -28,7 +28,7 @@ Google discourages **misleading** preview art and unreadable promotional density
 
 ## Practical sizing
 
-For dimensions and export checks, use our [Play Store screenshot size guide](/blog/play-store-screenshot-size-guide/) alongside Console.
+For dimensions and export checks, use our [Play Store screenshot size guide](/blog/play-store-screenshot-size-guide/) alongside Console. Build phone-first composites in one workflow with an [Android app screenshot editor](/play-store-screenshot-editor/) so frame, text, and export stay aligned.
 
 ## Workflow
 

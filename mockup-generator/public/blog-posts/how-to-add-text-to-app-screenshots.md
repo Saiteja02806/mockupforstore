@@ -4,6 +4,8 @@ The UI inside your frame shows *what* the app looks like; overlay text explains 
 
 Google’s preview-asset guidance warns against misleading claims and dense promotional text. Aim for honest, benefit-led wording that matches what the user will see after install. Screenshots can also appear in **search and discovery surfaces**, not only on your listing—so text must stay readable when the image is small.
 
+![Google Play screenshot editor example: Android phone frame with headline space and background](/frames/circular%20courosel/WhatsApp%20Image%202026-04-25%20at%2010.24.03%20PM_store_1080x1920.webp)
+
 For the full mockup workflow (frame + background + export), start from the [Play Store screenshot editor](/play-store-screenshot-editor/) and pair this guide with [how to create Play Store screenshots](/blog/how-to-create-play-store-screenshots/) and the [Play Store screenshot size guide](/blog/play-store-screenshot-size-guide/).
 
 ## 25 headline examples for app screenshots

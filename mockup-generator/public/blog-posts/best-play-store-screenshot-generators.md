@@ -14,7 +14,9 @@ A useful generator gets you from **raw captures** to **store-ready composites** 
 
 **Strengths:** Full mockup editing in the browser—frame, background, text, layout, export—with real device frames synced to the editor. **Trade-offs:** You bring honest UI captures; it is not a magic “generate my UI” tool.
 
-Start from the marketing page: [Play Store screenshot generator](/play-store-screenshot-generator/) or jump to the [Play Store screenshot editor](/play-store-screenshot-editor/).
+![Play Store mockup editor: Android device frame with store-ready composition area](/frames/circular%20courosel/WhatsApp%20Image%202026-04-14%20at%209.16.04%20AM_store_1080x1920.webp)
+
+Start from the marketing page: [Play Store screenshot generator](/play-store-screenshot-generator/) or jump to the [Play Store screenshot editor](/play-store-screenshot-editor/). Prefer the [Google Play screenshot editor](/play-store-screenshot-editor/) when you need layout control beyond a template—frame, background, type, spacing, export—in one pass.
 
 ## Other categories of tools (compare fairly)
 

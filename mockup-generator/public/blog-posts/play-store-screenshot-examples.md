@@ -1,6 +1,6 @@
 ## How to use this list
 
-Pick **5–8** ideas that map to your real product. Order them as a story: promise → action → proof → settings/trust. Skip anything you cannot show honestly in UI.
+Pick **5–8** ideas that map to your real product. Order them as a story: promise → action → proof → settings/trust. Skip anything you cannot show honestly in UI. To turn ideas into **store-ready** images, use a [create Play Store mockups](/play-store-screenshot-editor/) workflow (full composite: frame, background, headline, export)—not just cropping captures.
 
 ## 30 gallery angles
 

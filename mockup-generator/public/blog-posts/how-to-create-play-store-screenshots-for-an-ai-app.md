@@ -15,4 +15,4 @@ Generic “AI magic” slides convert weakly. Show **real** prompts, grounded an
 
 ## Related
 
-[Common mistakes](/blog/common-play-store-screenshot-mistakes/) · [Add text](/blog/how-to-add-text-to-app-screenshots/) · [Play Store screenshot generator](/play-store-screenshot-generator/)
+[Play Store screenshot editor](/play-store-screenshot-editor/) · [Common mistakes](/blog/common-play-store-screenshot-mistakes/) · [Add text](/blog/how-to-add-text-to-app-screenshots/) · [Play Store screenshot generator](/play-store-screenshot-generator/)

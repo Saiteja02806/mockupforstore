@@ -12,6 +12,10 @@ keywords:
   - Google Play listing errors
 ---
 
+Most mistakes trace back to treating screenshots as raw UI crops instead of **complete listing images**. Google Play expects readable marketing composites—frame, background, headline text, spacing, export dimensions—not only a bezel around your PNG. A focused [Google Play screenshot editor](/play-store-screenshot-editor/) workflow keeps those layers aligned before upload.
+
+![Edit Play Store screenshots: Android frame mockup for listing-ready exports](/frames/circular%20courosel/WhatsApp%20Image%202026-04-14%20at%209.17.37%20AM_store_1080x1920.webp)
+
 ## Mistake 1: Illegible thumbnails
 
 Beautiful full-screen art that **fails at browse size** is a silent conversion killer. Fix by testing exports at small widths and shortening copy.

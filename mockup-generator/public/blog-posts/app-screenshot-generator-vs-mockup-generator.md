@@ -13,7 +13,7 @@ Public store listings, localized sets, and teams that need **repeatable systems*
 
 ## How Mockup Studio fits
 
-One workflow from **capture** to **export**, with marketing pages for both angles: [Play Store screenshot generator](/play-store-screenshot-generator/) and [app screenshot mockup editor](/app-screenshot-mockup-editor/).
+One workflow from **capture** to **export**, with marketing pages for both angles: [Play Store screenshot generator](/play-store-screenshot-generator/) for fast drafts and [app screenshot mockup editor](/app-screenshot-mockup-editor/) for composite control. For Google Play listings where you **edit the full store image**—frame, background, headline, layout, export—use the [Play Store screenshot editor](/play-store-screenshot-editor/).
 
 ## Related comparisons
 

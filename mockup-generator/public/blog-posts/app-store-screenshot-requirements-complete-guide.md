@@ -85,6 +85,7 @@ If you need a starting point, open one current frame, write one short promise, a
 ## Related
 
 - [Play Store vs App Store screenshots](/blog/play-store-vs-app-store-screenshots/)
+- [Play Store screenshot editor](/play-store-screenshot-editor/) (Google Play–first full mockup workflow)
 - [App screenshot mockup editor](/app-screenshot-mockup-editor/)
 - [How to add text to app screenshots](/blog/how-to-add-text-to-app-screenshots/)
 - [Google Play screenshot requirements](/blog/google-play-screenshot-requirements/)

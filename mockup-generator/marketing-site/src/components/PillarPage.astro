@@ -20,6 +20,11 @@ const {
   relatedLinks = /** @type {PillarLink[]} */ ([]),
   primaryFrameId = 'pill-phone',
   keywords = undefined,
+  titleAsIs = false,
+  moatTitle = null,
+  moatBody = null,
+  visualProof = null,
+  canonical = null,
 } = Astro.props
 
 const appUrl = getAppUrl()
@@ -28,31 +33,51 @@ const frame = getFrameById(primaryFrameId)
 const editorCta = frame ? getFrameAppUrl(frame, appUrl) : appUrl
 const pathJoined = `${siteUrl}${Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`}`
 
+const graph = [
+  {
+    '@type': 'WebPage',
+    name: h1,
+    description,
+    url: pathJoined,
+    isPartOf: { '@type': 'WebSite', name: siteName, url: siteUrl },
+  },
+  {
+    '@type': 'SoftwareApplication',
+    name: siteName,
+    applicationCategory: 'DesignApplication',
+    operatingSystem: 'Web',
+    url: siteUrl,
+    description:
+      'Create and edit Play Store and App Store screenshots with device frames, backgrounds, headline text, layouts, and export-ready sizes.',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+]
+if (faqs.length) {
+  graph.push({
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  })
+}
+
 const structuredData = {
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebPage',
-      name: h1,
-      description,
-      url: pathJoined,
-      isPartOf: { '@type': 'WebSite', name: siteName, url: siteUrl },
-    },
-    {
-      '@type': 'SoftwareApplication',
-      name: siteName,
-      applicationCategory: 'DesignApplication',
-      operatingSystem: 'Web',
-      url: siteUrl,
-      description:
-        'Create and edit Play Store and App Store screenshots with device frames, backgrounds, headline text, layouts, and export-ready sizes.',
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    },
-  ],
+  '@graph': graph,
 }
 ---
 
-<BaseLayout title={title} description={description} structuredData={structuredData} keywords={keywords}>
+<BaseLayout
+  title={title}
+  description={description}
+  structuredData={structuredData}
+  keywords={keywords}
+  titleAsIs={titleAsIs}
+  canonical={canonical}
+  preloadImages={visualProof ? [visualProof.before?.src, visualProof.after?.src].filter(Boolean) : null}
+>
   <section class="page-hero">
     <div class="page-shell">
       <div class="breadcrumbs">
@@ -67,6 +92,52 @@ const structuredData = {
       </div>
     </div>
   </section>
+
+  {moatTitle && moatBody ? (
+    <section class="section pillar-section">
+      <div class="page-shell content-prose pillar-inner">
+        <h2>{moatTitle}</h2>
+        <p>{moatBody}</p>
+      </div>
+    </section>
+  ) : null}
+
+  {visualProof && visualProof.before && visualProof.after ? (
+    <section class="section pillar-section" aria-label="Example mockups">
+      <div class="page-shell">
+        <h2 class="content-title" style="font-size: clamp(1.4rem, 2.5vw, 1.9rem); margin-bottom: 1rem;">Visual examples</h2>
+        <div
+          class="home-proof-grid"
+          style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: start;"
+        >
+          <figure style="margin:0;">
+            <img
+              src={visualProof.before.src}
+              alt={visualProof.before.alt}
+              width="400"
+              height="800"
+              loading="lazy"
+              decoding="async"
+              style="width: 100%; height: auto; border-radius: 12px;"
+            />
+            <figcaption style="font-size: 0.9rem; color: var(--text2, #a1a1aa); margin-top: 0.5rem;">{visualProof.before.caption ?? 'Frame + layout'}</figcaption>
+          </figure>
+          <figure style="margin:0;">
+            <img
+              src={visualProof.after.src}
+              alt={visualProof.after.alt}
+              width="400"
+              height="800"
+              loading="lazy"
+              decoding="async"
+              style="width: 100%; height: auto; border-radius: 12px;"
+            />
+            <figcaption style="font-size: 0.9rem; color: var(--text2, #a1a1aa); margin-top: 0.5rem;">{visualProof.after.caption ?? 'Export-ready mockup'}</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+  ) : null}
 
   <section class="section pillar-section">
     <div class="page-shell">

@@ -15,6 +15,7 @@ const {
   canonical: canonicalOverride = null,
   keywords = null,
   preloadImages = null,
+  titleAsIs = false,
 } = Astro.props
 
 const appUrl = getAppUrl()
@@ -24,7 +25,11 @@ const canonical =
     ? String(canonicalOverride).trim()
     : new URL(Astro.url.pathname + Astro.url.search, site).toString()
 const keywordsContent = Array.isArray(keywords) && keywords.length ? keywords.join(', ') : null
-const pageTitle = title === siteName ? title : `${title} | ${siteName}`
+const pageTitle = titleAsIs
+  ? title
+  : title === siteName
+    ? title
+    : `${title} | ${siteName}`
 const ogImageUrl = new URL(ogImage, site).toString()
 const hasFavicon = existsSync(join(process.cwd(), 'public', 'favicon.png'))
 const preloadList =

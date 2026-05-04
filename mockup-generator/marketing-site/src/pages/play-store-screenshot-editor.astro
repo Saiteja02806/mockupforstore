@@ -1,14 +1,36 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
 
-const title = 'Play Store Screenshot Editor'
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/play-store-screenshot-editor/`
+
+const title = 'Play Store Screenshot Editor | Edit Android App Mockups Online'
 const description =
-  'Edit full Google Play listing images in one place: Android device frames, headline text, backgrounds, layout, and export-ready dimensions.'
-const h1 = 'Play Store screenshot editor'
+  'Create and edit Play Store screenshots with Android frames, backgrounds, headline text, layouts, and export-ready mockups for your Google Play listing.'
+const h1 = 'Play Store Screenshot Editor'
+
 const introParagraphs = [
-  'Google Play can show your screenshots in search, collections, and your store listing—often smaller than full size. That means your listing art needs to read clearly as a complete mockup, not only as a raw UI capture.',
-  'Mockup Studio is built for the full listing image: pick a frame, place your screen, add typography and background, then export at the sizes you need. Use it alongside our guides on sizes, text, and workflow.',
+  'Mockup Editor is a Play Store screenshot editor that helps Android developers create complete Google Play mockups with phone frames, backgrounds, headline text, layouts, and export-ready sizes.',
+  'Google Play can show your screenshots in search, collections, and your store listing—often smaller than full size. Listing art should read clearly as a complete mockup, not only as a raw UI capture.',
 ]
+
+const moatTitle = 'Not just a phone frame generator'
+const moatBody =
+  'Most mockup tools help you place your app screenshot inside a device frame. Mockup Editor helps you design the full Play Store screenshot: Android frame, background, headline text, spacing, layout, and export-ready image.'
+
+const visualProof = {
+  before: {
+    src: '/assets/frames/google-pixel-7-obsidian-portrait.webp',
+    alt: 'Google Pixel–style Android frame for Play Store screenshot editing and composition',
+    caption: 'Android frame + layout',
+  },
+  after: {
+    src: '/assets/frames/samsung-galaxys21ultra-black-portrait.webp',
+    alt: 'Samsung-style Android frame example for Google Play listing mockups',
+    caption: 'Alternate Android frame',
+  },
+}
 
 const features = [
   {
@@ -27,16 +49,24 @@ const features = [
 
 const faqs = [
   {
-    q: 'Is this only for the Play Store?',
-    a: 'The same mockup workflow works for App Store screenshots too; dimensions differ, which our size guides cover.',
+    q: 'What is a Play Store screenshot editor?',
+    a: 'A Play Store screenshot editor helps you design the full screenshot image for your Google Play listing, including Android frames, headline text, backgrounds, layout, and export size.',
   },
   {
-    q: 'Do I still need a design tool?',
-    a: 'Many teams use Mockup Studio to assemble listing-ready shots without rebuilding device chrome in Figma or Photoshop for every export.',
+    q: 'How is this different from a Play Store screenshot generator?',
+    a: 'A generator usually creates screenshots from a template. An editor gives you more control over the frame, text, background, spacing, and final layout.',
   },
   {
-    q: 'Where do I learn export sizes?',
-    a: 'Start with our Play Store screenshot size guide linked below, then open the editor with a frame preset.',
+    q: 'Can I add text to Play Store screenshots?',
+    a: 'Yes. You can add headline text, subtitles, and feature callouts to your Play Store screenshots.',
+  },
+  {
+    q: 'Can I create Play Store screenshots without Figma?',
+    a: 'Yes. Mockup Editor lets you create store-ready Play Store mockups directly in the browser without using Figma or Photoshop.',
+  },
+  {
+    q: 'Can I export screenshots for Google Play?',
+    a: 'Yes. You can export edited screenshots for your Google Play listing.',
   },
 ]
 
@@ -53,9 +83,14 @@ const relatedLinks = [
 
 const keywords = [
   'Play Store screenshot editor',
-  'Google Play mockup editor',
+  'Play Store mockup editor',
+  'Google Play screenshot editor',
   'Android app screenshot editor',
-  'Play Console screenshots',
+  'Edit Play Store screenshots',
+  'Create Play Store mockups',
+  'Play Store screenshot generator',
+  'Google Play screenshot generator',
+  'App screenshot mockup editor',
 ]
 ---
 
@@ -68,6 +103,11 @@ const keywords = [
   features={features}
   faqs={faqs}
   relatedLinks={relatedLinks}
-  primaryFrameId="pill-phone"
+  primaryFrameId="punchhole-phone"
   keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
 />

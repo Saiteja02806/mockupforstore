@@ -23,7 +23,7 @@ Frames anchor the eye and communicate **real hardware context**. They also hide 
 - **Borderless / clean:** minimal chrome for brand-forward shots.  
 - **Foldable:** only if you ship fold support—otherwise skip.  
 
-Browse shells on [/frames/](/frames/) and open the [Android app screenshot editor](/android-app-screenshot-editor/).
+Browse shells on [/frames/](/frames/) and open the [Android app screenshot editor](/android-app-screenshot-editor/). When you need to tune **background, headline text, spacing, and export**—not only the bezel—use the [Play Store screenshot editor](/play-store-screenshot-editor/) so you edit the full Google Play mockup.
 
 ## Safe areas and headlines
 

@@ -20,4 +20,4 @@ Pair with [Google Play screenshot requirements](/blog/google-play-screenshot-req
 
 ## Editor
 
-[Play Store mockup editor](/play-store-mockup-editor/) · [Mockup Studio](/)
+[Play Store screenshot editor](/play-store-screenshot-editor/) · [Play Store mockup editor](/play-store-mockup-editor/) · [Mockup Studio](/)
