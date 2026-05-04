@@ -435,7 +435,7 @@ export const frames = {
       canvasWidth: 400,
       canvasHeight: 800,
       fixedFinish: 'silver',
-      screenArea: { x: 32, y: 32, width: 336, height: 736, radius: 42, shape: 'rect' }
+      screenArea: { x: 22.5, y: 22.5, width: 355, height: 755, radius: 44, shape: 'rect' }
     },
     {
       id: 'foldable-closed',

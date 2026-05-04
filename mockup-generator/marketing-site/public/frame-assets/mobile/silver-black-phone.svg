@@ -19,12 +19,12 @@
     </mask>
     <mask id="blackRingMask">
       <rect width="400" height="800" fill="#fff"/>
-      <rect x="32" y="32" width="336" height="736" rx="42" ry="42" fill="#000"/>
+      <rect x="22.5" y="22.5" width="355" height="755" rx="44" ry="44" fill="#000"/>
     </mask>
   </defs>
 
   <rect x="8" y="8" width="384" height="784" rx="58" ry="58" fill="url(#silverShell)" mask="url(#silverRingMask)"/>
   <rect x="13" y="13" width="374" height="774" rx="57" ry="57" fill="url(#innerBezel)" mask="url(#blackRingMask)"/>
 
-  <rect x="32" y="32" width="336" height="736" rx="42" ry="42" fill="none"/>
+  <rect x="22.5" y="22.5" width="355" height="755" rx="44" ry="44" fill="none"/>
 </svg>

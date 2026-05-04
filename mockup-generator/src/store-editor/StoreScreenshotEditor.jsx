@@ -395,7 +395,8 @@ export default function StoreScreenshotEditor({
   const [bgImageOpacity, setBgImageOpacity] = useState(typeof prefs?.bgImageOpacity === 'number' ? prefs.bgImageOpacity : 1)
 
   const [stack, setStack] = useState(() => {
-    const useSceneBg = sameCapture ? false : prefs?.mockUseSceneBg !== false
+    /** Default off when opening from Mockup Studio; only on if user previously enabled (saved). */
+    const useSceneBg = sameCapture ? false : prefs?.mockUseSceneBg === true
     return [
       {
         id: 'mockup',
@@ -551,7 +552,7 @@ export default function StoreScreenshotEditor({
       mockCx: mock?.x ?? 50,
       mockCy: mock?.y ?? 50,
       mockWPct: mock?.wPct ?? DEFAULT_MOCKUP_WIDTH_PCT,
-      mockUseSceneBg: mock?.useSceneBg !== false,
+      mockUseSceneBg: mock?.useSceneBg === true,
       mockRotation: mock?.rotation ?? 0,
       mockShadowOn: Boolean(mock?.shadowOn),
       mockShadowBlur: mock?.shadowBlur ?? 24,
@@ -1836,7 +1837,7 @@ export default function StoreScreenshotEditor({
                   <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, color: '#e2e8f0', cursor: 'pointer' }}>
                     <input
                       type="checkbox"
-                      checked={selected.useSceneBg !== false}
+                      checked={selected.useSceneBg === true}
                       onChange={(e) => updateLayer(selected.id, { useSceneBg: e.target.checked })}
                     />
                     Include generator scene background
