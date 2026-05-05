@@ -604,27 +604,6 @@ function StudioApp({ onGoHome } = {}) {
 export default function App() {
   const [mode, setMode] = useState(() => getInitialAppPage())
 
-  useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
-      body: JSON.stringify({
-        sessionId: '8707e8',
-        location: 'App.jsx:mode',
-        message: 'app mode after mount',
-        data: {
-          mode,
-          marketingModeClass: document.documentElement.classList.contains('marketing-mode'),
-          bodyOverflow: typeof getComputedStyle !== 'undefined' ? getComputedStyle(document.body).overflow : null,
-        },
-        timestamp: Date.now(),
-        hypothesisId: 'E',
-      }),
-    }).catch(() => {})
-    // #endregion
-  }, [mode])
-
   const goHome = useCallback(() => {
     if (typeof window !== 'undefined') window.history.replaceState(null, '', '/')
     setMode('landing')

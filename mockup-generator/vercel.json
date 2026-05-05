@@ -2,9 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/",
       "has": [{ "type": "host", "value": "www.mockupeditor.site" }],
-      "destination": "https://mockupeditor.site/:path*",
+      "destination": "https://mockupeditor.site/",
+      "permanent": true
+    },
+    {
+      "source": "/:path((?!assets/|blog-posts/|frames/|frame-assets/|hero-assets/|_astro/|og/|favicon\\.png).*)",
+      "has": [{ "type": "host", "value": "www.mockupeditor.site" }],
+      "destination": "https://mockupeditor.site/:path",
       "permanent": true
     }
   ],
@@ -48,6 +54,15 @@
     },
     {
       "source": "/frame-assets/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
+    },
+    {
+      "source": "/hero-assets/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
