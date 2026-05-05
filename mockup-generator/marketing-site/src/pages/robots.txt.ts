@@ -4,13 +4,13 @@ import type { APIRoute } from 'astro'
 export const prerender = true
 
 export const GET: APIRoute = ({ site }) => {
-  let base = String(site || 'https://mockupeditor.site').replace(/\/$/, '')
+  let base = String(site || 'https://www.mockupeditor.site').replace(/\/$/, '')
   try {
     const u = new URL(base)
-    if (u.hostname === 'www.mockupeditor.site') u.hostname = 'mockupeditor.site'
+    if (u.hostname === 'mockupeditor.site') u.hostname = 'www.mockupeditor.site'
     base = u.origin
   } catch {
-    base = 'https://mockupeditor.site'
+    base = 'https://www.mockupeditor.site'
   }
   const body = [
     'User-agent: *',

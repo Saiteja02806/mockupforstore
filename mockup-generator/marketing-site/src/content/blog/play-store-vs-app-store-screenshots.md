@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: portrait-tablet
 readingTime: 11 min read
-canonical: "https://mockupeditor.site/blog/play-store-vs-app-store-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/play-store-vs-app-store-screenshots/"
 keywords:
   - Play Store vs App Store screenshots
   - app store screenshot sizes

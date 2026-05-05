@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: dynamic-island-camera
 readingTime: 12 min read
-canonical: "https://mockupeditor.site/blog/best-play-store-screenshot-generators/"
+canonical: "https://www.mockupeditor.site/blog/best-play-store-screenshot-generators/"
 keywords:
   - Play Store screenshot generator
   - Android screenshot tools

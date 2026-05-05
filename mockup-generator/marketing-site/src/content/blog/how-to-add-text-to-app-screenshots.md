@@ -7,7 +7,7 @@ category: App Store
 featured: false
 ctaFrame: pill-phone
 readingTime: 14 min read
-canonical: "https://mockupeditor.site/blog/how-to-add-text-to-app-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/how-to-add-text-to-app-screenshots/"
 keywords:
   - app screenshot text
   - add text to app screenshots

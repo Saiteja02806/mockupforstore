@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: pill-phone
 readingTime: 9 min read
-canonical: "https://mockupeditor.site/blog/how-to-create-play-store-screenshots-for-a-to-do-app/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots-for-a-to-do-app/"
 keywords:
   - todo app Play Store screenshots
   - task app listing images

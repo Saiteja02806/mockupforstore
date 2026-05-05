@@ -7,7 +7,7 @@ category: Play Store
 featured: true
 ctaFrame: dynamic-island-camera
 readingTime: 16 min read
-canonical: "https://mockupeditor.site/blog/play-store-screenshot-size-guide/"
+canonical: "https://www.mockupeditor.site/blog/play-store-screenshot-size-guide/"
 keywords:
   - Play Store screenshot sizes
   - Google Play screenshot requirements

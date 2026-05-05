@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: punchhole-phone
 readingTime: 8 min read
-canonical: "https://mockupeditor.site/blog/create-app-screenshots-without-photoshop/"
+canonical: "https://www.mockupeditor.site/blog/create-app-screenshots-without-photoshop/"
 keywords:
   - app screenshots without Photoshop
   - Play Store mockups browser

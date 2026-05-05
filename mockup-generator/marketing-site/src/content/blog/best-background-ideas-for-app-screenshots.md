@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: borderless-phone-silver
 readingTime: 9 min read
-canonical: "https://mockupeditor.site/blog/best-background-ideas-for-app-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/best-background-ideas-for-app-screenshots/"
 keywords:
   - app screenshot backgrounds
   - Play Store mockup background

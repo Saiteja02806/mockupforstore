@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: silver-black-phone
 readingTime: 10 min read
-canonical: "https://mockupeditor.site/blog/best-fonts-for-app-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/best-fonts-for-app-screenshots/"
 keywords:
   - fonts for app screenshots
   - Play Store typography

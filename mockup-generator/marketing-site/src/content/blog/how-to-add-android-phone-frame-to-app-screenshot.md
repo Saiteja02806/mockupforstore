@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: punchhole-phone
 readingTime: 10 min read
-canonical: "https://mockupeditor.site/blog/how-to-add-android-phone-frame-to-app-screenshot/"
+canonical: "https://www.mockupeditor.site/blog/how-to-add-android-phone-frame-to-app-screenshot/"
 keywords:
   - Android phone frame screenshot
   - Play Store frame mockup

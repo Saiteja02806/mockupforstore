@@ -1,15 +1,15 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 
-/** Apex canonical host — strip www so builds never emit www canonicals if PUBLIC_SITE_URL was mis-set in CI/Vercel. */
+/** Canonical host is www — normalize apex so builds never emit apex-only URLs if PUBLIC_SITE_URL was mis-set in CI/Vercel. */
 function canonicalSiteOrigin() {
-  const raw = process.env.PUBLIC_SITE_URL || 'https://mockupeditor.site'
+  const raw = process.env.PUBLIC_SITE_URL || 'https://www.mockupeditor.site'
   try {
     const u = new URL(raw)
-    if (u.hostname === 'www.mockupeditor.site') u.hostname = 'mockupeditor.site'
+    if (u.hostname === 'mockupeditor.site') u.hostname = 'www.mockupeditor.site'
     return u.origin
   } catch {
-    return 'https://mockupeditor.site'
+    return 'https://www.mockupeditor.site'
   }
 }
 

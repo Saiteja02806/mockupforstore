@@ -6,7 +6,7 @@ category: Guides
 featured: false
 ctaFrame: borderless-phone
 readingTime: 9 min read
-canonical: "https://mockupeditor.site/blog/create-app-screenshots-without-figma/"
+canonical: "https://www.mockupeditor.site/blog/create-app-screenshots-without-figma/"
 keywords:
   - app screenshots without Figma
   - Play Store screenshots workflow

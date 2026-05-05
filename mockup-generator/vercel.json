@@ -1,19 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "redirects": [
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "www.mockupeditor.site" }],
-      "destination": "https://mockupeditor.site/",
-      "permanent": true
-    },
-    {
-      "source": "/:path((?!assets/|blog-posts/|frames/|frame-assets/|hero-assets/|_astro/|og/|favicon\\.png).*)",
-      "has": [{ "type": "host", "value": "www.mockupeditor.site" }],
-      "destination": "https://mockupeditor.site/:path",
-      "permanent": true
-    }
-  ],
   "framework": "vite",
   "installCommand": "npm install && npm install --prefix ./marketing-site",
   "buildCommand": "npm run build",

@@ -1,4 +1,4 @@
-const DEFAULT_MARKETING_ORIGIN = 'https://mockupeditor.site'
+const DEFAULT_MARKETING_ORIGIN = 'https://www.mockupeditor.site'
 
 /** True when the editor/marketing app is served from loopback (incl. IPv6). */
 export function isLoopbackMarketingHost(hostname) {

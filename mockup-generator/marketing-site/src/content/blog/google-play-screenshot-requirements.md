@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: landscape-tablet
 readingTime: 10 min read
-canonical: "https://mockupeditor.site/blog/google-play-screenshot-requirements/"
+canonical: "https://www.mockupeditor.site/blog/google-play-screenshot-requirements/"
 keywords:
   - Google Play screenshot requirements
   - Play Console preview assets

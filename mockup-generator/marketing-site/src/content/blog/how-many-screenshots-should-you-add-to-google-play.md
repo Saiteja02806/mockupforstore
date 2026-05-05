@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: pill-phone
 readingTime: 6 min read
-canonical: "https://mockupeditor.site/blog/how-many-screenshots-should-you-add-to-google-play/"
+canonical: "https://www.mockupeditor.site/blog/how-many-screenshots-should-you-add-to-google-play/"
 keywords:
   - how many Play Store screenshots
   - Google Play screenshot count

@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: borderless-phone
 readingTime: 9 min read
-canonical: "https://mockupeditor.site/blog/how-to-create-play-store-screenshots-for-a-fitness-app/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots-for-a-fitness-app/"
 keywords:
   - fitness app Play Store screenshots
   - workout app listing

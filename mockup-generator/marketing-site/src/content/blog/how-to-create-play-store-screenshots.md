@@ -7,7 +7,7 @@ category: Play Store
 featured: true
 ctaFrame: pill-phone
 readingTime: 18 min read
-canonical: "https://mockupeditor.site/blog/how-to-create-play-store-screenshots/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots/"
 keywords:
   - create Play Store screenshots
   - Google Play listing images

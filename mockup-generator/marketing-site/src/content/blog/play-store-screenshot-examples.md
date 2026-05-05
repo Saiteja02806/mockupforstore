@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: pill-phone
 readingTime: 14 min read
-canonical: "https://mockupeditor.site/blog/play-store-screenshot-examples/"
+canonical: "https://www.mockupeditor.site/blog/play-store-screenshot-examples/"
 keywords:
   - Play Store screenshot examples
   - Google Play listing ideas

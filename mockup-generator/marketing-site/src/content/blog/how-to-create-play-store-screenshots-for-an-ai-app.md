@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: dynamic-island-camera
 readingTime: 9 min read
-canonical: "https://mockupeditor.site/blog/how-to-create-play-store-screenshots-for-an-ai-app/"
+canonical: "https://www.mockupeditor.site/blog/how-to-create-play-store-screenshots-for-an-ai-app/"
 keywords:
   - AI app Play Store screenshots
   - AI listing images

@@ -19,7 +19,7 @@ const {
 } = Astro.props
 
 const appUrl = getAppUrl()
-const site = Astro.site ?? new URL('https://mockupeditor.site')
+const site = Astro.site ?? new URL('https://www.mockupeditor.site')
 const canonical =
   canonicalOverride && String(canonicalOverride).trim()
     ? String(canonicalOverride).trim()

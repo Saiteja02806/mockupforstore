@@ -6,7 +6,7 @@ category: Play Store
 featured: false
 ctaFrame: notch-phone
 readingTime: 11 min read
-canonical: "https://mockupeditor.site/blog/common-play-store-screenshot-mistakes/"
+canonical: "https://www.mockupeditor.site/blog/common-play-store-screenshot-mistakes/"
 keywords:
   - Play Store screenshot mistakes
   - Google Play listing errors
