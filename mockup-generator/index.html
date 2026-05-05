@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Apex is canonical: run before module scripts so JS/CSS load from one origin (avoids blank shell on www). -->
+    <script>
+      (function () {
+        if (location.hostname === 'www.mockupeditor.site') {
+          location.replace(
+            'https://mockupeditor.site' + location.pathname + location.search + location.hash
+          )
+        }
+      })()
+    </script>
     <script src="https://analytics.ahrefs.com/analytics.js" data-key="E5FFBSLzy9vzfP33vBGVBw" async></script>
     <title>Mockup Studio</title>
     <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
