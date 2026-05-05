@@ -114,6 +114,23 @@ export default function BlogSection() {
   const posts = Array.isArray(blogManifest) ? blogManifest : []
   const showPost = Boolean(slug)
 
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+      body: JSON.stringify({
+        sessionId: '8707e8',
+        location: 'BlogSection.jsx:mount',
+        message: 'blog shell mounted',
+        data: { slug: slug || null, showPost, postCount: posts.length },
+        timestamp: Date.now(),
+        hypothesisId: 'D',
+      }),
+    }).catch(() => {})
+    // #endregion
+  }, [slug, showPost, posts.length])
+
   return (
     <div className="landing-page blog-app">
       <header className="landing-header blog-app-header">

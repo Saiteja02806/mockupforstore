@@ -216,6 +216,26 @@ export default function MarketingHome({ onEnterStudio }) {
     window.scrollTo({ top: 0, left: 0 })
   }, [])
 
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+      body: JSON.stringify({
+        sessionId: '8707e8',
+        location: 'MarketingHome.jsx:mount',
+        message: 'marketing home mounted',
+        data: {
+          marketingModeClass: document.documentElement.classList.contains('marketing-mode'),
+          bodyOverflow: typeof getComputedStyle !== 'undefined' ? getComputedStyle(document.body).overflow : null,
+        },
+        timestamp: Date.now(),
+        hypothesisId: 'C',
+      }),
+    }).catch(() => {})
+    // #endregion
+  }, [])
+
   const enter = (event) => {
     event.preventDefault()
     onEnterStudio()

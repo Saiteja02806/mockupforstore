@@ -6,6 +6,32 @@ import App from './App.jsx'
 import { getInitialAppPage } from './utils/siteLinks'
 
 const initialPage = getInitialAppPage()
+// #region agent log
+fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+  body: JSON.stringify({
+    sessionId: '8707e8',
+    location: 'main.jsx:initialPage',
+    message: 'boot routing',
+    data: {
+      initialPage,
+      hostname: typeof window !== 'undefined' ? window.location.hostname : null,
+      path: typeof window !== 'undefined' ? window.location.pathname : null,
+      marketingClassPre: typeof document !== 'undefined' ? document.documentElement.classList.contains('marketing-mode') : null,
+    },
+    timestamp: Date.now(),
+    hypothesisId: 'B',
+  }),
+}).catch(() => {
+  try {
+    sessionStorage.setItem(
+      'debug8707e8-main',
+      JSON.stringify({ t: Date.now(), step: 'initialPage', initialPage, hostname: window.location.hostname })
+    )
+  } catch {}
+})
+// #endregion
 if (initialPage === 'landing' || initialPage === 'blog') {
   document.documentElement.classList.add('marketing-mode')
 }
@@ -18,6 +44,23 @@ class AppErrorBoundary extends Component {
 
   static getDerivedStateFromError(error) {
     return { error }
+  }
+
+  componentDidCatch(error, info) {
+    // #region agent log
+    fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+      body: JSON.stringify({
+        sessionId: '8707e8',
+        location: 'main.jsx:AppErrorBoundary',
+        message: 'react render error',
+        data: { err: String(error?.message || error), stack: String(error?.stack || '').slice(0, 500), info: String(info?.componentStack || '').slice(0, 400) },
+        timestamp: Date.now(),
+        hypothesisId: 'C',
+      }),
+    }).catch(() => {})
+    // #endregion
   }
 
   render() {
@@ -65,6 +108,20 @@ class AppErrorBoundary extends Component {
 }
 
 const rootEl = document.getElementById('root')
+// #region agent log
+fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+  body: JSON.stringify({
+    sessionId: '8707e8',
+    location: 'main.jsx:root',
+    message: 'dom root',
+    data: { hasRoot: Boolean(rootEl), marketingClass: document.documentElement.classList.contains('marketing-mode') },
+    timestamp: Date.now(),
+    hypothesisId: 'A',
+  }),
+}).catch(() => {})
+// #endregion
 if (!rootEl) {
   throw new Error('Missing #root — check index.html')
 }
@@ -77,3 +134,17 @@ createRoot(rootEl).render(
     <Analytics mode="production" />
   </Fragment>
 )
+// #region agent log
+fetch('http://127.0.0.1:7324/ingest/15c1e48c-1b67-4154-9d47-e4314289a078', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8707e8' },
+  body: JSON.stringify({
+    sessionId: '8707e8',
+    location: 'main.jsx:afterRender',
+    message: 'createRoot render invoked',
+    data: {},
+    timestamp: Date.now(),
+    hypothesisId: 'A',
+  }),
+}).catch(() => {})
+// #endregion
