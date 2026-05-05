@@ -1,7 +1,17 @@
 import type { APIRoute } from 'astro'
 
+/** Required for `output: 'static'` — otherwise /robots.txt may not be written at build time. */
+export const prerender = true
+
 export const GET: APIRoute = ({ site }) => {
-  const base = String(site || 'https://mockupeditor.site').replace(/\/$/, '')
+  let base = String(site || 'https://mockupeditor.site').replace(/\/$/, '')
+  try {
+    const u = new URL(base)
+    if (u.hostname === 'www.mockupeditor.site') u.hostname = 'mockupeditor.site'
+    base = u.origin
+  } catch {
+    base = 'https://mockupeditor.site'
+  }
   const body = [
     'User-agent: *',
     'Allow: /',

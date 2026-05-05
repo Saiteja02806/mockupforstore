@@ -1,51 +1,96 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
 
-const title = 'App Store Screenshot Generator'
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/app-store-screenshot-generator/`
+
+const title = 'App Store Screenshot Generator – iPhone & iPad Listing Sets'
 const description =
-  'Generate store-ready App Store listing images from your raw captures: frames, backgrounds, text, and editing controls in Mockup Studio.'
+  'Generate App Store Connect–ready screenshot sets for iPhone and iPad: consistent device frames, headline lanes, and backgrounds—built for iOS listing throughput, separate from Google Play layouts.'
 const h1 = 'App Store screenshot generator'
+
 const introParagraphs = [
-  'A “generator” mindset is about speed: go from screenshots on disk to a cohesive set of listing images without redrawing device bezels for every slide.',
-  'Mockup Studio combines frame presets with editing controls so you are not locked into one rigid template—you can still tune layout, copy, and background per shot.',
+  'This page is intentionally iOS-first: App Store galleries, Safe Area realities, and Connect upload rhythms differ from Play—so the copy here avoids positioning this URL as your primary Play Store screenshot generator.',
+  'When you need manual refinement—custom crops, typography tweaks, or frame swaps—continue in the App Store screenshot editor after you generate a solid first pass.',
+]
+
+const moatTitle = 'iOS constraints without Android baggage'
+const moatBody =
+  'Teams juggling both stores accidentally reuse Play framing on App Store slides—then wonder why headlines collide with Dynamic Island or iPad multitasking chrome. This generator lane keeps language and examples anchored to Apple surfaces.'
+
+const visualProof = {
+  before: {
+    src: '/assets/frames/apple-iphone-15-black-portrait.webp',
+    alt: 'iPhone frame for generated App Store screenshot sets',
+    caption: 'iPhone frame preset',
+  },
+  after: {
+    src: '/assets/frames/apple-ipadair5-spacegrey-portrait.webp',
+    alt: 'iPad frame for App Store Connect screenshot layouts',
+    caption: 'iPad story for tablet SKU',
+  },
+}
+
+const bodySections = [
+  {
+    type: 'bullets',
+    title: 'When App Store keyword intent fits best',
+    items: [
+      'You are shipping or refreshing an iOS-only SKU',
+      'You need consistent headline bands across iPhone and iPad crops',
+      'You want generator speed without adopting Play-specific examples as the primary story',
+    ],
+  },
 ]
 
 const features = [
   {
-    title: 'Fast first version',
-    body: 'Pick a frame, drop in your UI, add a headline, and export—ideal when you are validating positioning before polish.',
+    title: 'Connect-minded presets',
+    body: 'Frame lanes tuned for App Store gallery reading—not recycled Android examples.',
   },
   {
     title: 'Consistent series',
-    body: 'Reuse background and type styles across the gallery so the listing feels like one product story.',
+    body: 'Reuse gradients, typography, and spacing so every slide reinforces the same promise.',
   },
   {
-    title: 'Editor-grade control',
-    body: 'When you need pixel tweaks, the same canvas behaves as an editor—not a one-off PNG from a rigid template.',
+    title: 'Still editable',
+    body: 'Promote difficult slides into full mockup editing when marketing pushes back on copy or order.',
   },
 ]
 
 const faqs = [
   {
-    q: 'Generator vs editor—what is the difference?',
-    a: 'Generators emphasize speed from a template; editors emphasize control. Mockup Studio blends both: quick presets with full mockup editing.',
+    q: 'App Store screenshot generator vs Play Store screenshot generator?',
+    a: 'This URL targets App Store and iOS surfaces explicitly. For Google Play listing work and Android framing as the primary story, use the Play Store screenshot generator or Android app screenshot generator.',
+  },
+  {
+    q: 'Generator vs App Store screenshot editor?',
+    a: 'Generators emphasize velocity across a set; editors emphasize manual polish. Many teams generate first, then edit problem slides.',
   },
   {
     q: 'Can I match App Store Connect dimensions?',
-    a: 'Yes—use our App Store requirements guide for phone and tablet ranges, then export from the studio when the layout reads at thumbnail scale.',
+    a: 'Yes—use our App Store screenshot requirements guide for accepted ranges, then export when thumbnails stay legible.',
   },
 ]
 
 const relatedLinks = [
   { href: '/app-store-screenshot-editor/', label: 'App Store screenshot editor' },
   { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/android-app-screenshot-generator/', label: 'Android app screenshot generator' },
+  { href: '/app-screenshot-mockup-editor/', label: 'App screenshot mockup editor' },
   { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
   { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'How to add text to app screenshots' },
   { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
   { href: '/frames/', label: 'Device frames' },
 ]
 
-const keywords = ['App Store screenshot generator', 'iOS mockup generator', 'iPhone listing screenshots']
+const keywords = [
+  'App Store screenshot generator',
+  'iOS screenshot generator',
+  'iPhone App Store screenshots',
+  'App Store Connect screenshots',
+]
 ---
 
 <PillarPage
@@ -59,4 +104,10 @@ const keywords = ['App Store screenshot generator', 'iOS mockup generator', 'iPh
   relatedLinks={relatedLinks}
   primaryFrameId="borderless-phone-silver"
   keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
+  bodySections={bodySections}
 />

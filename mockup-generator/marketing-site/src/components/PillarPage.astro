@@ -7,6 +7,12 @@ import { getFrameAppUrl, getFrameById } from '../data/marketingFrames.js'
  * @typedef {{ title: string; body: string }} PillarFeature
  * @typedef {{ q: string; a: string }} PillarFaq
  * @typedef {{ href: string; label: string }} PillarLink
+ * @typedef {{ title: string; body: string }} PillarStepItem
+ * @typedef {{ type: 'steps'; title: string; items: PillarStepItem[] }} PillarSectionSteps
+ * @typedef {{ type: 'bullets'; title: string; items: string[] }} PillarSectionBullets
+ * @typedef {{ type: 'prose'; title?: string; paragraphs: string[] }} PillarSectionProse
+ * @typedef {{ type: 'links'; title: string; items: PillarLink[] }} PillarSectionLinks
+ * @typedef {PillarSectionSteps | PillarSectionBullets | PillarSectionProse | PillarSectionLinks} PillarBodySection
  */
 
 const {
@@ -25,6 +31,7 @@ const {
   moatBody = null,
   visualProof = null,
   canonical = null,
+  bodySections = /** @type {PillarBodySection[]} */ ([]),
 } = Astro.props
 
 const appUrl = getAppUrl()
@@ -67,6 +74,23 @@ const structuredData = {
   '@context': 'https://schema.org',
   '@graph': graph,
 }
+
+/** Skip unknown `bodySections` types or empty sections so we never ship blank bands. */
+const bodySectionsRendered = bodySections.filter((section) => {
+  if (!section || typeof section !== 'object' || !section.type) return false
+  switch (section.type) {
+    case 'steps':
+      return Boolean(section.title && Array.isArray(section.items) && section.items.length)
+    case 'bullets':
+      return Boolean(section.title && Array.isArray(section.items) && section.items.length)
+    case 'prose':
+      return Array.isArray(section.paragraphs) && section.paragraphs.length > 0
+    case 'links':
+      return Boolean(section.title && Array.isArray(section.items) && section.items.length)
+    default:
+      return false
+  }
+})
 ---
 
 <BaseLayout
@@ -137,6 +161,61 @@ const structuredData = {
         </div>
       </div>
     </section>
+  ) : null}
+
+  {bodySectionsRendered.length > 0 ? (
+    <>
+      {bodySectionsRendered.map((section) => (
+        <section class="section pillar-section pillar-body-section">
+          <div class="page-shell content-prose pillar-inner">
+            {section.type === 'steps' ? (
+              <>
+                <h2>{section.title}</h2>
+                <ol class="pillar-steps-list">
+                  {section.items.map((item) => (
+                    <li>
+                      <strong>{item.title}</strong>
+                      {' — '}
+                      {item.body}
+                    </li>
+                  ))}
+                </ol>
+              </>
+            ) : null}
+            {section.type === 'bullets' ? (
+              <>
+                <h2>{section.title}</h2>
+                <ul class="pillar-bullet-list">
+                  {section.items.map((text) => (
+                    <li>{text}</li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+            {section.type === 'prose' ? (
+              <>
+                {section.title ? <h2>{section.title}</h2> : null}
+                {section.paragraphs.map((p) => (
+                  <p>{p}</p>
+                ))}
+              </>
+            ) : null}
+            {section.type === 'links' ? (
+              <>
+                <h2>{section.title}</h2>
+                <ul class="pillar-link-list">
+                  {section.items.map((link) => (
+                    <li>
+                      <a href={link.href}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </div>
+        </section>
+      ))}
+    </>
   ) : null}
 
   <section class="section pillar-section">

@@ -1,5 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.mockupeditor.site" }],
+      "destination": "https://mockupeditor.site/:path*",
+      "permanent": true
+    }
+  ],
   "framework": "vite",
   "installCommand": "npm install && npm install --prefix ./marketing-site",
   "buildCommand": "npm run build",

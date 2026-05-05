@@ -1,54 +1,113 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
 
-const title = 'App Screenshot Mockup Editor'
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/app-screenshot-mockup-editor/`
+
+const title = 'App Screenshot Mockup Editor – One Workflow for Web, Ads & Store Galleries'
 const description =
-  'Turn raw app UI into polished marketing and store screenshots: phone and tablet mockups, typography, backgrounds, and export-ready layouts.'
-const h1 = 'App screenshot mockup editor'
+  'Turn raw UI into polished mockups for landing pages, pitch decks, paid social, and App Store or Play Store galleries—consistent frames, typography, and backgrounds without rebuilding device chrome for every channel.'
+const h1 = 'App Screenshot Mockup Editor'
+
 const introParagraphs = [
-  'Mockups are not just “phones around PNGs.” They are how teams communicate value on landing pages, pitch decks, and store listings—especially when the UI alone does not explain the benefit.',
-  'Mockup Studio focuses on the whole canvas: frame choice, safe margins, headline hierarchy, and background treatment so each image works at small preview sizes.',
+  'This is the cross-channel angle: the same screenshot story should read on your homepage hero, in a deck, in an Instagram ad, and in your store gallery—only the aspect ratio and copy density change.',
+  'Mockup Studio is not an Android-only tool and not a single-store generator. It is a mockup editor for the whole canvas so you keep one visual language while adapting crops and headlines per surface.',
+]
+
+const moatTitle = 'Mockups beyond a single store listing'
+const moatBody =
+  'If you only optimize one channel, you ship mismatched art—wide web heroes, tall store shots, and square social crops that feel like three different products. This workflow keeps frames, type hierarchy, and background discipline consistent so repurposing is faster, not a redesign.'
+
+const visualProof = {
+  before: {
+    src: '/frame-assets/mobile/borderless-phone.svg',
+    alt: 'Phone mockup frame for cross-channel app screenshot marketing',
+    caption: 'Neutral frame for web or deck',
+  },
+  after: {
+    src: '/frame-assets/tablet/portrait-tablet.svg',
+    alt: 'Tablet mockup frame for store and marketing screenshot layouts',
+    caption: 'Tablet story for productivity SKUs',
+  },
+}
+
+const bodySections = [
+  {
+    type: 'steps',
+    title: 'How teams reuse one mockup system',
+    items: [
+      {
+        title: 'Anchor the product story',
+        body: 'Pick frames that match real usage—phone, tablet, laptop—and draft headlines that sell the outcome, not feature jargon.',
+      },
+      {
+        title: 'Adapt per surface',
+        body: 'Export taller crops for stores, wider crops for web heroes, and tighter crops for paid social without redrawing device bezels.',
+      },
+      {
+        title: 'Stay on brand',
+        body: 'Unify background color, gradient, or texture so every touchpoint feels like one launch, even when copy changes.',
+      },
+    ],
+  },
+  {
+    type: 'prose',
+    title: 'Different from Android-only editing',
+    paragraphs: [
+      'If your primary job is finishing Google Play slides with Android-specific frames and Play discovery constraints, start with the Android app screenshot editor. If you need fast multi-slide throughput with layout presets, use the Android or Play generators—then return here when you need marketing-wide consistency.',
+    ],
+  },
 ]
 
 const features = [
   {
-    title: 'Marketing and stores',
-    body: 'Ship the same visual language to your site hero, social ads, and Play or App Store galleries.',
+    title: 'Marketing and stores together',
+    body: 'Ship the same visual language to your site hero, social ads, decks, and Play or App Store galleries.',
   },
   {
     title: 'Readable at thumbnail size',
-    body: 'Design with the assumption that many users will see a tiny preview first—short copy and strong contrast win.',
+    body: 'Design knowing many users see a tiny preview first—short copy, strong contrast, clear focal hierarchy.',
   },
   {
-    title: 'Frame library',
-    body: 'Phones, tablets, laptops, and watches—pick shells that match how your product is actually used.',
+    title: 'Deep frame library',
+    body: 'Phones, tablets, laptops, and watches—choose shells that reflect how the product is actually used.',
   },
 ]
 
 const faqs = [
   {
-    q: 'Does this replace my design system?',
-    a: 'No—it helps you execute screenshot and mockup deliverables faster while staying on-brand with your colors and type choices.',
+    q: 'App screenshot mockup editor vs Android app screenshot editor?',
+    a: 'The mockup editor emphasizes cross-channel reuse and consistent marketing art. The Android editor emphasizes Play-oriented polish with Android frames and listing constraints.',
+  },
+  {
+    q: 'Does this replace our design system?',
+    a: 'No—it accelerates screenshot and mockup execution while you stay on-brand with colors and typography choices.',
   },
   {
     q: 'App Store and Play Store together?',
-    a: 'Yes. Aspect ratios differ; use our App Store and Play size guides, then mirror the same story arc across both.',
+    a: 'Yes. Aspect ratios differ—use our App Store and Play size guides—then mirror the same narrative arc across both.',
   },
 ]
 
 const relatedLinks = [
-  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
-  { href: '/app-store-screenshot-editor/', label: 'App Store screenshot editor' },
-  { href: '/app-store-mockup-editor/', label: 'App Store mockup editor' },
-  { href: '/mobile-app-mockup-editor/', label: 'Mobile app mockup editor' },
   { href: '/android-app-screenshot-editor/', label: 'Android app screenshot editor' },
+  { href: '/android-app-screenshot-generator/', label: 'Android app screenshot generator' },
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
   { href: '/blog/app-screenshot-generator-vs-mockup-generator/', label: 'Screenshot generator vs mockup generator' },
+  { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
   { href: '/blog/how-to-add-text-to-app-screenshots/', label: 'Add text to app screenshots' },
-  { href: '/blog/app-store-screenshot-requirements-complete-guide/', label: 'App Store screenshot requirements' },
   { href: '/frames/', label: 'Frames catalog' },
 ]
 
-const keywords = ['app screenshot mockup editor', 'mobile app mockup tool', 'App Store Play Store mockups']
+const keywords = [
+  'app screenshot mockup editor',
+  'cross-channel app mockups',
+  'marketing app screenshot editor',
+  'App Store Play Store mockups',
+]
 ---
 
 <PillarPage
@@ -62,4 +121,10 @@ const keywords = ['app screenshot mockup editor', 'mobile app mockup tool', 'App
   relatedLinks={relatedLinks}
   primaryFrameId="borderless-phone"
   keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
+  bodySections={bodySections}
 />

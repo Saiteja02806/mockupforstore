@@ -1,43 +1,81 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
 
-const title = 'Play Store Screenshot Generator'
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/play-store-screenshot-generator/`
+
+const title = 'Play Store Screenshot Generator – Fast Google Play Listing Sets'
 const description =
-  'Generate store-ready Play listing images from your raw captures: frames, backgrounds, text, and batch-friendly editing in Mockup Studio.'
+  'Generate Google Play listing screenshots quickly: consistent Android frames, backgrounds, and headline lanes across every slide—optimized for gallery throughput and Play Console uploads, not pixel tutorials.'
 const h1 = 'Play Store screenshot generator'
+
 const introParagraphs = [
-  'A “generator” mindset is about speed: go from screenshots on disk to a cohesive set of listing images without redrawing device bezels for every slide.',
-  'Mockup Studio combines frame presets with editing controls so you are not limited to a single rigid template—you can still tune layout, copy, and background per shot.',
+  'This page targets the Play Store screenshot generator intent: ship a credible multi-slide gallery fast when you are validating positioning, refreshing seasonal campaigns, or handing assets to a teammate.',
+  'Need manual polish on one stubborn slide? Pair this flow with the Play Store screenshot editor or the Android app screenshot editor—generators move the line; editors finish the exceptions.',
+]
+
+const moatTitle = 'Speed that still looks intentional'
+const moatBody =
+  'Cheap generators export brittle PNGs you cannot revise. Mockup Studio keeps you inside a real mockup canvas—duplicate slide DNA, swap UI, tune headlines—so “generated” does not mean disposable.'
+
+const visualProof = {
+  before: {
+    src: '/assets/frames/google-pixel-7-obsidian-portrait.webp',
+    alt: 'Google Pixel–style frame for generated Play Store screenshots',
+    caption: 'Android frame preset',
+  },
+  after: {
+    src: '/assets/frames/google-pixel5-justblack-portrait.webp',
+    alt: 'Alternate Android frame for cohesive Play listing screenshot sets',
+    caption: 'Consistent series styling',
+  },
+}
+
+const bodySections = [
+  {
+    type: 'prose',
+    title: 'Generator vs Play Store screenshot editor',
+    paragraphs: [
+      'Generators emphasize multi-slide velocity and matching backgrounds across the gallery. Editors emphasize fine control when one slide needs a different frame, headline hierarchy, or crop. Mockup Studio lets you start fast and edit without switching tools.',
+    ],
+  },
 ]
 
 const features = [
   {
-    title: 'Fast first version',
-    body: 'Pick a frame, drop in your UI, add a headline, and export—ideal when you are validating positioning before polish.',
+    title: 'Listing throughput',
+    body: 'Stack slides with shared visual rules so your gallery reads like one product—not six accidental compositions.',
   },
   {
-    title: 'Consistent series',
-    body: 'Reuse background and type styles across the gallery so the listing feels like one product story.',
+    title: 'Play discovery aware',
+    body: 'Preview how dense UI and headlines survive thumbnail-scale glimpses in Google Play surfaces.',
   },
   {
-    title: 'Editor-grade control',
-    body: 'When you need pixel tweaks, the same canvas behaves as an editor—not a one-off PNG from a rigid template.',
+    title: 'Escape hatch to editing',
+    body: 'When a slide breaks at small sizes, refine inline instead of re-exporting from a rigid template factory.',
   },
 ]
 
 const faqs = [
   {
-    q: 'Generator vs editor—what is the difference?',
-    a: 'Generators emphasize speed from a template; editors emphasize control. Mockup Studio blends both: quick presets with full mockup editing.',
+    q: 'Play Store screenshot generator vs editor?',
+    a: 'Generators emphasize speed from repeatable layouts; editors emphasize control over frames, text, backgrounds, and fine spacing. Use both as a sequence when needed.',
+  },
+  {
+    q: 'How is this different from the Android app screenshot generator?',
+    a: 'Android keyword pages speak to teams shipping Android-first assets. This page keeps language anchored to Google Play listing work specifically.',
   },
   {
     q: 'Can I match Play Console dimensions?',
-    a: 'Yes—use our size guide for phone and tablet requirements, then export from the studio when the layout looks right at thumbnail scale.',
+    a: 'Yes—use our Play screenshot size guide for phone and tablet ranges, generate your set, then export when layouts read at reduced scale.',
   },
 ]
 
 const relatedLinks = [
   { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/android-app-screenshot-generator/', label: 'Android app screenshot generator' },
+  { href: '/android-app-screenshot-editor/', label: 'Android app screenshot editor' },
   { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
   { href: '/blog/best-play-store-screenshot-generators/', label: 'Best Play Store screenshot generators (comparison)' },
   { href: '/blog/how-to-create-play-store-screenshots/', label: 'Create Play Store screenshots (step-by-step)' },
@@ -45,7 +83,12 @@ const relatedLinks = [
   { href: '/frames/', label: 'Device frames' },
 ]
 
-const keywords = ['Play Store screenshot generator', 'Google Play mockup generator', 'Android listing screenshots']
+const keywords = [
+  'Play Store screenshot generator',
+  'Google Play screenshot generator',
+  'Generate Play Store screenshots',
+  'Android listing screenshots',
+]
 ---
 
 <PillarPage
@@ -59,4 +102,10 @@ const keywords = ['Play Store screenshot generator', 'Google Play mockup generat
   relatedLinks={relatedLinks}
   primaryFrameId="dynamic-island-camera"
   keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
+  bodySections={bodySections}
 />

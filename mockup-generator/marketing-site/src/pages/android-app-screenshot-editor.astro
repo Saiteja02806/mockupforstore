@@ -1,52 +1,125 @@
 ---
 import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
 
-const title = 'Android App Screenshot Editor'
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/android-app-screenshot-editor/`
+
+const title = 'Android App Screenshot Editor – Polish Frames, Text & Backgrounds for Play'
 const description =
-  'Create and edit Android app screenshots with Material-friendly frames, bold headline type, and backgrounds suited to Google Play previews.'
-const h1 = 'Android app screenshot editor'
+  'Edit Android app screenshots into professional Google Play mockups: real device frames, headline text, backgrounds, crop-friendly layouts, and export-ready sizes—built for manual polish, not bulk template dumps.'
+const h1 = 'Android App Screenshot Editor'
+
 const introParagraphs = [
-  'Android teams often ship more device diversity—notches, punch holes, foldables—than a single Figma artboard can mock quickly. A dedicated screenshot editor keeps shells and safe areas consistent.',
-  'Mockup Studio pairs Android-appropriate frames with typography and export controls so marketing and dev-build screenshots stay aligned.',
+  'Use this page when you need control: adjust the frame, rewrite the headline, tune the background, and finish corners and safe areas so each listing image reads clearly in tiny Play previews.',
+  'If your goal is to blast through a six-slide set with matching layouts first, use our Android app screenshot generator workflow—then come back here for pixel-level finishing.',
+]
+
+const moatTitle = 'Editing, not just framing'
+const moatBody =
+  'Many tools stop at dropping a PNG into a bezel. Mockup Studio treats each slide like a designed asset: typography hierarchy, background separation from UI, and consistent margins so marketing and engineering screenshots stay aligned.'
+
+const visualProof = {
+  before: {
+    src: '/assets/frames/google-pixel-7-obsidian-portrait.webp',
+    alt: 'Android phone frame with UI placeholder for Google Play screenshot editing',
+    caption: 'Frame + layout shell',
+  },
+  after: {
+    src: '/assets/frames/samsung-galaxys21ultra-black-portrait.webp',
+    alt: 'Alternate Android device frame for polished Play Store listing mockups',
+    caption: 'Swap chassis to match your release',
+  },
+}
+
+const bodySections = [
+  {
+    type: 'steps',
+    title: 'Manual workflow from capture to Play-ready',
+    items: [
+      {
+        title: 'Import your real UI',
+        body: 'Bring emulator or device captures—PNG or JPEG—and pick an Android frame that matches how you ship (notch, punch hole, foldable).',
+      },
+      {
+        title: 'Design the full slide',
+        body: 'Set background treatment, headline and subcopy, spacing, and alignment so the story reads at thumbnail size.',
+      },
+      {
+        title: 'Tune store specifics',
+        body: 'Adjust corners, padding, and contrast so dense UI still separates from chrome when Google surfaces smaller previews.',
+      },
+      {
+        title: 'Export at listing dimensions',
+        body: 'Export consistent pixel dimensions across the set so Play Console uploads stay predictable release over release.',
+      },
+    ],
+  },
+  {
+    type: 'bullets',
+    title: 'What you control in the editor',
+    items: [
+      'Device frame + screen composition',
+      'Headline and supporting text overlays',
+      'Backgrounds and separation from UI',
+      'Per-slide layout and spacing',
+      'Fine adjustments before export',
+    ],
+  },
 ]
 
 const features = [
   {
     title: 'Hardware diversity',
-    body: 'Foldables, notched phones, and tablets—pick the chassis that matches your release notes and target devices.',
+    body: 'Foldables, notched phones, and tablets—pick the chassis that matches release notes and screenshots users expect.',
   },
   {
-    title: 'Play discovery aware',
-    body: 'Tune headlines for legibility when Google surfaces tiny previews next to your title and icon.',
+    title: 'Readable in discovery surfaces',
+    body: 'Design for legibility when Play shows tiny thumbnails beside your title and icon—not only full gallery width.',
   },
   {
-    title: 'From capture to upload',
-    body: 'Pair this workflow with our guides on capture hygiene, size tables, and common rejection mistakes.',
+    title: 'Editor-first positioning',
+    body: 'Stay here for finishing work; pair with guides on capture hygiene and rejection pitfalls when you promote to production.',
   },
 ]
 
 const faqs = [
   {
-    q: 'Is this only for developers?',
-    a: 'Marketers and solo founders use the same flow—anyone who has PNG or JPEG captures and needs store-ready mockups.',
+    q: 'Android app screenshot editor vs generator—which should I use?',
+    a: 'Use this editor page when manual polish is the job: frames, text, backgrounds, and layout control. Use the Android app screenshot generator when you want to move faster through multi-slide sets with repeatable layouts.',
   },
   {
-    q: 'Kotlin or Android Studio integration?',
-    a: 'Export images from the emulator or device, then bring them into Mockup Studio in the browser—no IDE plugin required.',
+    q: 'Is this only for developers?',
+    a: 'Marketers and solo founders use the same flow—anyone with captures who needs store-ready mockups without bouncing between Figma layers.',
+  },
+  {
+    q: 'Do I need Android Studio integration?',
+    a: 'Export images from the emulator or device, then compose in Mockup Studio in the browser—no IDE plugin required.',
+  },
+  {
+    q: 'Can I match Google Play screenshot sizes?',
+    a: 'Yes—start from our Play screenshot size guide, build your slides here, and export when the layout holds up at reduced scale.',
   },
 ]
 
 const relatedLinks = [
+  { href: '/android-app-screenshot-generator/', label: 'Android app screenshot generator (speed & sets)' },
   { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
-  { href: '/mobile-app-mockup-editor/', label: 'Mobile app mockup editor' },
+  { href: '/app-screenshot-mockup-editor/', label: 'App screenshot mockup editor (cross-channel)' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
   { href: '/blog/how-to-add-android-phone-frame-to-app-screenshot/', label: 'Add an Android phone frame' },
   { href: '/blog/best-device-frame-sizes-for-google-play-2025/', label: 'Device frame sizes for Google Play' },
   { href: '/blog/common-play-store-screenshot-mistakes/', label: 'Common Play Store screenshot mistakes' },
-  { href: '/blog/play-store-vs-app-store-screenshots/', label: 'Play Store vs App Store screenshots' },
   { href: '/frames/', label: 'Browse Android-style frames' },
 ]
 
-const keywords = ['Android app screenshot editor', 'Google Play screenshot tool', 'Android mockup editor']
+const keywords = [
+  'Android app screenshot editor',
+  'Edit Android app screenshots',
+  'Google Play screenshot editor',
+  'Android mockup editor',
+]
 ---
 
 <PillarPage
@@ -60,4 +133,10 @@ const keywords = ['Android app screenshot editor', 'Google Play screenshot tool'
   relatedLinks={relatedLinks}
   primaryFrameId="notch-phone"
   keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
+  bodySections={bodySections}
 />

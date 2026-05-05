@@ -468,6 +468,73 @@ body {
   line-height: 1.55;
 }
 
+.home-cluster {
+  padding: 72px 0 88px;
+  background: #060f18;
+  border-bottom: 1px solid rgba(91, 124, 184, 0.14);
+}
+
+.home-cluster h2 {
+  margin: 0 0 12px;
+  text-align: center;
+  color: #fff;
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+}
+
+.home-cluster-intro {
+  margin: 0 auto 28px;
+  max-width: 62ch;
+  text-align: center;
+  color: rgba(226, 232, 240, 0.78);
+  line-height: 1.6;
+}
+
+.home-cluster-subhead {
+  margin: 1.75rem 0 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.95);
+}
+
+.home-cluster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.home-cluster-grid h3 {
+  margin: 0 0 10px;
+  font-size: 1.15rem;
+}
+
+.home-cluster-grid h3 a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.home-cluster-grid h3 a:hover {
+  text-decoration: underline;
+  color: #b9dcff;
+}
+
+.home-cluster-foot {
+  margin: 2rem 0 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: rgba(226, 232, 240, 0.62);
+}
+
+.home-cluster-foot a {
+  color: var(--accent, #7ab8ff);
+  text-decoration: none;
+}
+
+.home-cluster-foot a:hover {
+  text-decoration: underline;
+}
+
 .home-guides {
   padding: 72px 0 96px;
   background: #050d14;
@@ -517,8 +584,8 @@ body {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 48px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 36px;
 }
 
 .footer-grid > div {
@@ -1990,7 +2057,8 @@ body {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 36px;
 }
 
 @media (max-width: 640px) {
@@ -2045,6 +2113,28 @@ body {
 
 .pillar-link-list a:hover {
   text-decoration: underline;
+}
+
+.pillar-steps-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.35rem;
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+
+.pillar-steps-list li {
+  margin-bottom: 0.65rem;
+}
+
+.pillar-bullet-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+
+.pillar-bullet-list li {
+  margin-bottom: 0.4rem;
 }
 
 .pillar-faq-item {

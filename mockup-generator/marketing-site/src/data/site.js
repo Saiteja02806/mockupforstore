@@ -6,10 +6,31 @@ export const defaultDescription =
 export const defaultSiteUrl = 'https://mockupeditor.site'
 export const defaultAppUrl = 'https://mockupeditor.site/'
 
+const CANONICAL_HOST = 'mockupeditor.site'
+
+function normalizeMockupEditorOrigin(urlLike) {
+  const fallback = `https://${CANONICAL_HOST}`
+  if (!urlLike || typeof urlLike !== 'string') return fallback
+  try {
+    const u = new URL(urlLike.includes('://') ? urlLike : `https://${urlLike}`)
+    if (u.hostname === `www.${CANONICAL_HOST}`) u.hostname = CANONICAL_HOST
+    return u.origin
+  } catch {
+    return fallback
+  }
+}
+
 export function getAppUrl() {
-  return import.meta.env.PUBLIC_APP_URL || defaultAppUrl
+  const raw = import.meta.env.PUBLIC_APP_URL || defaultAppUrl
+  try {
+    const u = new URL(raw.includes('://') ? raw : `https://${raw}`)
+    if (u.hostname === `www.${CANONICAL_HOST}`) u.hostname = CANONICAL_HOST
+    return u.toString()
+  } catch {
+    return defaultAppUrl
+  }
 }
 
 export function getSiteUrl() {
-  return import.meta.env.PUBLIC_SITE_URL || defaultSiteUrl
+  return normalizeMockupEditorOrigin(import.meta.env.PUBLIC_SITE_URL || defaultSiteUrl)
 }

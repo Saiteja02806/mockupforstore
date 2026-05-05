@@ -1,0 +1,135 @@
+---
+import PillarPage from '../components/PillarPage.astro'
+import { getSiteUrl } from '../data/site.js'
+
+const siteUrl = getSiteUrl().replace(/\/$/, '')
+const canonical = `${siteUrl}/android-app-screenshot-generator/`
+
+const title = 'Android App Screenshot Generator – Quick Sets & Play Listing Layouts'
+const description =
+  'Generate Android app screenshot sets fast: stack slides with consistent frames, backgrounds, and typography presets—built for Google Play listing throughput before you dive into pixel-level edits.'
+const h1 = 'Android app screenshot generator'
+
+const introParagraphs = [
+  'Generators prioritize velocity: turn folder-of-PNGs into a cohesive six-slide story with shared backgrounds and headline styles so you can ship a listing refresh without camping in layout tools.',
+  'When a slide needs real finishing—custom crops, nuanced type, or frame swaps—switch to the Android app screenshot editor workflow for manual polish.',
+]
+
+const moatTitle = 'Throughput without ugly repetition'
+const moatBody =
+  'Rigid template exporters often leave you with mismatched crops or brittle copy. Mockup Studio pairs preset layouts with real editing controls so “generator speed” does not lock you out of adjustments when marketing pushes back on copy or order.'
+
+const visualProof = {
+  before: {
+    src: '/assets/frames/samsung-galaxy-s24-ultra-portrait.webp',
+    alt: 'Samsung-style Android frame preset for fast Play Store screenshot generation',
+    caption: 'Preset frame + headline lane',
+  },
+  after: {
+    src: '/assets/frames/google-pixel-7-obsidian-portrait.webp',
+    alt: 'Alternate Android frame for generated Play Store screenshot sets',
+    caption: 'Swap chassis across the set',
+  },
+}
+
+const bodySections = [
+  {
+    type: 'steps',
+    title: 'Fast path for multi-slide Android listings',
+    items: [
+      {
+        title: 'Batch your sources',
+        body: 'Drop in captures from QA builds—keep naming consistent so slide order matches your intended story arc.',
+      },
+      {
+        title: 'Lock the system',
+        body: 'Choose one background style and headline scale so every slide feels like the same product, not six one-offs.',
+      },
+      {
+        title: 'Generate the gallery',
+        body: 'Duplicate layout DNA across slides, swap UI per frame, and preview how the stack reads in Play’s gallery strip.',
+      },
+      {
+        title: 'Polish only where it matters',
+        body: 'Open individual slides in the editor when a headline wraps badly or a device frame needs a swap.',
+      },
+    ],
+  },
+  {
+    type: 'bullets',
+    title: 'When to pick generator-first',
+    items: [
+      'You need a credible first draft this week, not a museum piece',
+      'Marketing wants consistent backgrounds and type across all slides',
+      'You are iterating positioning and may reorder slides often',
+    ],
+  },
+]
+
+const features = [
+  {
+    title: 'Listing-first presets',
+    body: 'Frame lanes and headline bands tuned for Google Play gallery readability—not generic social crops.',
+  },
+  {
+    title: 'Series consistency',
+    body: 'Reuse backgrounds, gradients, and type scales so the story feels deliberate end-to-end.',
+  },
+  {
+    title: 'Escape hatch to editing',
+    body: 'When layouts break at thumbnail scale, refine in the same studio instead of exporting dead-end PNGs.',
+  },
+]
+
+const faqs = [
+  {
+    q: 'Android app screenshot generator vs editor?',
+    a: 'Use the generator when speed and multi-slide consistency come first. Use the Android app screenshot editor when manual polish—frames, text, backgrounds, fine layout—is the primary job.',
+  },
+  {
+    q: 'Is this the same as the Play Store screenshot generator?',
+    a: 'They overlap for Google Play work. This page targets the Android app screenshot generator keyword specifically; the Play Store generator page speaks to broader Play listing layouts and keyword intent.',
+  },
+  {
+    q: 'Can I still match Play Console sizes?',
+    a: 'Yes—start from our Play screenshot size guide, generate your set, then export when thumbnails look legible.',
+  },
+]
+
+const relatedLinks = [
+  { href: '/android-app-screenshot-editor/', label: 'Android app screenshot editor (manual polish)' },
+  { href: '/play-store-screenshot-generator/', label: 'Play Store screenshot generator' },
+  { href: '/play-store-screenshot-editor/', label: 'Play Store screenshot editor' },
+  { href: '/app-screenshot-mockup-editor/', label: 'App screenshot mockup editor' },
+  { href: '/app-store-screenshot-generator/', label: 'App Store screenshot generator' },
+  { href: '/blog/how-to-create-play-store-screenshots/', label: 'How to create Play Store screenshots' },
+  { href: '/blog/play-store-screenshot-size-guide/', label: 'Play Store screenshot size guide' },
+  { href: '/frames/', label: 'Browse device frames' },
+]
+
+const keywords = [
+  'Android app screenshot generator',
+  'Google Play screenshot generator',
+  'Android listing screenshots',
+  'Generate Android mockups',
+]
+---
+
+<PillarPage
+  title={title}
+  description={description}
+  h1={h1}
+  eyebrow="Android"
+  introParagraphs={introParagraphs}
+  features={features}
+  faqs={faqs}
+  relatedLinks={relatedLinks}
+  primaryFrameId="pill-phone"
+  keywords={keywords}
+  titleAsIs={true}
+  moatTitle={moatTitle}
+  moatBody={moatBody}
+  visualProof={visualProof}
+  canonical={canonical}
+  bodySections={bodySections}
+/>
