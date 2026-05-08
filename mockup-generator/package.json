@@ -7,6 +7,7 @@
     "sync-frames": "node scripts/sync-frames-to-public.mjs",
     "sync-blog": "node scripts/sync-blog-manifest.mjs",
     "strip-svg-filters": "node scripts/strip-frame-svg-filters.mjs",
+    "test:store-editor": "node --test ./src/store-editor/storeEditorLayerCycle.test.mjs",
     "dev": "npm run sync-frames && npm run sync-blog && vite",
     "dev:vanilla": "npm run sync-frames && npm run sync-blog && vite --open /vanilla.html",
     "build": "npm run sync-frames && npm run sync-blog && node scripts/optimize-landing-carousel-webp.mjs && npm --prefix ./marketing-site run build && vite build && node scripts/merge-marketing-into-editor-dist.mjs && node scripts/verify-in-app-blog-dist.mjs",

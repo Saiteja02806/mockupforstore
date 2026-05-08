@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   Download,
   Home,
@@ -30,8 +30,18 @@ import {
   getDefaultImageCropRect,
   getImageLayerPreviewBox,
   getLayerCroppedAspect,
+  getStoreImageLayerGeometry,
+  scaleStoreImageGeometryToPreview,
+  shouldSnapStoreImageLayer,
 } from './imageLayerGeometry.js'
 import { resolveImageCropRect, normRectToSourcePixels, clampNormRect } from './storeRectCropMath.js'
+import { collectHitLayerIdsFrontFirst, cyclePickInHits } from './storeEditorLayerCycle.js'
+import { snapExportHalfPx, storeFontPxFromHeight } from './storeExportSnap.js'
+
+/*
+ * Layer drag uses a single dragRef.id + updateLayer(id) — only one stack row updates x/y per gesture.
+ * Multi-phone confusion usually comes from overlapping hit targets + identical mockup PNGs, not merged state.
+ */
 
 /** Matches generator accent; root `.store-editor-root` also defines --accent in CSS */
 const ACCENT = '#6366f1'
@@ -45,7 +55,9 @@ const IMAGE_WIDTH_MIN_PCT = 5
 const IMAGE_WIDTH_MAX_PCT = 160
 const TEXT_LINE_HEIGHT = 1.1
 const TEXT_FONT_MAX_PX = 400
-const MIN_VISIBLE_LAYER_PCT = 3
+/** Export-space px; negative compensates transparent padding in tight PNG icons */
+const ATTACH_GAP_EXPORT_MIN = -20
+const ATTACH_GAP_EXPORT_MAX = 800
 
 const CANVAS_PATTERN_CSS = {
   dots: 'radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)',
@@ -65,6 +77,35 @@ const imageCache = new Map()
 
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n))
+}
+
+/** Padding/content box aligned with CSS % (fractional size; border box minus borders on all sides). */
+function getPreviewArtboardMetrics(el) {
+  if (!el) return { left: 0, top: 0, width: 1, height: 1 }
+  const rect = el.getBoundingClientRect()
+  const style = window.getComputedStyle(el)
+  const borderLeft = parseFloat(style.borderLeftWidth) || 0
+  const borderRight = parseFloat(style.borderRightWidth) || 0
+  const borderTop = parseFloat(style.borderTopWidth) || 0
+  const borderBottom = parseFloat(style.borderBottomWidth) || 0
+  return {
+    left: rect.left + borderLeft,
+    top: rect.top + borderTop,
+    width: Math.max(1, rect.width - borderLeft - borderRight),
+    height: Math.max(1, rect.height - borderTop - borderBottom),
+  }
+}
+
+function getPointerArtboardPct(e, el) {
+  const m = getPreviewArtboardMetrics(el)
+  const w = Math.max(1, m.width)
+  const h = Math.max(1, m.height)
+  return {
+    x: ((e.clientX - m.left) / w) * 100,
+    y: ((e.clientY - m.top) / h) * 100,
+    width: m.width,
+    height: m.height,
+  }
 }
 
 /** Break a single token when it is wider than maxW (matches CSS word-break: break-word). */
@@ -238,6 +279,171 @@ function getTextMaxWidthPx(layer, totalWidth) {
   return totalWidth * (clamp(pct, 20, 98) / 100)
 }
 
+/**
+ * Visible horizontal glyph bounds for one line — matches runExport single-line fillText anchor (`x`) + textAlign.
+ * Uses TextMetrics.actualBoundingBox* when finite; otherwise advance-width fallback.
+ */
+function singleLineCanvasTextHorizontalEdges(ctx, line, align, tx, blockW) {
+  const a = align || 'center'
+  let x = tx
+  if (a === 'center') {
+    ctx.textAlign = 'center'
+    x = tx
+  } else if (a === 'left') {
+    ctx.textAlign = 'left'
+    x = tx - blockW / 2
+  } else {
+    ctx.textAlign = 'right'
+    x = tx + blockW / 2
+  }
+  ctx.textBaseline = 'middle'
+  const metrics = ctx.measureText(line || ' ')
+  const hasActual =
+    Number.isFinite(metrics.actualBoundingBoxLeft) && Number.isFinite(metrics.actualBoundingBoxRight)
+  if (hasActual) {
+    return {
+      exportTextLeft: x - metrics.actualBoundingBoxLeft,
+      exportTextRight: x + metrics.actualBoundingBoxRight,
+      metrics,
+    }
+  }
+  let exportTextLeft = tx - metrics.width / 2
+  let exportTextRight = tx + metrics.width / 2
+  if (a === 'left') {
+    exportTextLeft = x
+    exportTextRight = x + metrics.width
+  } else if (a === 'right') {
+    exportTextRight = x
+    exportTextLeft = x - metrics.width
+  }
+  return { exportTextLeft, exportTextRight, metrics }
+}
+
+/** Horizontal text edges in export canvas px — mirrors single-line branch of runExport. Returns null edges if text wraps. */
+function measureExportTextHorizontalEdges(layer, W, H) {
+  if (!layer || layer.type !== 'text' || !String(layer.text || '').trim()) {
+    return { exportTextLeft: null, exportTextRight: null, singleLine: false, lineCount: 0 }
+  }
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return { exportTextLeft: null, exportTextRight: null, singleLine: false, lineCount: 0 }
+
+  const fontPx = storeFontPxFromHeight(H, layer.fontSizePct)
+  const fam = (layer.fontFamily || 'Inter').replace(/"/g, '\\"')
+  ctx.font = `${layer.fontWeight || 600} ${fontPx}px "${fam}", ui-sans-serif, system-ui, sans-serif`
+  const align = layer.align || 'center'
+  const tx = snapExportHalfPx((W * layer.x) / 100)
+  const ty = snapExportHalfPx((H * layer.y) / 100)
+  const maxWrapW = getTextMaxWidthPx(layer, W)
+  const lines = expandTextLinesForExport(ctx, String(layer.text), maxWrapW)
+  const widths = lines.map((ln) => ctx.measureText(ln || ' ').width)
+  const blockW = Math.max(...widths, 1)
+
+  if (lines.length !== 1) {
+    return {
+      exportTextLeft: null,
+      exportTextRight: null,
+      singleLine: false,
+      lineCount: lines.length,
+    }
+  }
+
+  const line = lines[0] || ' '
+  const { exportTextLeft, exportTextRight } = singleLineCanvasTextHorizontalEdges(ctx, line, align, tx, blockW)
+
+  return {
+    exportTextLeft,
+    exportTextRight,
+    exportTextCenterY: ty,
+    fontPx,
+    singleLine: true,
+    lineCount: 1,
+  }
+}
+
+/** Canvas text horizontal bounds per text layer id (export pixels). */
+function buildTextExportBoundsMap(stack, W, H) {
+  const map = new Map()
+  for (const layer of stack) {
+    if (layer.type !== 'text' || !isLayerVisible(layer)) continue
+    if (!String(layer.text || '').trim()) continue
+    map.set(layer.id, measureExportTextHorizontalEdges(layer, W, H))
+  }
+  return map
+}
+
+function snapAttachedValue(layer, W, value) {
+  return shouldSnapStoreImageLayer(layer, W) ? snapExportHalfPx(value) : value
+}
+
+/**
+ * Single-line attach only: override image layer x/y from measured canvas text + gap.
+ * This is the shared preview/export ruler; preview scales the returned export geometry down.
+ */
+function getImageLayerWithTextAttach(layer, textBoundsMap, nw, nh, W, H) {
+  const tid = layer.attachToTextId
+  if (!tid || !nw || !nh) return null
+  const tb = textBoundsMap.get(tid)
+  if (
+    !tb?.singleLine ||
+    tb.exportTextLeft == null ||
+    tb.exportTextRight == null ||
+    tb.exportTextCenterY == null
+  ) {
+    return null
+  }
+  const g = getStoreImageLayerGeometry(layer, nw, nh, W, H)
+  if (!g) return null
+  const gapRaw = Number(layer.attachGapPx)
+  const gapPx = Number.isFinite(gapRaw) ? gapRaw : 8
+  const offsetRaw = Number(layer.attachVerticalOffsetPx)
+  const offsetPx = Number.isFinite(offsetRaw) ? offsetRaw : 0
+  const side = layer.attachSide === 'left' ? 'left' : 'right'
+  const rawCxPx =
+    side === 'right'
+      ? tb.exportTextRight + gapPx + g.mw / 2
+      : tb.exportTextLeft - gapPx - g.mw / 2
+  const rawCyPx = tb.exportTextCenterY + offsetPx
+  const cxPx = snapAttachedValue(layer, W, rawCxPx)
+  const cyPx = snapAttachedValue(layer, W, rawCyPx)
+  return { ...layer, x: (cxPx / W) * 100, y: (cyPx / H) * 100 }
+}
+
+/**
+ * Convert a desired dragged/nudged center into text-relative attach values.
+ * Attached image x/y remain as fallback positions, but gap/side/vertical offset are the source of truth.
+ */
+function getTextAttachMovePatch(layer, textBoundsMap, nw, nh, W, H, nextX, nextY) {
+  const tid = layer.attachToTextId
+  if (!tid || !nw || !nh) return { x: nextX, y: nextY }
+  const tb = textBoundsMap.get(tid)
+  if (
+    !tb?.singleLine ||
+    tb.exportTextLeft == null ||
+    tb.exportTextRight == null ||
+    tb.exportTextCenterY == null
+  ) {
+    return { x: nextX, y: nextY }
+  }
+  const g = getStoreImageLayerGeometry(layer, nw, nh, W, H)
+  if (!g) return { x: nextX, y: nextY }
+  const targetCx = (W * nextX) / 100
+  const targetCy = (H * nextY) / 100
+  const textCenterX = (tb.exportTextLeft + tb.exportTextRight) / 2
+  const side = targetCx < textCenterX ? 'left' : 'right'
+  const rawGap =
+    side === 'right'
+      ? targetCx - g.mw / 2 - tb.exportTextRight
+      : tb.exportTextLeft - (targetCx + g.mw / 2)
+  return {
+    x: nextX,
+    y: nextY,
+    attachSide: side,
+    attachGapPx: clamp(rawGap, ATTACH_GAP_EXPORT_MIN, ATTACH_GAP_EXPORT_MAX),
+    attachVerticalOffsetPx: clamp(targetCy - tb.exportTextCenterY, -800, 800),
+  }
+}
+
 function hasExplicitTextWidth(layer) {
   return typeof layer?.maxWidthPct === 'number' && Number.isFinite(layer.maxWidthPct) && layer.maxWidthPct > 0
 }
@@ -292,9 +498,9 @@ function isLayerVisible(layer) {
   return layer.visible !== false
 }
 
-function getMockupBitmap(layer, mockImgs) {
-  if (!mockImgs?.with || !mockImgs?.device) return null
-  return layer.useSceneBg ? mockImgs.with : mockImgs.device
+function getMockupBitmap(_layer, mockImgs) {
+  if (!mockImgs?.device) return null
+  return mockImgs.device
 }
 
 function getAutoMockupWidthPct(img, canvasWidth, canvasHeight) {
@@ -307,26 +513,9 @@ function getAutoMockupWidthPct(img, canvasWidth, canvasHeight) {
   return clamp(Math.round(widthForTargetHeight), MOCKUP_WIDTH_MIN_PCT, MOCKUP_AUTO_MAX_WIDTH_PCT)
 }
 
-function getLayerPositionBounds(layer, mockImgs, canvasAspect) {
+function getLayerPositionBounds(layer) {
   if (layer?.type === 'mockup') {
-    const img = getMockupBitmap(layer, mockImgs)
-    const wPct = clamp(layer.wPct ?? DEFAULT_MOCKUP_WIDTH_PCT, MOCKUP_WIDTH_MIN_PCT, MOCKUP_WIDTH_MAX_PCT)
-    let ar = 1.85
-    if (img?.naturalWidth && img?.naturalHeight) {
-      const { sw, sh } = normRectToSourcePixels(
-        img.naturalWidth,
-        img.naturalHeight,
-        resolveImageCropRect(layer, img.naturalWidth, img.naturalHeight),
-      )
-      ar = sh / Math.max(sw, 1)
-    }
-    const hPct = wPct * ar * canvasAspect
-    return {
-      xMin: Math.min(0, -wPct / 2 + MIN_VISIBLE_LAYER_PCT),
-      xMax: Math.max(100, 100 + wPct / 2 - MIN_VISIBLE_LAYER_PCT),
-      yMin: Math.min(0, -hPct / 2 + MIN_VISIBLE_LAYER_PCT),
-      yMax: Math.max(100, 100 + hPct / 2 - MIN_VISIBLE_LAYER_PCT),
-    }
+    return { xMin: -100, xMax: 200, yMin: -100, yMax: 200 }
   }
   if (layer?.type === 'image') {
     // Full freedom: image can be positioned anywhere, including completely off-canvas,
@@ -395,8 +584,6 @@ export default function StoreScreenshotEditor({
   const [bgImageOpacity, setBgImageOpacity] = useState(typeof prefs?.bgImageOpacity === 'number' ? prefs.bgImageOpacity : 1)
 
   const [stack, setStack] = useState(() => {
-    /** Default off when opening from Mockup Studio; only on if user previously enabled (saved). */
-    const useSceneBg = sameCapture ? false : prefs?.mockUseSceneBg === true
     return [
       {
         id: 'mockup',
@@ -404,7 +591,7 @@ export default function StoreScreenshotEditor({
         x: 50,
         y: 50,
         wPct: DEFAULT_MOCKUP_WIDTH_PCT,
-        useSceneBg,
+        useSceneBg: false,
         visible: true,
         rotation: typeof prefs?.mockRotation === 'number' ? prefs.mockRotation : 0,
         shadowOn: prefs?.mockShadowOn === true,
@@ -431,11 +618,27 @@ export default function StoreScreenshotEditor({
     ]
   })
 
+  /** Fixed policy: device-only (clear legacy `useSceneBg` on layer rows if present). */
+  useEffect(() => {
+    setStack((prev) => {
+      let changed = false
+      const next = prev.map((l) => {
+        if (l.type === 'mockup' && l.useSceneBg) {
+          changed = true
+          return { ...l, useSceneBg: false }
+        }
+        return l
+      })
+      return changed ? next : prev
+    })
+  }, [])
+
   const [selectedId, setSelectedId] = useState('__bg__')
   const [mockImgs, setMockImgs] = useState(null)
   const [loadError, setLoadError] = useState('')
   const [exporting, setExporting] = useState(false)
   const [dropHint, setDropHint] = useState('')
+  const [pinAttachMessage, setPinAttachMessage] = useState('')
   const [cropModalOpen, setCropModalOpen] = useState(false)
   const [imgNaturalById, setImgNaturalById] = useState({})
   const addImageFileRef = useRef(null)
@@ -444,8 +647,12 @@ export default function StoreScreenshotEditor({
   const stageRef = useRef(null)
   const previewRef = useRef(null)
   const dragRef = useRef(null)
-  /** Outer wrapper per text layer — used for pointer hit-testing (matches padded bounds). */
+  /** Last auto-computed mockup width % applied from device images + format — used to sync only rows still on that auto width. */
+  const prevAutoWPctRef = useRef(null)
+  /** Outer wrapper per text layer — hit-testing uses padded bounds. */
   const textLayerRootRef = useRef({})
+  /** Inner text box — actual glyph bounds for DEV gap debug (no padding). */
+  const textInnerRef = useRef({})
   const bgFileRef = useRef(null)
   const restoredTextRef = useRef(false)
 
@@ -482,6 +689,27 @@ export default function StoreScreenshotEditor({
     previewW = previewH * aspect
   }
 
+  const exportCanvasW = Math.round(fmt.width * EXPORT_SCALE)
+  const exportCanvasH = Math.round(fmt.height * EXPORT_SCALE)
+
+  const [fontEpoch, setFontEpoch] = useState(0)
+  useEffect(() => {
+    let cancelled = false
+    function onLoadingDone() {
+      if (!cancelled) setFontEpoch((v) => v + 1)
+    }
+    if (typeof document !== 'undefined' && document.fonts?.addEventListener) {
+      document.fonts.addEventListener('loadingdone', onLoadingDone)
+    }
+    document.fonts?.ready?.then(() => {
+      if (!cancelled) setFontEpoch((v) => v + 1)
+    })
+    return () => {
+      cancelled = true
+      document.fonts?.removeEventListener?.('loadingdone', onLoadingDone)
+    }
+  }, [])
+
   useEffect(() => {
     if (sameCapture) {
       setStack((prev) =>
@@ -516,21 +744,30 @@ export default function StoreScreenshotEditor({
   }, [initialMockupWithSceneUrl, initialMockupDeviceOnlyUrl])
 
   /**
-   * Auto-size the device whenever images change so every device frame
-   * fills a consistent ~70 % of canvas height, regardless of which
-   * frame was used in the Mockup Studio.
-   *
-   * Formula:  wPct = 70 / (canvasW/canvasH × deviceNH/deviceNW)
-   * Derivation: deviceHeightFraction = wPct/100 × deviceAR / (canvasH/canvasW)
-   *             => solve for wPct when deviceHeightFraction = 0.70
+   * Auto-size mockups from device bitmap + export format.
+   * Only rows whose `wPct` still matches the **previous** auto value get updated when the auto value
+   * changes — duplicated phones with a manually changed width are left alone.
    */
   useLayoutEffect(() => {
     if (!mockImgs) return
     const img = mockImgs.device || mockImgs.with
     const safeWPct = getAutoMockupWidthPct(img, fmt.width, fmt.height)
+    const prevAuto = prevAutoWPctRef.current
+
     setStack((prev) =>
-      prev.map((l) => (l.type === 'mockup' && l.wPct !== safeWPct ? { ...l, wPct: safeWPct } : l)),
+      prev.map((l) => {
+        if (l.type !== 'mockup') return l
+        if (prevAuto === null) {
+          return l.wPct !== safeWPct ? { ...l, wPct: safeWPct } : l
+        }
+        if (l.wPct === prevAuto && l.wPct !== safeWPct) {
+          return { ...l, wPct: safeWPct }
+        }
+        return l
+      }),
     )
+
+    prevAutoWPctRef.current = safeWPct
   }, [mockImgs, fmt.width, fmt.height])
 
   const getSavePayload = useCallback(() => {
@@ -552,7 +789,7 @@ export default function StoreScreenshotEditor({
       mockCx: mock?.x ?? 50,
       mockCy: mock?.y ?? 50,
       mockWPct: mock?.wPct ?? DEFAULT_MOCKUP_WIDTH_PCT,
-      mockUseSceneBg: mock?.useSceneBg === true,
+      mockUseSceneBg: false,
       mockRotation: mock?.rotation ?? 0,
       mockShadowOn: Boolean(mock?.shadowOn),
       mockShadowBlur: mock?.shadowBlur ?? 24,
@@ -581,6 +818,15 @@ export default function StoreScreenshotEditor({
           gradientAngle: typeof l.gradientAngle === 'number' ? l.gradientAngle : 90,
           visible: l.visible !== false,
         })),
+      imageLayers: stack
+        .filter((l) => l.type === 'image')
+        .map((l) => ({
+          id: l.id,
+          attachToTextId: l.attachToTextId ?? null,
+          attachGapPx: typeof l.attachGapPx === 'number' ? l.attachGapPx : 8,
+          attachSide: l.attachSide === 'left' ? 'left' : 'right',
+          attachVerticalOffsetPx: typeof l.attachVerticalOffsetPx === 'number' ? l.attachVerticalOffsetPx : 0,
+        })),
     }
   }, [
     formatKey,
@@ -607,9 +853,33 @@ export default function StoreScreenshotEditor({
   }, [getSavePayload])
 
   useEffect(() => {
-    stack.forEach((l) => {
-      if (l.type === 'image' && l.src) loadImage(l.src).catch(() => {})
+    let cancelled = false
+
+    stack.forEach((layer) => {
+      if (layer.type !== 'image' || !layer.src) return
+
+      loadImage(layer.src)
+        .then((im) => {
+          if (cancelled) return
+          const w = im.naturalWidth || im.width
+          const h = im.naturalHeight || im.height
+          if (!w || !h) return
+
+          setImgNaturalById((prev) => {
+            const old = prev[layer.id]
+            if (old?.w === w && old?.h === h) return prev
+            return {
+              ...prev,
+              [layer.id]: { w, h },
+            }
+          })
+        })
+        .catch(() => {})
     })
+
+    return () => {
+      cancelled = true
+    }
   }, [stack])
 
   useEffect(() => {
@@ -644,8 +914,39 @@ export default function StoreScreenshotEditor({
     })
   }, [])
 
+  useEffect(() => {
+    const p = loadStoreEditorPrefs()
+    const imgs = p?.imageLayers
+    if (!Array.isArray(imgs) || imgs.length === 0) return
+    const byId = Object.fromEntries(imgs.map((m) => [m.id, m]))
+    setStack((prev) =>
+      prev.map((l) => {
+        if (l.type !== 'image') return l
+        const m = byId[l.id]
+        if (!m) return l
+        return {
+          ...l,
+          attachToTextId: m.attachToTextId ?? null,
+          attachGapPx: typeof m.attachGapPx === 'number' ? m.attachGapPx : 8,
+          attachSide: m.attachSide === 'left' ? 'left' : 'right',
+          attachVerticalOffsetPx: typeof m.attachVerticalOffsetPx === 'number' ? m.attachVerticalOffsetPx : 0,
+        }
+      }),
+    )
+  }, [])
+
   const mockLayer = stack.find((l) => l.type === 'mockup')
   const selected = stack.find((l) => l.id === selectedId)
+  const mockupLayerCount = stack.filter((l) => l.type === 'mockup').length
+  const textExportBoundsMap = useMemo(
+    () => buildTextExportBoundsMap(stack, exportCanvasW, exportCanvasH),
+    [stack, exportCanvasW, exportCanvasH, fontEpoch],
+  )
+
+  const selectedImagePinTargetBounds = useMemo(() => {
+    if (selected?.type !== 'image' || !selected.attachToTextId) return null
+    return textExportBoundsMap.get(selected.attachToTextId) ?? null
+  }, [selected, textExportBoundsMap])
 
   const updateLayer = useCallback((id, patch) => {
     setStack((prev) => prev.map((l) => (l.id === id ? { ...l, ...patch } : l)))
@@ -736,11 +1037,29 @@ export default function StoreScreenshotEditor({
         setStackWithHistory((prev) =>
           prev.map((l) => {
             if (l.id !== selectedId) return l
-            const bounds = getLayerPositionBounds(l, mockImgs, aspect)
+            const cached = l.type === 'image' ? imageCache.get(l.src) : null
+            const nat = l.type === 'image' ? imgNaturalById[l.id] : null
+            const nw = nat?.w || cached?.naturalWidth || cached?.width || 0
+            const nh = nat?.h || cached?.naturalHeight || cached?.height || 0
+            const effective =
+              l.type === 'image' && l.attachToTextId && nw && nh
+                ? getImageLayerWithTextAttach(l, textExportBoundsMap, nw, nh, exportCanvasW, exportCanvasH)
+                : null
+            const bounds = getLayerPositionBounds(l)
+            const baseX = effective?.x ?? l.x
+            const baseY = effective?.y ?? l.y
+            const nextX = clamp(baseX + dx, bounds.xMin, bounds.xMax)
+            const nextY = clamp(baseY + dy, bounds.yMin, bounds.yMax)
+            if (l.type === 'image' && l.attachToTextId && (dx !== 0 || dy !== 0)) {
+              return {
+                ...l,
+                ...getTextAttachMovePatch(l, textExportBoundsMap, nw, nh, exportCanvasW, exportCanvasH, nextX, nextY),
+              }
+            }
             return {
               ...l,
-              x: clamp(l.x + dx, bounds.xMin, bounds.xMax),
-              y: clamp(l.y + dy, bounds.yMin, bounds.yMax),
+              x: nextX,
+              y: nextY,
             }
           })
         )
@@ -763,7 +1082,18 @@ export default function StoreScreenshotEditor({
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [aspect, mockImgs, selectedId, stack, undo, redo, setStackWithHistory])
+  }, [
+    aspect,
+    selectedId,
+    stack,
+    undo,
+    redo,
+    setStackWithHistory,
+    imgNaturalById,
+    textExportBoundsMap,
+    exportCanvasW,
+    exportCanvasH,
+  ])
 
 
   const addTextLayer = useCallback(() => {
@@ -814,6 +1144,10 @@ export default function StoreScreenshotEditor({
         shadowOffsetX: 0,
         shadowOffsetY: 12,
         shadowOpacity: 0.35,
+        attachToTextId: null,
+        attachGapPx: 8,
+        attachSide: 'right',
+        attachVerticalOffsetPx: 0,
       },
     ])
     setSelectedId(id)
@@ -825,7 +1159,14 @@ export default function StoreScreenshotEditor({
       if (layer?.type === 'mockup' && prev.filter((l) => l.type === 'mockup').length <= 1) {
         return prev
       }
-      const next = prev.filter((l) => l.id !== id)
+      const next = prev
+        .filter((l) => l.id !== id)
+        .map((l) => {
+          if (l.type === 'image' && l.attachToTextId === id) {
+            return { ...l, attachToTextId: null }
+          }
+          return l
+        })
       setSelectedId((sel) => {
         if (sel !== id) return sel
         const m = next.find((l) => l.type === 'mockup')
@@ -851,6 +1192,7 @@ export default function StoreScreenshotEditor({
           x: ox,
           y: oy,
           visible: true,
+          useSceneBg: false,
         }
         const a = [...prev]
         a.splice(idx, 0, copy)
@@ -885,34 +1227,60 @@ export default function StoreScreenshotEditor({
    * Extracted so we can reuse it for both sticky-selection and normal iteration.
    */
   const isHitOnLayer = useCallback(
-    (layer, e, rect) => {
+    (layer, e, board) => {
       if (!isLayerVisible(layer)) return false
       if (layer.type === 'mockup') {
         const img = getMockupBitmap(layer, mockImgs)
         if (!img) return false
-        const mw = (layer.wPct / 100) * rect.width
         const nw = img.naturalWidth || img.width
         const nh = img.naturalHeight || img.height
+        const exportW = Math.round(fmt.width * EXPORT_SCALE)
+        const exportH = Math.round(fmt.height * EXPORT_SCALE)
+        const g0 = nw && nh ? getStoreImageLayerGeometry(layer, nw, nh, exportW, exportH) : null
+        if (g0) {
+          const pg = scaleStoreImageGeometryToPreview(g0, board.width, board.height, exportW, exportH)
+          const cx = board.left + pg.cx
+          const cy = board.top + pg.cy
+          const dx = e.clientX - cx
+          const dy = e.clientY - cy
+          return Math.abs(dx) < (pg.mw / 2) * 1.15 && Math.abs(dy) < (pg.mh / 2) * 1.15 + 2
+        }
+        const mw = (layer.wPct / 100) * board.width
         const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1)
         const mh = mw * car
-        const lx = (layer.x / 100) * rect.width
-        const ly = (layer.y / 100) * rect.height
-        const dx = (e.clientX - rect.left - lx) / rect.width * 100
-        const dy = (e.clientY - rect.top - ly) / rect.height * 100
-        return Math.abs(dx) < (layer.wPct / 2) * 1.15 && Math.abs(dy) < ((mh / rect.height) * 100) / 2 + 6
+        const lx = (layer.x / 100) * board.width
+        const ly = (layer.y / 100) * board.height
+        const dx = (e.clientX - board.left - lx) / board.width * 100
+        const dy = (e.clientY - board.top - ly) / board.height * 100
+        return Math.abs(dx) < (layer.wPct / 2) * 1.15 && Math.abs(dy) < ((mh / board.height) * 100) / 2 + 6
       }
       if (layer.type === 'image') {
-        const iw = (layer.wPct / 100) * rect.width
         const imgEl = imageCache.get(layer.src)
         const nat = imgNaturalById[layer.id]
-        const nw = nat?.w || imgEl?.naturalWidth || 0
-        const nh = nat?.h || imgEl?.naturalHeight || 0
+        const nw = nat?.w || imgEl?.naturalWidth || imgEl?.width || 0
+        const nh = nat?.h || imgEl?.naturalHeight || imgEl?.height || 0
+        const exportW = Math.round(fmt.width * EXPORT_SCALE)
+        const exportH = Math.round(fmt.height * EXPORT_SCALE)
+        const layerGeom =
+          layer.attachToTextId && nw && nh
+            ? getImageLayerWithTextAttach(layer, textExportBoundsMap, nw, nh, exportW, exportH) ?? layer
+            : layer
+        const g0 = nw && nh ? getStoreImageLayerGeometry(layerGeom, nw, nh, exportW, exportH) : null
+        if (g0) {
+          const pg = scaleStoreImageGeometryToPreview(g0, board.width, board.height, exportW, exportH)
+          const cx = board.left + pg.cx
+          const cy = board.top + pg.cy
+          const dx = e.clientX - cx
+          const dy = e.clientY - cy
+          return Math.abs(dx) < pg.mw / 2 + 4 && Math.abs(dy) < pg.mh / 2 + 4
+        }
+        const iw = (layer.wPct / 100) * board.width
         const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1) || 1
         const ih = iw * car
-        const lx = (layer.x / 100) * rect.width
-        const ly = (layer.y / 100) * rect.height
-        const dx = e.clientX - rect.left - lx
-        const dy = e.clientY - rect.top - ly
+        const lx = (layer.x / 100) * board.width
+        const ly = (layer.y / 100) * board.height
+        const dx = e.clientX - board.left - lx
+        const dy = e.clientY - board.top - ly
         return Math.abs(dx) < iw / 2 + 4 && Math.abs(dy) < ih / 2 + 4
       }
       if (layer.type === 'text') {
@@ -921,29 +1289,65 @@ export default function StoreScreenshotEditor({
           const br = root.getBoundingClientRect()
           return e.clientX >= br.left && e.clientX <= br.right && e.clientY >= br.top && e.clientY <= br.bottom
         }
-        const fs = Math.max(10, (rect.height * (layer.fontSizePct ?? 3.5)) / 100)
+        const fs = storeFontPxFromHeight(board.height, layer.fontSizePct)
         const lines = String(layer.text || '').split('\n').length || 1
         const approxH = Math.max(fs * 1.45 * lines, 40) + 28
         const limitedW = hasExplicitTextWidth(layer)
-          ? rect.width * (clamp(layer.maxWidthPct, 20, 98) / 100)
-          : Math.min(rect.width * 0.92, 320)
-        const lx = (layer.x / 100) * rect.width
-        const ly = (layer.y / 100) * rect.height
-        const dx = e.clientX - rect.left - lx
-        const dy = e.clientY - rect.top - ly
+          ? board.width * (clamp(layer.maxWidthPct, 20, 98) / 100)
+          : Math.min(board.width * 0.92, 320)
+        const lx = (layer.x / 100) * board.width
+        const ly = (layer.y / 100) * board.height
+        const dx = e.clientX - board.left - lx
+        const dy = e.clientY - board.top - ly
         return Math.abs(dx) < Math.max(limitedW, 80) / 2 && Math.abs(dy) < approxH / 2
       }
       return false
     },
-    [mockImgs, imgNaturalById],
+    [mockImgs, imgNaturalById, fmt, textExportBoundsMap],
+  )
+
+  const getLayerDragCenterPct = useCallback(
+    (layer) => {
+      if (layer?.type !== 'image' || !layer.attachToTextId) return { x: layer?.x ?? 50, y: layer?.y ?? 50 }
+      const cached = imageCache.get(layer.src)
+      const nat = imgNaturalById[layer.id]
+      const nw = nat?.w || cached?.naturalWidth || cached?.width || 0
+      const nh = nat?.h || cached?.naturalHeight || cached?.height || 0
+      const attached =
+        nw && nh ? getImageLayerWithTextAttach(layer, textExportBoundsMap, nw, nh, exportCanvasW, exportCanvasH) : null
+      return { x: attached?.x ?? layer.x, y: attached?.y ?? layer.y }
+    },
+    [imgNaturalById, textExportBoundsMap, exportCanvasW, exportCanvasH],
   )
 
   const onStageMouseDown = useCallback(
     (e) => {
       if (!previewRef.current || !mockImgs) return
-      const rect = previewRef.current.getBoundingClientRect()
-      const px = ((e.clientX - rect.left) / rect.width) * 100
-      const py = ((e.clientY - rect.top) / rect.height) * 100
+      const board = getPreviewArtboardMetrics(previewRef.current)
+      const p = getPointerArtboardPct(e, previewRef.current)
+      const px = p.x
+      const py = p.y
+
+      /* Alt or ⌘/Win-meta: cycle selection among layers under the pointer (front-first), then drag the picked id. */
+      if (e.altKey || e.metaKey) {
+        const hits = collectHitLayerIdsFrontFirst(stack, (layer) => isHitOnLayer(layer, e, board))
+        if (hits.length > 0) {
+          const pick = cyclePickInHits(selectedId, hits)
+          const pickedLayer = stack.find((l) => l.id === pick)
+          if (pickedLayer) {
+            const center = getLayerDragCenterPct(pickedLayer)
+            setSelectedId(pick)
+            dragRef.current = {
+              id: pick,
+              ox: px - center.x,
+              oy: py - center.y,
+              kind: pickedLayer.type,
+            }
+            e.preventDefault()
+            return
+          }
+        }
+      }
 
       /**
        * STICKY SELECTION — Figma-style:
@@ -954,8 +1358,9 @@ export default function StoreScreenshotEditor({
        */
       if (selectedId && selectedId !== '__bg__') {
         const selLayer = stack.find((l) => l.id === selectedId)
-        if (selLayer && isHitOnLayer(selLayer, e, rect)) {
-          dragRef.current = { id: selLayer.id, ox: px - selLayer.x, oy: py - selLayer.y, kind: selLayer.type }
+        if (selLayer && isHitOnLayer(selLayer, e, board)) {
+          const center = getLayerDragCenterPct(selLayer)
+          dragRef.current = { id: selLayer.id, ox: px - center.x, oy: py - center.y, kind: selLayer.type }
           e.preventDefault()
           return
         }
@@ -964,30 +1369,45 @@ export default function StoreScreenshotEditor({
       /* Normal front-to-back (top-z to bottom-z) iteration for new selection */
       for (let i = stack.length - 1; i >= 0; i--) {
         const layer = stack[i]
-        if (!isHitOnLayer(layer, e, rect)) continue
+        if (!isHitOnLayer(layer, e, board)) continue
         setSelectedId(layer.id)
-        dragRef.current = { id: layer.id, ox: px - layer.x, oy: py - layer.y, kind: layer.type }
+        const center = getLayerDragCenterPct(layer)
+        dragRef.current = { id: layer.id, ox: px - center.x, oy: py - center.y, kind: layer.type }
         e.preventDefault()
         return
       }
       setSelectedId('__bg__')
     },
-    [stack, mockImgs, selectedId, isHitOnLayer],
+    [stack, mockImgs, selectedId, isHitOnLayer, getLayerDragCenterPct],
   )
 
   const moveDraggedLayer = useCallback(
     (e) => {
       if (!dragRef.current || !previewRef.current) return
-      const rect = previewRef.current.getBoundingClientRect()
-      const px = ((e.clientX - rect.left) / rect.width) * 100
-      const py = ((e.clientY - rect.top) / rect.height) * 100
+      const p = getPointerArtboardPct(e, previewRef.current)
+      const px = p.x
+      const py = p.y
       const layer = stack.find((l) => l.id === dragRef.current.id)
-      const bounds = getLayerPositionBounds(layer, mockImgs, aspect)
+      const bounds = getLayerPositionBounds(layer)
       const nx = clamp(px - dragRef.current.ox, bounds.xMin, bounds.xMax)
       const ny = clamp(py - dragRef.current.oy, bounds.yMin, bounds.yMax)
+      if (layer?.type === 'image' && layer.attachToTextId) {
+        const cached = imageCache.get(layer.src)
+        const nat = imgNaturalById[layer.id]
+        const nw = nat?.w || cached?.naturalWidth || cached?.width || 0
+        const nh = nat?.h || cached?.naturalHeight || cached?.height || 0
+        const tb = textExportBoundsMap.get(layer.attachToTextId)
+        if (nw && nh && tb?.singleLine) {
+          updateLayer(
+            dragRef.current.id,
+            getTextAttachMovePatch(layer, textExportBoundsMap, nw, nh, exportCanvasW, exportCanvasH, nx, ny),
+          )
+          return
+        }
+      }
       updateLayer(dragRef.current.id, { x: nx, y: ny })
     },
-    [aspect, mockImgs, stack, updateLayer],
+    [stack, updateLayer, imgNaturalById, textExportBoundsMap, exportCanvasW, exportCanvasH],
   )
 
   const onStageMouseMove = useCallback(
@@ -1049,7 +1469,7 @@ export default function StoreScreenshotEditor({
   const patternSize = !noBg && bgPattern && bgPattern !== 'none' ? CANVAS_PATTERN_SIZE[bgPattern] : ''
 
   const runExport = useCallback(async () => {
-    if (!mockImgs?.with) return
+    if (!mockImgs?.device) return
     setExporting(true)
     try {
       await ensureTextFontsReady(stack)
@@ -1077,6 +1497,8 @@ export default function StoreScreenshotEditor({
 
       drawPatternOverlay(ctx, W, H, bgPattern)
 
+      const textExportBoundsMap = buildTextExportBoundsMap(stack, W, H)
+
       for (const layer of stack) {
         if (!isLayerVisible(layer)) continue
         if (layer.type === 'mockup') {
@@ -1086,20 +1508,36 @@ export default function StoreScreenshotEditor({
         } else if (layer.type === 'image') {
           try {
             const im = await loadImage(layer.src)
-            drawStoreImageLayer(ctx, im, layer, W, H, EXPORT_SCALE)
+            const nw0 = im.naturalWidth || im.width
+            const nh0 = im.naturalHeight || im.height
+            const patched = getImageLayerWithTextAttach(layer, textExportBoundsMap, nw0, nh0, W, H)
+            const layerDraw = patched ?? layer
+            if (import.meta.env.DEV) {
+              const g = nw0 && nh0 ? getStoreImageLayerGeometry(layerDraw, nw0, nh0, W, H) : null
+              if (g) {
+                console.table({
+                  kind: 'export_image',
+                  layerId: layer.id,
+                  attached: Boolean(patched),
+                  exportIconLeft: g.cx - g.mw / 2,
+                  exportIconRight: g.cx + g.mw / 2,
+                  iconMw: g.mw,
+                })
+              }
+            }
+            drawStoreImageLayer(ctx, im, layerDraw, W, H, EXPORT_SCALE)
           } catch {
             /* skip */
           }
         } else if (layer.type === 'text' && String(layer.text || '').trim()) {
-          const fontPx = Math.max(12, (H * (layer.fontSizePct ?? 3.5)) / 100)
+          const fontPx = storeFontPxFromHeight(H, layer.fontSizePct)
           const fam = (layer.fontFamily || 'Inter').replace(/"/g, '\\"')
           ctx.save()
           ctx.globalAlpha = clamp(layer.opacity ?? 1, 0, 1)
           ctx.font = `${layer.fontWeight || 600} ${fontPx}px "${fam}", ui-sans-serif, system-ui, sans-serif`
           const align = layer.align || 'center'
-          ctx.textBaseline = 'top'
-          const tx = (W * layer.x) / 100
-          const ty = (H * layer.y) / 100
+          const tx = snapExportHalfPx((W * layer.x) / 100)
+          const ty = snapExportHalfPx((H * layer.y) / 100)
           const lineH = fontPx * TEXT_LINE_HEIGHT
           const maxWrapW = getTextMaxWidthPx(layer, W)
           const lines = expandTextLinesForExport(ctx, String(layer.text), maxWrapW)
@@ -1107,9 +1545,9 @@ export default function StoreScreenshotEditor({
           const blockW = Math.max(...widths, 1)
           const totalH = lines.length * lineH
           ctx.fillStyle = getTextCanvasFill(ctx, layer, tx, ty, blockW, totalH)
-          let y = ty - totalH / 2
-          for (let i = 0; i < lines.length; i++) {
-            const line = lines[i] || ' '
+          if (lines.length === 1) {
+            ctx.textBaseline = 'middle'
+            const line = lines[0] || ' '
             let x = tx
             if (align === 'center') {
               ctx.textAlign = 'center'
@@ -1121,8 +1559,49 @@ export default function StoreScreenshotEditor({
               ctx.textAlign = 'right'
               x = tx + blockW / 2
             }
-            ctx.fillText(line, x, y)
-            y += lineH
+            if (import.meta.env.DEV) {
+              const { exportTextLeft, exportTextRight, metrics } = singleLineCanvasTextHorizontalEdges(
+                ctx,
+                line,
+                align,
+                tx,
+                blockW,
+              )
+              console.table({
+                kind: 'export_text_single',
+                layerId: layer.id,
+                text: layer.text,
+                align,
+                fontPx,
+                tx,
+                ty,
+                canvasTextWidth: metrics.width,
+                actualBoundingBoxLeft: metrics.actualBoundingBoxLeft,
+                actualBoundingBoxRight: metrics.actualBoundingBoxRight,
+                exportTextLeft,
+                exportTextRight,
+              })
+            }
+            ctx.fillText(line, x, ty)
+          } else {
+            ctx.textBaseline = 'top'
+            let y = ty - totalH / 2
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i] || ' '
+              let x = tx
+              if (align === 'center') {
+                ctx.textAlign = 'center'
+                x = tx
+              } else if (align === 'left') {
+                ctx.textAlign = 'left'
+                x = tx - blockW / 2
+              } else {
+                ctx.textAlign = 'right'
+                x = tx + blockW / 2
+              }
+              ctx.fillText(line, x, y)
+              y += lineH
+            }
           }
           ctx.restore()
         }
@@ -1161,6 +1640,107 @@ export default function StoreScreenshotEditor({
     stack,
     suggestedBaseName,
   ])
+
+  /** DEV-only: preview vs export text–icon gap (normalized to export canvas px where possible). */
+  const debugTextIconGap = useCallback(
+    ({ textLayerId, iconLayerId }) => {
+      const textLayer = stack.find((l) => l.id === textLayerId)
+      const iconLayer = stack.find((l) => l.id === iconLayerId)
+      if (!textLayer || !iconLayer || !previewRef.current) {
+        console.warn('[store-editor debug] missing text/icon layer or preview ref')
+        return
+      }
+
+      const board = getPreviewArtboardMetrics(previewRef.current)
+      const textInner = textInnerRef.current[textLayerId]
+      const textRect = textInner?.getBoundingClientRect()
+      if (!textRect && import.meta.env.DEV) {
+        console.warn(
+          '[store-editor debug] textInnerRef missing — inner text node not mounted; gap uses padded wrapper fallback',
+        )
+      }
+      const textRectFallback = textLayerRootRef.current[textLayerId]?.getBoundingClientRect()
+      const effectiveTextRight = (textRect ?? textRectFallback)?.right ?? null
+
+      const cached = imageCache.get(iconLayer.src)
+      const nat = imgNaturalById[iconLayer.id]
+      const nw = nat?.w || cached?.naturalWidth || cached?.width || 0
+      const nh = nat?.h || cached?.naturalHeight || cached?.height || 0
+      const exportEdges = measureExportTextHorizontalEdges(textLayer, exportCanvasW, exportCanvasH)
+      const debugBoundsMap = new Map([[textLayer.id, exportEdges]])
+      const iconLayerForGeom =
+        nw && nh
+          ? getImageLayerWithTextAttach(iconLayer, debugBoundsMap, nw, nh, exportCanvasW, exportCanvasH) ?? iconLayer
+          : iconLayer
+
+      const iconExportGeom =
+        nw && nh ? getStoreImageLayerGeometry(iconLayerForGeom, nw, nh, exportCanvasW, exportCanvasH) : null
+
+      const iconPreviewGeom = iconExportGeom
+        ? scaleStoreImageGeometryToPreview(iconExportGeom, previewW, previewH, exportCanvasW, exportCanvasH)
+        : null
+
+      const previewIconLeft = iconPreviewGeom
+        ? board.left + iconPreviewGeom.cx - iconPreviewGeom.mw / 2
+        : null
+      const previewTextRight = effectiveTextRight
+
+      const previewGapPx =
+        previewTextRight != null && previewIconLeft != null ? previewIconLeft - previewTextRight : null
+
+      const previewToExportX = board.width > 0 ? exportCanvasW / board.width : null
+      const previewGapExportPx =
+        previewGapPx != null && previewToExportX != null ? previewGapPx * previewToExportX : null
+
+      const exportIconLeft = iconExportGeom ? iconExportGeom.cx - iconExportGeom.mw / 2 : null
+      const exportGapPx =
+        exportIconLeft != null && exportEdges.exportTextRight != null
+          ? exportIconLeft - exportEdges.exportTextRight
+          : null
+
+      console.table({
+        boardWidth: board.width,
+        boardHeight: board.height,
+        previewW,
+        previewH,
+        previewToExportX,
+        exportCanvasW,
+        exportCanvasH,
+        textMeasuredFromInner: Boolean(textRect),
+        textLayerX: textLayer.x,
+        textLayerY: textLayer.y,
+        iconLayerX: iconLayer.x,
+        iconLayerY: iconLayer.y,
+        iconLayerWPct: iconLayer.wPct,
+        imageNaturalW: nw,
+        imageNaturalH: nh,
+        hasIconPreviewGeom: Boolean(iconPreviewGeom),
+        previewTextRight,
+        previewIconLeft,
+        previewGapPxScreen: previewGapPx != null ? Math.round(previewGapPx * 10) / 10 : null,
+        previewGapExportPx: previewGapExportPx != null ? Math.round(previewGapExportPx * 10) / 10 : null,
+        exportTextLeft: exportEdges.exportTextLeft,
+        exportTextRight: exportEdges.exportTextRight,
+        exportTextSingleLine: exportEdges.singleLine,
+        exportTextLineCount: exportEdges.lineCount,
+        exportIconLeft,
+        exportGapPx: exportGapPx != null ? Math.round(exportGapPx * 10) / 10 : null,
+        gapDeltaExportPx:
+          previewGapExportPx != null && exportGapPx != null
+            ? Math.round((previewGapExportPx - exportGapPx) * 10) / 10
+            : null,
+      })
+    },
+    [stack, previewW, previewH, exportCanvasW, exportCanvasH, imgNaturalById],
+  )
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+    window.__storeEditorDebugTextIconGap = debugTextIconGap
+    return () => {
+      delete window.__storeEditorDebugTextIconGap
+    }
+  }, [debugTextIconGap])
 
   const listFromTop = [...stack].reverse()
   const formatOptgroups = getStoreFormatOptgroups()
@@ -1408,11 +1988,12 @@ export default function StoreScreenshotEditor({
               style={{
                 width: previewW,
                 height: previewH,
-                border: noBg
+                border: 'none',
+                outline: noBg
                   ? 'none'
                   : selectedId && selectedId !== '__bg__'
                     ? '1px solid var(--border3)'
-                    : `2px solid rgba(99, 102, 241, 0.35)`,
+                    : '2px solid rgba(99, 102, 241, 0.35)',
                 background: previewBackground,
                 overflow: noBg ? 'visible' : 'hidden',
                 borderRadius: noBg ? 0 : 8,
@@ -1458,38 +2039,51 @@ export default function StoreScreenshotEditor({
                   const wPct = layer.wPct
                   const nw = img.naturalWidth || img.width
                   const nh = img.naturalHeight || img.height
-                  const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1)
-                  const hPct = wPct * car * aspect
                   const rot = layer.rotation ?? 0
                   const shOn = layer.shadowOn
                   const sb = layer.shadowBlur ?? 24
-                  const sx = layer.shadowOffsetX ?? 0
-                  const sy = layer.shadowOffsetY ?? 12
+                  const sxOff = layer.shadowOffsetX ?? 0
+                  const syOff = layer.shadowOffsetY ?? 12
                   const sop = clamp(layer.shadowOpacity ?? 0.35, 0, 1)
-                  const dropFilter = shOn ? `drop-shadow(${sx}px ${sy}px ${sb}px rgba(0,0,0,${sop}))` : undefined
-                  const mwPx = (previewW * wPct) / 100
-                  const inner = nw && nh ? getImageLayerPreviewBox(layer, nw, nh, mwPx) : null
+                  const dropFilter = shOn ? `drop-shadow(${sxOff}px ${syOff}px ${sb}px rgba(0,0,0,${sop}))` : undefined
+                  const exportGeom =
+                    nw && nh ? getStoreImageLayerGeometry(layer, nw, nh, exportCanvasW, exportCanvasH) : null
+                  const previewGeom = exportGeom
+                    ? scaleStoreImageGeometryToPreview(exportGeom, previewW, previewH, exportCanvasW, exportCanvasH)
+                    : null
+                  const car = nw && nh ? getLayerCroppedAspect(layer, nw, nh) : nh / Math.max(nw, 1)
+                  const hPct = wPct * car * aspect
+                  const inner =
+                    previewGeom ??
+                    (nw && nh ? getImageLayerPreviewBox(layer, nw, nh, (previewW * wPct) / 100) : null)
                   const br = inner
                     ? Math.min(inner.cornerRadiusPx, inner.mw / 2, inner.mh / 2, 999)
                     : 6
-                  const mockSrc = layer.useSceneBg ? initialMockupWithSceneUrl : initialMockupDeviceOnlyUrl
+                  const mockSrc = initialMockupDeviceOnlyUrl
+                  const mockSelected = selectedId === layer.id
                   return (
                     <div
                       key={layer.id}
                       style={{
                         position: 'absolute',
-                        left: `${layer.x}%`,
-                        top: `${layer.y}%`,
-                        width: `${wPct}%`,
-                        height: `${hPct}%`,
+                        left: previewGeom ? previewGeom.cx : `${layer.x}%`,
+                        top: previewGeom ? previewGeom.cy : `${layer.y}%`,
+                        width: previewGeom ? previewGeom.mw : `${wPct}%`,
+                        height: previewGeom ? previewGeom.mh : `${hPct}%`,
                         transform: `translate(-50%, -50%) rotate(${rot}deg)`,
                         filter: dropFilter,
                         pointerEvents: 'auto',
                         cursor: 'grab',
                         borderRadius: 0,
                         outline: 'none',
+                        boxShadow: mockSelected
+                          ? `0 0 0 2px ${ACCENT}, 0 0 14px rgba(99,102,241,0.45)`
+                          : undefined,
                       }}
                     >
+                      {mockupLayerCount > 1 ? (
+                        <span className="se-mockup-layer-badge">{getLayerRowLabel(layer, stack)}</span>
+                      ) : null}
                       <div
                         className="se-mockup-wrap"
                         style={{
@@ -1523,19 +2117,34 @@ export default function StoreScreenshotEditor({
                 }
                 if (layer.type === 'image') {
                   const imgRot = layer.rotation ?? 0
+                  const cached = imageCache.get(layer.src)
                   const nat = imgNaturalById[layer.id]
-                  const mwPx = (previewW * (layer.wPct ?? 22)) / 100
+                  const nw = nat?.w || cached?.naturalWidth || cached?.width || 0
+                  const nh = nat?.h || cached?.naturalHeight || cached?.height || 0
+                  let layerForGeom = layer
+                  if (layer.attachToTextId && nw && nh) {
+                    layerForGeom =
+                      getImageLayerWithTextAttach(layer, textExportBoundsMap, nw, nh, exportCanvasW, exportCanvasH) ??
+                      layer
+                  }
+                  const exportGeom =
+                    nw && nh ? getStoreImageLayerGeometry(layerForGeom, nw, nh, exportCanvasW, exportCanvasH) : null
+                  const previewGeom = exportGeom
+                    ? scaleStoreImageGeometryToPreview(exportGeom, previewW, previewH, exportCanvasW, exportCanvasH)
+                    : null
                   let aspectStr = '16 / 9'
-                  if (nat?.w && nat?.h) {
+                  if (nw && nh) {
                     const { sw, sh } = normRectToSourcePixels(
-                      nat.w,
-                      nat.h,
-                      resolveImageCropRect(layer, nat.w, nat.h),
+                      nw,
+                      nh,
+                      resolveImageCropRect(layer, nw, nh),
                     )
                     aspectStr = `${sw} / ${sh}`
                   }
+                  const mwPx = (previewW * (layer.wPct ?? 22)) / 100
                   const inner =
-                    nat?.w && nat?.h ? getImageLayerPreviewBox(layer, nat.w, nat.h, mwPx) : null
+                    previewGeom ??
+                    (nw && nh ? getImageLayerPreviewBox(layerForGeom, nw, nh, mwPx) : null)
                   const br = inner
                     ? Math.min(inner.cornerRadiusPx, inner.mw / 2, inner.mh / 2, 999)
                     : 4
@@ -1545,9 +2154,10 @@ export default function StoreScreenshotEditor({
                       key={layer.id}
                       style={{
                         position: 'absolute',
-                        left: `${layer.x}%`,
-                        top: `${layer.y}%`,
-                        width: `${layer.wPct}%`,
+                        left: previewGeom ? previewGeom.cx : `${layer.x}%`,
+                        top: previewGeom ? previewGeom.cy : `${layer.y}%`,
+                        width: previewGeom ? previewGeom.mw : `${layer.wPct}%`,
+                        height: previewGeom ? previewGeom.mh : undefined,
                         transform: `translate(-50%, -50%) rotate(${imgRot}deg)`,
                         opacity: layer.opacity ?? 1,
                         filter: imageDropFilter,
@@ -1556,45 +2166,82 @@ export default function StoreScreenshotEditor({
                         outline: 'none',
                       }}
                     >
-                      <div
-                        style={{
-                          position: 'relative',
-                          width: '100%',
-                          aspectRatio: aspectStr,
-                          overflow: 'hidden',
-                          borderRadius: br,
-                        }}
-                      >
-                        <img
-                          src={layer.src}
-                          alt=""
-                          draggable={false}
-                          onLoad={(e) => {
-                            const el = e.currentTarget
-                            setImgNaturalById((m) => ({
-                              ...m,
-                              [layer.id]: { w: el.naturalWidth, h: el.naturalHeight },
-                            }))
+                      {previewGeom ? (
+                        <div
+                          style={{
+                            position: 'relative',
+                            width: '100%',
+                            height: '100%',
+                            overflow: 'hidden',
+                            borderRadius: br,
                           }}
-                          style={
-                            inner?.layout
-                              ? {
-                                  position: 'absolute',
-                                  width: inner.layout.width,
-                                  height: inner.layout.height,
-                                  left: inner.layout.left,
-                                  top: inner.layout.top,
-                                  display: 'block',
-                                }
-                              : { width: '100%', height: 'auto', display: 'block' }
-                          }
-                        />
-                      </div>
+                        >
+                          <img
+                            src={layer.src}
+                            alt=""
+                            draggable={false}
+                            onLoad={(e) => {
+                              const el = e.currentTarget
+                              setImgNaturalById((m) => ({
+                                ...m,
+                                [layer.id]: { w: el.naturalWidth, h: el.naturalHeight },
+                              }))
+                            }}
+                            style={
+                              inner?.layout
+                                ? {
+                                    position: 'absolute',
+                                    width: inner.layout.width,
+                                    height: inner.layout.height,
+                                    left: inner.layout.left,
+                                    top: inner.layout.top,
+                                    display: 'block',
+                                  }
+                                : undefined
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            position: 'relative',
+                            width: '100%',
+                            aspectRatio: aspectStr,
+                            overflow: 'hidden',
+                            borderRadius: br,
+                          }}
+                        >
+                          <img
+                            src={layer.src}
+                            alt=""
+                            draggable={false}
+                            onLoad={(e) => {
+                              const el = e.currentTarget
+                              setImgNaturalById((m) => ({
+                                ...m,
+                                [layer.id]: { w: el.naturalWidth, h: el.naturalHeight },
+                              }))
+                            }}
+                            style={
+                              inner?.layout
+                                ? {
+                                    position: 'absolute',
+                                    width: inner.layout.width,
+                                    height: inner.layout.height,
+                                    left: inner.layout.left,
+                                    top: inner.layout.top,
+                                    display: 'block',
+                                  }
+                                : { width: '100%', height: 'auto', display: 'block' }
+                            }
+                          />
+                        </div>
+                      )}
                     </div>
                   )
                 }
                 if (layer.type === 'text') {
-                  const fsPx = Math.max(10, (previewH * (layer.fontSizePct ?? 3.5)) / 100)
+                  const fsPx = storeFontPxFromHeight(previewH, layer.fontSizePct)
                   const hasFixedTextWidth = hasExplicitTextWidth(layer)
                   const textMaxWidthPx = hasExplicitTextWidth(layer)
                     ? (previewW * clamp(layer.maxWidthPct, 20, 98)) / 100
@@ -1624,6 +2271,10 @@ export default function StoreScreenshotEditor({
                       }}
                     >
                       <div
+                        ref={(el) => {
+                          if (el) textInnerRef.current[layer.id] = el
+                          else delete textInnerRef.current[layer.id]
+                        }}
                         style={{
                           display: 'inline-block',
                           width: textMaxWidthPx ? `${textMaxWidthPx}px` : 'auto',
@@ -1672,7 +2323,7 @@ export default function StoreScreenshotEditor({
                     textAlign: 'center',
                   }}
                 >
-                  <GripHorizontal size={12} strokeWidth={2} /> Drag layers · drop images on the canvas
+                  <GripHorizontal size={12} strokeWidth={2} /> Drag layers · Alt/⌘+click to cycle overlaps · drop images
                 </div>
               ) : null}
               {dropHint ? (
@@ -1831,26 +2482,6 @@ export default function StoreScreenshotEditor({
             </>
           ) : selected?.type === 'mockup' ? (
             <>
-              <div style={{ fontWeight: 700, letterSpacing: 1, color: '#94a3b8', marginBottom: 12, fontSize: 11 }}>DEVICE</div>
-              {!sameCapture ? (
-                <>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, color: '#e2e8f0', cursor: 'pointer' }}>
-                    <input
-                      type="checkbox"
-                      checked={selected.useSceneBg === true}
-                      onChange={(e) => updateLayer(selected.id, { useSceneBg: e.target.checked })}
-                    />
-                    Include generator scene background
-                  </label>
-                  <p style={{ color: '#64748b', fontSize: 11, lineHeight: 1.5, marginBottom: 12 }}>
-                    Turn off to use only the device (no sidebar gradient/solid from the mockup generator).
-                  </p>
-                </>
-              ) : (
-                <p style={{ color: '#64748b', fontSize: 11, lineHeight: 1.5, marginBottom: 12 }}>
-                  Mockup was opened without a generator scene; only the device frame is available.
-                </p>
-              )}
               <p style={{ fontSize: 10, color: 'var(--text3)', lineHeight: 1.45, margin: '0 0 12px' }}>
                 Extra pictures with crop and rounded corners: use <strong style={{ color: 'var(--text2)' }}>Crop and Corner Radius</strong> in the left column (upload there).
               </p>
@@ -1979,6 +2610,134 @@ export default function StoreScreenshotEditor({
                 {isLayerVisible(selected) ? <Eye size={14} /> : <EyeOff size={14} />}
                 Visible
               </label>
+              <div
+                style={{
+                  marginBottom: 12,
+                  padding: '10px 0',
+                  borderTop: '1px solid var(--border2)',
+                  borderBottom: '1px solid var(--border2)',
+                }}
+              >
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text)', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={Boolean(selected.attachToTextId)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        const W = Math.round(fmt.width * EXPORT_SCALE)
+                        const H = Math.round(fmt.height * EXPORT_SCALE)
+                        const candidates = stack.filter((l) => l.type === 'text' && isLayerVisible(l))
+                        const chosen = candidates.find((t) => measureExportTextHorizontalEdges(t, W, H).singleLine)
+                        if (!chosen) {
+                          setPinAttachMessage(
+                            'Pin to text works only for single-line text. Set Text width to Free text or shorten the headline.',
+                          )
+                          return
+                        }
+                        setPinAttachMessage('')
+                        updateLayer(selected.id, {
+                          attachToTextId: chosen.id,
+                          attachGapPx: selected.attachGapPx ?? 8,
+                          attachSide: selected.attachSide === 'left' ? 'left' : 'right',
+                          attachVerticalOffsetPx: selected.attachVerticalOffsetPx ?? 0,
+                        })
+                      } else {
+                        setPinAttachMessage('')
+                        updateLayer(selected.id, { attachToTextId: null })
+                      }
+                    }}
+                  />
+                  Pin to text (export aligns icon to canvas text + gap)
+                </label>
+                {pinAttachMessage ? (
+                  <p style={{ fontSize: 11, color: '#fbbf24', margin: '8px 0 0', lineHeight: 1.4 }}>{pinAttachMessage}</p>
+                ) : null}
+                {selected.attachToTextId &&
+                selectedImagePinTargetBounds &&
+                !selectedImagePinTargetBounds.singleLine ? (
+                  <p style={{ fontSize: 11, color: '#fbbf24', margin: '8px 0 0', lineHeight: 1.4 }}>
+                    This text wraps in export, so pin-to-text is paused. Use one line or remove line breaks to align the icon.
+                  </p>
+                ) : null}
+                {selected.attachToTextId ? (
+                  <>
+                    <label style={{ color: '#64748b', marginBottom: 4, display: 'block', marginTop: 10 }}>Text layer</label>
+                    <select
+                      value={selected.attachToTextId}
+                      onChange={(e) => updateLayer(selected.id, { attachToTextId: e.target.value || null })}
+                      style={{ width: '100%', marginBottom: 8, padding: 6, borderRadius: 6 }}
+                    >
+                      {stack.filter((l) => l.type === 'text').length === 0 ? (
+                        <option value="">No text layers</option>
+                      ) : null}
+                      {stack
+                        .filter((l) => l.type === 'text')
+                        .map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {(t.text || 'Text').slice(0, 44)}
+                            {(t.text || '').length > 44 ? '…' : ''}
+                          </option>
+                        ))}
+                    </select>
+                    {stack.filter((l) => l.type === 'text').length === 0 ? (
+                      <p style={{ fontSize: 10, color: 'var(--text3)', margin: '0 0 8px' }}>Add a text layer first.</p>
+                    ) : null}
+                    <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Gap (export px)</label>
+                    <input
+                      type="number"
+                      min={ATTACH_GAP_EXPORT_MIN}
+                      max={ATTACH_GAP_EXPORT_MAX}
+                      step={1}
+                      value={selected.attachGapPx ?? 8}
+                      onChange={(e) =>
+                        updateLayer(selected.id, {
+                          attachGapPx: clamp(Number(e.target.value), ATTACH_GAP_EXPORT_MIN, ATTACH_GAP_EXPORT_MAX),
+                        })
+                      }
+                      style={{ width: '100%', marginBottom: 8, padding: 6, borderRadius: 6 }}
+                    />
+                    <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>
+                      Vertical offset (export px)
+                    </label>
+                    <input
+                      type="number"
+                      min={-800}
+                      max={800}
+                      step={1}
+                      value={selected.attachVerticalOffsetPx ?? 0}
+                      onChange={(e) =>
+                        updateLayer(selected.id, {
+                          attachVerticalOffsetPx: clamp(Number(e.target.value), -800, 800),
+                        })
+                      }
+                      style={{ width: '100%', marginBottom: 8, padding: 6, borderRadius: 6 }}
+                    />
+                    <div style={{ display: 'flex', gap: 12, marginBottom: 6, flexWrap: 'wrap' }}>
+                      <label style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          name={`attach-side-${selected.id}`}
+                          checked={(selected.attachSide || 'right') !== 'left'}
+                          onChange={() => updateLayer(selected.id, { attachSide: 'right' })}
+                        />
+                        Right of text
+                      </label>
+                      <label style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          name={`attach-side-${selected.id}`}
+                          checked={selected.attachSide === 'left'}
+                          onChange={() => updateLayer(selected.id, { attachSide: 'left' })}
+                        />
+                        Left of text
+                      </label>
+                    </div>
+                    <p style={{ fontSize: 10, color: 'var(--text3)', lineHeight: 1.45, margin: 0 }}>
+                      Pin applies only when export text is a single line. Dragging preserves the pin and updates gap/offset.
+                    </p>
+                  </>
+                ) : null}
+              </div>
               <label style={{ color: '#64748b', marginBottom: 4, display: 'block' }}>Scale ({clamp(selected.wPct ?? 22, IMAGE_WIDTH_MIN_PCT, IMAGE_WIDTH_MAX_PCT)}%)</label>
               <input
                 type="range"

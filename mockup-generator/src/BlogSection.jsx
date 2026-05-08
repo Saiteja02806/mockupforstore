@@ -58,8 +58,6 @@ function BlogPostView({ slug }) {
 
   useEffect(() => {
     let cancelled = false
-    setLoading(true)
-    setErr(null)
     const root = import.meta.env.BASE_URL || '/'
     const normalized = root.endsWith('/') ? root : `${root}/`
     fetch(`${normalized}blog-posts/${encodeURIComponent(slug)}.md`)
@@ -147,7 +145,7 @@ export default function BlogSection() {
             <BlogList posts={posts} />
           </>
         ) : (
-          <BlogPostView slug={slug} />
+          <BlogPostView key={slug} slug={slug} />
         )}
       </main>
     </div>
